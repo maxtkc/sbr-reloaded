@@ -1,0 +1,20 @@
+---
+// Shared shell for /games/<slug> pages. Wiring (start, close, touch guard) comes in a later phase.
+interface Props {
+  title: string;
+  slug: string;
+}
+const { title, slug } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <div id="game-root" data-slug={slug}></div>
+  </body>
+</html>
