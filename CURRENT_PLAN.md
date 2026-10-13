@@ -193,7 +193,10 @@ src/games/<slug>/        index.ts (export default start(root: HTMLElement): () =
   `title` + `lines` list; structured joke files from later phases are edited in git. Issue form parsing lives in
   `scripts/event-issue/to-event.mjs` (no deps, issue body never reaches a shell); the workflow requires labels
   `event` + `approved`, runs `npm run build` before opening the PR (GITHUB_TOKEN PRs trigger no other workflows),
-  and comments on the issue on failure. All-day events store an inclusive last day, matching `ics.ts`. Verified
+  and comments on the issue on failure. All-day events store an inclusive last day, matching `ics.ts`. Content YAML uses Sveltia's serializer settings
+  (`scripts/lib/yaml-format.mjs`, plain strings, single quotes only when needed); the issue workflow uses the same
+  module and `npm run format:content` normalizes existing files. Unquoted `YYYY-MM-DD` frontmatter parses as a Date,
+  so the event date schema maps Dates back to strings. Verified
   locally: build passes with generated events, `/admin` renders the login screen with the config loaded. Not yet
   verified: GitHub login and the issue -> PR run (need User action 2 and the repo settings in `docs/cms-setup.md`).
 

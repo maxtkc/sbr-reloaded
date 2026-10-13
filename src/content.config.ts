@@ -3,9 +3,11 @@ import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
 // Local wall-clock time in Europe/London: "YYYY-MM-DD" (all-day) or "YYYY-MM-DDTHH:MM".
-const localDateTime = z
-  .string()
-  .regex(/^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2})?$/, 'Use YYYY-MM-DD or YYYY-MM-DDTHH:MM');
+// Unquoted YAML dates (as written by the CMS) arrive as UTC-midnight Date objects, so map them back.
+const localDateTime = z.preprocess(
+  (v) => (v instanceof Date ? v.toISOString().slice(0, 10) : v),
+  z.string().regex(/^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2})?$/, 'Use YYYY-MM-DD or YYYY-MM-DDTHH:MM'),
+);
 
 export const eventCategories = [
   'academic',
