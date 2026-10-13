@@ -200,11 +200,21 @@ src/games/<slug>/        index.ts (export default start(root: HTMLElement): () =
   locally: build passes with generated events, `/admin` renders the login screen with the config loaded. Not yet
   verified: GitHub login and the issue -> PR run (need User action 2 and the repo settings in `docs/cms-setup.md`).
 
-## Phase 5 - Gallery + Instagram  `[ ]`
+## Phase 5 - Gallery + Instagram  `[x]`
 - Gallery: masonry grid + lightbox (small lib or hand-rolled), images from `src/content/gallery`.
 - Instagram: lazy iframes from `instagram` collection (seed 3-6 real recent @samuelsroom post URLs if findable, else
   placeholders), Follow button.
 - Checklist: gallery responsive; embeds load; adding an item via CMS shows after rebuild.
+- Notes: masonry via CSS `columns` (1/2/3 at <560/<900/wider), thumbnails at 480w with 2x density, each linking to a
+  1600w `getImage` rendition so it works without JS. Lightbox is a hand-rolled `<dialog>` in `Gallery.astro`
+  (prev/next buttons, arrow keys, Esc, backdrop click, horizontal swipe; nav buttons hidden on phones). Gallery is
+  seeded with 3 entries reusing repo images (college map, Butler portrait, arms) copied into `src/assets/gallery`.
+  Gallery `date` gets the same Date-to-string preprocess as events (unquoted YAML dates). Instagram renders
+  `https://www.instagram.com/<p|reel>/<id>/embed` iframes (`loading="lazy"`, fixed 560px height since no Instagram
+  script is loaded) with a "View on Instagram" link. No Instagram seed: the profile cannot be read without a login,
+  so the section shows only the Follow button until posts are added via the CMS. Verified in headless Chromium at
+  375/768/1280px (no horizontal scroll, all lightbox controls) and that the iframe loads only on scroll; the embed
+  endpoint allows framing, but a rendered real post is unverified until a real post URL is added.
 
 ## Phase 6 - Asset pipeline (faces, arms parts)  `[ ]`
 - `scripts/faces/` (Python, `-I`, venv): MediaPipe face detection or OpenCV DNN on each committee photo -> square crop

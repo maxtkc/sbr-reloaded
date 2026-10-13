@@ -1,8 +1,23 @@
 ---
 import { getCollection } from 'astro:content';
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 
-const items = (await getCollection('gallery')).sort((a, b) => a.data.order - b.data.order);
+const items = await Promise.all(
+  (await getCollection('gallery'))
+    .sort((a, b) => a.data.order - b.data.order)
+    .map(async (g) => ({
+      ...g.data,
+      full: (await getImage({ src: g.data.image, width: Math.min(1600, g.data.image.width) })).src,
+    })),
+);
+
+const formatDate = (d: string) =>
+  new Date(`${d}T12:00:00Z`).toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
 ---
 
 <section class="section" id="gallery">
@@ -11,24 +26,218 @@ const items = (await getCollection('gallery')).sort((a, b) => a.data.order - b.d
     {items.length === 0 ? (
       <p class="lead">Photos from SBR events will appear here soon.</p>
     ) : (
-      <div class="grid">
+      <ul class="masonry">
         {items.map((g) => (
-          <figure>
-            <Image src={g.data.image} alt={g.data.alt} width={480} />
-            {g.data.caption && <figcaption>{g.data.caption}</figcaption>}
-          </figure>
+          <li>
+            <figure>
+              <a
+                href={g.full}
+                class="thumb"
+                data-caption={g.caption ?? g.alt}
+                data-date={g.date ? formatDate(g.date) : ''}
+              >
+                <Image src={g.image} alt={g.alt} width={480} densities={[1, 2]} loading="lazy" />
+              </a>
+              {g.caption && <figcaption>{g.caption}</figcaption>}
+            </figure>
+          </li>
         ))}
-      </div>
+      </ul>
     )}
   </div>
+  {items.length > 0 && (
+    <dialog class="lightbox" aria-label="Photo viewer">
+      <button class="close" type="button" aria-label="Close">
+        X
+      </button>
+      <button class="nav prev" type="button" aria-label="Previous photo">
+        &lt;
+      </button>
+      <figure>
+        <img alt="" />
+        <figcaption>
+          <span class="caption"></span> <span class="date"></span>
+        </figcaption>
+      </figure>
+      <button class="nav next" type="button" aria-label="Next photo">
+        &gt;
+      </button>
+    </dialog>
+  )}
 </section>
 
 <style>
+  .masonry {
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0 0;
+    columns: 1;
+    column-gap: 1rem;
+  }
+  @media (min-width: 560px) {
+    .masonry {
+      columns: 2;
+    }
+  }
+  @media (min-width: 900px) {
+    .masonry {
+      columns: 3;
+    }
+  }
+  .masonry li {
+    break-inside: avoid;
+    margin-bottom: 1rem;
+  }
   figure {
     margin: 0;
   }
-  figure :global(img) {
-    border-radius: var(--radius);
+  .thumb {
     display: block;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--card);
+  }
+  .thumb :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: transform 0.25s;
+  }
+  .thumb:hover :global(img),
+  .thumb:focus-visible :global(img) {
+    transform: scale(1.03);
+  }
+  .masonry figcaption {
+    margin-top: 0.4rem;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+
+  .lightbox {
+    width: 100vw;
+    height: 100dvh;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 1rem;
+    border: 0;
+    background: transparent;
+    color: #fff;
+  }
+  .lightbox[open] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  .lightbox::backdrop {
+    background: rgb(0 0 0 / 0.88);
+  }
+  .lightbox figure {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .lightbox img {
+    max-width: 100%;
+    max-height: calc(100dvh - 7rem);
+    object-fit: contain;
+    border-radius: 4px;
+  }
+  .lightbox figcaption {
+    text-align: center;
+    max-width: 46rem;
+    font-size: 0.95rem;
+  }
+  .lightbox .date {
+    opacity: 0.7;
+  }
+  .lightbox button {
+    flex: none;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 0;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.15);
+    color: #fff;
+    font: 600 1.1rem var(--sans);
+    cursor: pointer;
+  }
+  .lightbox button:hover {
+    background: rgb(255 255 255 / 0.3);
+  }
+  .lightbox .close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+  }
+  @media (max-width: 559px) {
+    .lightbox .nav {
+      display: none;
+    }
   }
 </style>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('#gallery .lightbox');
+  const thumbs = [...document.querySelectorAll<HTMLAnchorElement>('#gallery .thumb')];
+
+  if (dialog && thumbs.length) {
+    const img = dialog.querySelector('img')!;
+    const caption = dialog.querySelector<HTMLElement>('.caption')!;
+    const date = dialog.querySelector<HTMLElement>('.date')!;
+    let index = 0;
+
+    // Shows the photo at position i (wraps around).
+    const show = (i: number) => {
+      index = (i + thumbs.length) % thumbs.length;
+      const t = thumbs[index];
+      img.src = t.href;
+      img.alt = t.querySelector('img')?.alt ?? '';
+      caption.textContent = t.dataset.caption ?? '';
+      date.textContent = t.dataset.date ?? '';
+    };
+
+    thumbs.forEach((t, i) =>
+      t.addEventListener('click', (e) => {
+        e.preventDefault();
+        show(i);
+        dialog.showModal();
+      }),
+    );
+
+    dialog.querySelector('.close')!.addEventListener('click', () => dialog.close());
+    dialog.querySelector('.prev')!.addEventListener('click', () => show(index - 1));
+    dialog.querySelector('.next')!.addEventListener('click', () => show(index + 1));
+
+    // Clicks on the backdrop (the dialog itself, outside the photo and buttons) close it.
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) dialog.close();
+    });
+
+    dialog.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') show(index - 1);
+      else if (e.key === 'ArrowRight') show(index + 1);
+    });
+
+    // Horizontal swipe for prev/next.
+    let startX = 0;
+    let startY = 0;
+    dialog.addEventListener(
+      'touchstart',
+      (e) => {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+      },
+      { passive: true },
+    );
+    dialog.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - startX;
+      const dy = e.changedTouches[0].clientY - startY;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) show(index + (dx < 0 ? 1 : -1));
+    });
+  }
+</script>

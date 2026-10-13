@@ -4,8 +4,9 @@ import { z } from 'astro/zod';
 
 // Local wall-clock time in Europe/London: "YYYY-MM-DD" (all-day) or "YYYY-MM-DDTHH:MM".
 // Unquoted YAML dates (as written by the CMS) arrive as UTC-midnight Date objects, so map them back.
+const dateToString = (v: unknown) => (v instanceof Date ? v.toISOString().slice(0, 10) : v);
 const localDateTime = z.preprocess(
-  (v) => (v instanceof Date ? v.toISOString().slice(0, 10) : v),
+  dateToString,
   z.string().regex(/^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2})?$/, 'Use YYYY-MM-DD or YYYY-MM-DDTHH:MM'),
 );
 
@@ -79,7 +80,9 @@ const gallery = defineCollection({
       image: image(),
       alt: z.string(),
       caption: z.string().optional(),
-      date: z.string().optional(),
+      date: z
+        .preprocess(dateToString, z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Use YYYY-MM-DD'))
+        .optional(),
       order: z.number().default(0),
     }),
 });
