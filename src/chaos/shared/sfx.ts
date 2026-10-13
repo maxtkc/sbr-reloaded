@@ -55,3 +55,8 @@ export function boom(ms = 300, vol = 0.3): void {
 export function fanfare(): void {
   [523, 659, 784, 1047].forEach((f, i) => beep(f, 150, 'square', 0.08, i * 120));
 }
+
+// Two-tone porter siren.
+export function siren(ms = 2000): void {
+  for (let t = 0, i = 0; t < ms; t += 250, i++) beep(i % 2 ? 950 : 700, 240, 'square', 0.06, t);
+}

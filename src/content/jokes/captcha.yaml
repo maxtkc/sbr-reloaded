@@ -1,0 +1,30 @@
+title: captcha
+brand: porterCAPTCHA
+checkbox: I'm not a robot
+hints:
+  - Cats do not count.
+  - Cambridge urban variety only.
+  - If there are none left, click verify.
+  - Foxes seen near the bins on Bridge Street count double.
+verifying:
+  - Verifying...
+  - Consulting the Head Porter...
+  - Checking your gown length...
+failures:
+  - Please try again.
+  - That was a cat.
+  - All of the foxes you selected were cats. Please try again.
+  - Foxes are nocturnal. Please try again after midnight.
+  - Incorrect. A fox would have known that.
+  - Please select all foxes, not all cats.
+giveUp: Give up
+siren:
+  - Wrong! Robot detected, alerting the porters!
+sirenDetails:
+  - The Porters' Lodge (01223 338671) has been notified. Please remain where you are.
+  - A porter in a bowler hat is on the way. Please keep off the grass.
+  - Your CRSid has been forwarded to the Dean.
+letThrough:
+  - On second thought, the porters are at BA Table. Letting you through.
+  - The porters have decided you seem harmless. Continue.
+  - Robots are permitted on the Backs on Tuesdays. Continue.
