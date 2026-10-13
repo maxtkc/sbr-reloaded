@@ -1,4 +1,4 @@
-// Intent matchers for Soleh-bot: keyword hits (instant) or MiniLM sentence embeddings (lazy-loaded model).
+// Intent matchers for Solbee: keyword hits (instant) or MiniLM sentence embeddings (lazy-loaded model).
 export interface Intent {
   id: string;
   keywords: string[];

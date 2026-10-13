@@ -278,7 +278,7 @@ src/games/<slug>/        index.ts (export default start(root: HTMLElement): () =
   Transformers.js `Xenova/all-MiniLM-L6-v2` lazy-loaded on first message, cosine against precomputed intent example
   embeddings (computed in browser on load, cached). Typing indicator, sometimes "thinks" for too long.
 - Real info: occasionally gives a real fact wrapped in nonsense (BA Table days, Port & Sherry price).
-- Notes: `src/chaos/gags/assistant/{index.ts,match.ts}`. Data reaches the client through
+- Notes: the bot is named Solbee (`name` in `assistant.yaml`). `src/chaos/gags/assistant/{index.ts,match.ts}`. Data reaches the client through
   `src/components/AssistantData.astro` (in `BaseLayout`, so not on game pages): it validates `assistant.yaml` with a zod
   schema (a bad edit fails the build) and adds Soleh's cutout as a 128px webp, as `<script id="assistant-data">` JSON.
   `assistant.yaml` has `greeting`, `thinking`, `nudges`, `fallbacks`, `facts` and 23 `intents` (`keywords`, `examples`,

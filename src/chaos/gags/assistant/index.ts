@@ -1,4 +1,4 @@
-// Soleh-bot: a floating chat widget that matches what you type to a joke intent and never helps.
+// Solbee: a floating chat widget that matches what you type to a joke intent and never helps.
 import { onPause, onResume } from '../../bus';
 import { blip } from '../../shared/sfx';
 import { embeddingMatcher, keywordMatcher, type Intent, type Matcher } from './match';
