@@ -1,0 +1,176 @@
+{
+  "viewBox": "0 0 984.61 922.31",
+  "parts": [
+    {
+      "name": "left-yale-legs",
+      "file": "left-yale-legs.svg",
+      "x": 156.85,
+      "y": 439.3,
+      "width": 242.56,
+      "height": 392.34,
+      "pivot": [338.77, 458.92]
+    },
+    {
+      "name": "right-yale-legs",
+      "file": "right-yale-legs.svg",
+      "x": 585.21,
+      "y": 438.84,
+      "width": 242.5,
+      "height": 392.38,
+      "pivot": [645.84, 458.46]
+    },
+    {
+      "name": "eagle-wing-l",
+      "file": "eagle-wing-l.svg",
+      "x": 230.41,
+      "y": 14.4,
+      "width": 247.15,
+      "height": 366.09,
+      "pivot": [452.85, 197.44]
+    },
+    {
+      "name": "eagle-wing-r",
+      "file": "eagle-wing-r.svg",
+      "x": 479.58,
+      "y": 5.22,
+      "width": 268.66,
+      "height": 378.66,
+      "pivot": [506.45, 194.55]
+    },
+    {
+      "name": "eagle-body",
+      "file": "eagle-body.svg",
+      "x": 363.6,
+      "y": -2.01,
+      "width": 220.83,
+      "height": 434.23,
+      "pivot": [474.02, 432.22]
+    },
+    {
+      "name": "shield",
+      "file": "shield.svg",
+      "x": 303.46,
+      "y": 401.78,
+      "width": 378.1,
+      "height": 484.75,
+      "pivot": [492.51, 644.15]
+    },
+    {
+      "name": "left-yale-ear",
+      "file": "left-yale-ear.svg",
+      "x": 140.03,
+      "y": 307.21,
+      "width": 27.69,
+      "height": 63.17,
+      "pivot": [153.88, 370.38]
+    },
+    {
+      "name": "left-yale-horn-back",
+      "file": "left-yale-horn-back.svg",
+      "x": 4.24,
+      "y": 307.89,
+      "width": 143.47,
+      "height": 133.21,
+      "pivot": [133.36, 357.18]
+    },
+    {
+      "name": "left-yale-horn-front",
+      "file": "left-yale-horn-front.svg",
+      "x": 118.12,
+      "y": 271.79,
+      "width": 153.23,
+      "height": 99.42,
+      "pivot": [164.09, 350.33]
+    },
+    {
+      "name": "left-yale-tongue",
+      "file": "left-yale-tongue.svg",
+      "x": 148.39,
+      "y": 392.49,
+      "width": 92.05,
+      "height": 29.19,
+      "pivot": [162.2, 407.09]
+    },
+    {
+      "name": "left-yale-tail",
+      "file": "left-yale-tail.svg",
+      "x": 18.8,
+      "y": 731.14,
+      "width": 56.49,
+      "height": 54.99,
+      "pivot": [63.99, 742.14]
+    },
+    {
+      "name": "left-yale",
+      "file": "left-yale.svg",
+      "x": -1.99,
+      "y": 306.73,
+      "width": 349.18,
+      "height": 617.58,
+      "pivot": [172.6, 893.43]
+    },
+    {
+      "name": "right-yale-ear",
+      "file": "right-yale-ear.svg",
+      "x": 816.94,
+      "y": 306.77,
+      "width": 27.7,
+      "height": 63.17,
+      "pivot": [830.79, 369.94]
+    },
+    {
+      "name": "right-yale-horn-back",
+      "file": "right-yale-horn-back.svg",
+      "x": 836.9,
+      "y": 307.46,
+      "width": 143.48,
+      "height": 133.22,
+      "pivot": [851.25, 356.75]
+    },
+    {
+      "name": "right-yale-horn-front",
+      "file": "right-yale-horn-front.svg",
+      "x": 713.2,
+      "y": 271.39,
+      "width": 153.3,
+      "height": 99.42,
+      "pivot": [820.51, 349.93]
+    },
+    {
+      "name": "right-yale-tongue",
+      "file": "right-yale-tongue.svg",
+      "x": 744.17,
+      "y": 392.05,
+      "width": 92.05,
+      "height": 29.16,
+      "pivot": [822.41, 406.63]
+    },
+    {
+      "name": "right-yale-tail",
+      "file": "right-yale-tail.svg",
+      "x": 909.33,
+      "y": 730.7,
+      "width": 56.48,
+      "height": 54.98,
+      "pivot": [920.63, 741.7]
+    },
+    {
+      "name": "right-yale",
+      "file": "right-yale.svg",
+      "x": 637.41,
+      "y": 306.31,
+      "width": 349.21,
+      "height": 617.54,
+      "pivot": [812.01, 892.97]
+    },
+    {
+      "name": "coronet",
+      "file": "coronet.svg",
+      "x": 268.68,
+      "y": 304.14,
+      "width": 446.08,
+      "height": 127.52,
+      "pivot": [491.72, 431.66]
+    }
+  ]
+}
