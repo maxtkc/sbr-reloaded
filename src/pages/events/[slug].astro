@@ -1,0 +1,152 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SubscribeButtons from '../../components/SubscribeButtons.astro';
+import { occurrences, formatWhen, categoryLabels } from '../../lib/events';
+import { googleEventLink, outlookEventLink } from '../../lib/calendar-links';
+import { plainText } from '../../lib/ics';
+import { url } from '../../lib/url';
+
+export const getStaticPaths = (async () => {
+  const events = await getCollection('events');
+  return events.map((event) => ({ params: { slug: event.id }, props: { event } }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  event: CollectionEntry<'events'>;
+}
+const { event } = Astro.props;
+const { title, location, category, ticketUrl, tbc, rrule, allDay } = event.data;
+const { Content } = await render(event);
+const dates = occurrences(event);
+const pageUrl = new URL(url(`/events/${event.id}`), Astro.site).href;
+const google = googleEventLink(event, pageUrl);
+const outlook = outlookEventLink(event, pageUrl);
+---
+
+<BaseLayout title={title} description={plainText(event.body).slice(0, 160)}>
+  <main class="section">
+    <article class="wrap">
+      <p class="back">
+        <a href={url('/#events')}>&lt;- All events</a>
+      </p>
+      <p class="kicker">
+        <span class="tag">{categoryLabels[category]}</span>
+      </p>
+      <h1>{title}</h1>
+      <dl class="facts">
+        <dt>When</dt>
+        <dd>
+          {rrule ? `${dates.length} dates, ${formatWhen(dates[0])} onwards` : formatWhen(dates[0])}
+          {tbc && <span class="tbc">date to be confirmed</span>}
+        </dd>
+        <dt>Where</dt>
+        <dd>{location}</dd>
+        {ticketUrl && (
+          <>
+            <dt>Tickets</dt>
+            <dd>
+              <a href={ticketUrl}>{ticketUrl.replace(/^https?:\/\//, '')}</a>
+            </dd>
+          </>
+        )}
+      </dl>
+      <div class="prose">
+        <Content />
+      </div>
+
+      <h2>Add to your calendar</h2>
+      <div class="btn-row">
+        <a class="btn" href={google} target="_blank" rel="noopener">
+          Add to Google Calendar
+        </a>
+        {!rrule && (
+          <a class="btn secondary" href={outlook} target="_blank" rel="noopener">
+            Add to Outlook
+          </a>
+        )}
+        <a class="btn secondary" href={url(`/events/${event.id}.ics`)} download={`${event.id}.ics`}>
+          Download .ics{rrule ? ' (all dates)' : ''}
+        </a>
+      </div>
+      {rrule && (
+        <p class="note">
+          For Outlook, Apple Calendar and others, download the .ics file to add every date at once.
+        </p>
+      )}
+
+      {rrule && (
+        <>
+          <h2>Dates</h2>
+          <ol class="dates">
+            {dates.map((o) => (
+              <li data-end={allDay ? `${o.end}T23:59` : o.end}>{formatWhen(o)}</li>
+            ))}
+          </ol>
+        </>
+      )}
+
+      <h2>Every SBR event</h2>
+      <p>Subscribe once and new events appear in your calendar automatically.</p>
+      <SubscribeButtons />
+    </article>
+  </main>
+</BaseLayout>
+
+<script>
+  // Greys out dates that have already ended.
+  const now = new Date()
+    .toLocaleString('sv-SE', { timeZone: 'Europe/London', hour12: false })
+    .replace(' ', 'T')
+    .slice(0, 16);
+  for (const li of document.querySelectorAll<HTMLLIElement>('.dates li[data-end]')) {
+    li.classList.toggle('past', (li.dataset.end ?? '') < now);
+  }
+</script>
+
+<style>
+  .back {
+    margin: 0 0 1rem;
+  }
+  .kicker {
+    margin: 0;
+  }
+  h1 {
+    margin: 0.3rem 0 1rem;
+  }
+  .facts {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0.4rem 1.2rem;
+    margin: 0 0 1.5rem;
+  }
+  .facts dt {
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .facts dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+  .tbc {
+    margin-left: 0.5rem;
+    font-style: italic;
+    color: var(--muted);
+  }
+  .note {
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+  .dates {
+    columns: 3 14rem;
+    padding-left: 1.4rem;
+  }
+  .dates li {
+    break-inside: avoid;
+  }
+  .dates li.past {
+    color: var(--muted);
+    text-decoration: line-through;
+  }
+</style>

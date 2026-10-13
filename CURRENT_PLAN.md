@@ -159,12 +159,22 @@ src/games/<slug>/        index.ts (export default start(root: HTMLElement): () =
   a cam.ac.uk login; wiggle, upaychilli, tabsfm intranet, lgbt.cusu, sjcjcr in the guide); left as scraped.
   Fixed small source typos (missing spaces, split "Port & Sherry" bold).
 
-## Phase 3 - Events + exportable calendar  `[ ]`
+## Phase 3 - Events + exportable calendar  `[x]`
 - `/events/<slug>` detail pages. Category filter on landing.
 - `src/pages/calendar.ics.ts` (use `ical-generator` or similar) with RRULE support, `VTIMEZONE` Europe/London,
   stable UIDs. Per-event `/events/<slug>.ics`.
 - Buttons: "Subscribe" (`webcal://` + Google "add by URL" link), "Add to Google/Outlook", "Download .ics".
 - Checklist: `.ics` validates (icalendar.org validator); subscribing in Google Calendar shows recurring BA Table.
+- Notes: ICS is hand-rolled in `src/lib/ics.ts` (no dependency): static Europe/London `VTIMEZONE`, `TZID` local
+  times, all-day `VALUE=DATE` with exclusive end, RFC 5545 escaping and 75-octet folding, UID `<id>@sbr-reloaded`
+  (host-independent so a custom domain does not duplicate events), `tbc` events get `STATUS:TENTATIVE` and
+  "(date tbc)" in the summary. Add links in `src/lib/calendar-links.ts`: Google template link carries the RRULE;
+  Outlook deeplinks cannot carry recurrence, so the Outlook button is shown only for one-off events (recurring ones
+  point at the per-event `.ics`). Subscribe buttons (webcal, Google add-by-URL, Outlook add-from-web, download) live
+  in `SubscribeButtons.astro`, used on the landing page and every detail page. Landing renders up to 15 upcoming
+  occurrences per category; the client filter shows the next 5 live ones for the selected category. Validated by
+  parsing with Python `icalendar` + `recurring-ical-events` (correct BST/GMT offsets, 18 BA Table dates per
+  Michaelmas/Lent). icalendar.org validation and the Google subscribe test need the deployed URL.
 
 ## Phase 4 - CMS + event issue form  `[ ]` (needs User action 2 to fully test)
 - `public/admin/index.html` loading Sveltia CMS; `config.yml` with GitHub backend, `base_url` = Worker URL, collections

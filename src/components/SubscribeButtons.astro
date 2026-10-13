@@ -1,0 +1,22 @@
+---
+import { subscribeLinks } from '../lib/calendar-links';
+import { url } from '../lib/url';
+
+const icsUrl = new URL(url('/calendar.ics'), Astro.site).href;
+const links = subscribeLinks(icsUrl);
+---
+
+<div class="btn-row">
+  <a class="btn" href={links.webcal}>
+    Subscribe to the calendar
+  </a>
+  <a class="btn secondary" href={links.google} target="_blank" rel="noopener">
+    Subscribe in Google Calendar
+  </a>
+  <a class="btn secondary" href={links.outlook} target="_blank" rel="noopener">
+    Subscribe in Outlook
+  </a>
+  <a class="btn secondary" href={url('/calendar.ics')} download="sbr.ics">
+    Download .ics
+  </a>
+</div>

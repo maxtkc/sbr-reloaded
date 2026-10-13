@@ -1,20 +1,38 @@
 ---
 import SectionText from './SectionText.astro';
+import SubscribeButtons from './SubscribeButtons.astro';
 import { allOccurrences, notEnded, formatWhen, categoryLabels } from '../lib/events';
 import { url } from '../lib/url';
 
 const SHOW = 5;
-// Extra items are rendered so the client can drop ones that ended since the last build.
-const list = notEnded(await allOccurrences()).slice(0, SHOW + 10);
-const icsUrl = new URL(url('/calendar.ics'), Astro.site).href;
-const webcal = icsUrl.replace(/^https?:/, 'webcal:');
-const google = `https://calendar.google.com/calendar/r?cid=${encodeURIComponent(webcal)}`;
+// Up to 15 per category are rendered so the client can filter and drop ones that ended since the build.
+const PER_CATEGORY = SHOW + 10;
+const upcoming = notEnded(await allOccurrences());
+const counts: Record<string, number> = {};
+const list = upcoming.filter((o) => {
+  const c = o.event.data.category;
+  counts[c] = (counts[c] ?? 0) + 1;
+  return counts[c] <= PER_CATEGORY;
+});
+const categories = Object.entries(categoryLabels).filter(([c]) => counts[c]);
 ---
 
 <section class="section" id="events">
   <div class="wrap">
     <h2>Upcoming events</h2>
     <SectionText id="events-intro" />
+    {categories.length > 1 && (
+      <div class="filter" role="group" aria-label="Filter events by category">
+        <button type="button" class="chip" data-filter="" aria-pressed="true">
+          All
+        </button>
+        {categories.map(([c, label]) => (
+          <button type="button" class="chip" data-filter={c} aria-pressed="false">
+            {label}
+          </button>
+        ))}
+      </div>
+    )}
     {list.length === 0 ? (
       <p>No upcoming events right now. Check back soon.</p>
     ) : (
@@ -23,13 +41,16 @@ const google = `https://calendar.google.com/calendar/r?cid=${encodeURIComponent(
           <li
             class="card event"
             data-end={o.event.data.allDay ? `${o.end}T23:59` : o.end}
+            data-category={o.event.data.category}
             hidden={i >= SHOW}
           >
             <div class="when">
               {formatWhen(o)}
               {o.event.data.tbc && <span class="tbc">date tbc</span>}
             </div>
-            <h3>{o.event.data.title}</h3>
+            <h3>
+              <a href={url(`/events/${o.event.id}`)}>{o.event.data.title}</a>
+            </h3>
             <p class="meta">
               <span class="tag">{categoryLabels[o.event.data.category]}</span>{' '}
               {o.event.data.location}
@@ -39,36 +60,39 @@ const google = `https://calendar.google.com/calendar/r?cid=${encodeURIComponent(
         ))}
       </ol>
     )}
-    <div class="btn-row">
-      <a class="btn" href={webcal}>
-        Subscribe to the calendar
-      </a>
-      <a class="btn secondary" href={google}>
-        Add to Google Calendar
-      </a>
-      <a class="btn secondary" href={url('/calendar.ics')} download>
-        Download .ics
-      </a>
-    </div>
+    <p class="empty" hidden>
+      No upcoming events in this category.
+    </p>
+    <SubscribeButtons />
   </div>
 </section>
 
 <script>
-  // Hides occurrences that ended after the build and shows the next ones instead.
+  // Shows the next few live occurrences for the selected category, hiding ones that ended after the build.
   const list = document.querySelector<HTMLOListElement>('ol.events');
-  if (list) {
+  const empty = document.querySelector<HTMLElement>('#events .empty');
+  const chips = document.querySelectorAll<HTMLButtonElement>('#events .chip');
+  const now = new Date()
+    .toLocaleString('sv-SE', { timeZone: 'Europe/London', hour12: false })
+    .replace(' ', 'T')
+    .slice(0, 16);
+
+  function apply(filter: string) {
+    if (!list) return;
     const show = Number(list.dataset.show);
-    const now = new Date()
-      .toLocaleString('sv-SE', { timeZone: 'Europe/London', hour12: false })
-      .replace(' ', 'T')
-      .slice(0, 16);
     let shown = 0;
     for (const li of list.querySelectorAll<HTMLLIElement>('li[data-end]')) {
       const live = (li.dataset.end ?? '') >= now;
-      li.hidden = !live || shown >= show;
-      if (live && !li.hidden) shown++;
+      const match = !filter || li.dataset.category === filter;
+      li.hidden = !live || !match || shown >= show;
+      if (!li.hidden) shown++;
     }
+    if (empty) empty.hidden = shown > 0;
+    chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.filter === filter)));
   }
+
+  chips.forEach((c) => c.addEventListener('click', () => apply(c.dataset.filter ?? '')));
+  apply('');
 </script>
 
 <style>
@@ -97,7 +121,33 @@ const google = `https://calendar.google.com/calendar/r?cid=${encodeURIComponent(
     font-weight: 400;
     font-style: italic;
   }
+  .event h3 a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .event h3 a:hover {
+    text-decoration: underline;
+  }
   .meta {
     margin: 0;
+  }
+  .filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 1.25rem;
+  }
+  .chip {
+    padding: 0.3em 0.9em;
+    border: 1px solid var(--blue);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--blue);
+    font: 600 0.85rem var(--sans);
+    cursor: pointer;
+  }
+  .chip[aria-pressed='true'] {
+    background: var(--blue);
+    color: #fff;
   }
 </style>
