@@ -129,7 +129,7 @@ src/games/<slug>/        index.ts (export default start(root: HTMLElement): () =
   footer image is a raster of the arms (`src/assets/arms/arms-footer.png`). Quick links get `order` and `featured`
   (8 for the landing strip). Em/en dashes in scraped text replaced with hyphens.
 
-## Phase 2 - Landing page + subpages  `[ ]`
+## Phase 2 - Landing page + subpages  `[x]`
 - Theme tokens (Johns red, arms gold/blue), serif heading font (Google Fonts), responsive.
 - Landing sections in order: hero (arms logo, tagline), welcome, upcoming events (next 5) + subscribe buttons,
   "what we do" (event categories from Events page), committee grid (Butler portrait for no-photo members), facilities
@@ -140,6 +140,24 @@ src/games/<slug>/        index.ts (export default start(root: HTMLElement): () =
   phase header; logo eagle, Freshers' Guide link, college map, address, Formal Halls/Swaps, Ents, Port & Sherry, pool
   table, Wii, Sports/punt, GSR, Buttery link, Accommodation, history punt mishaps, welfare/footer image, cycling.
 - Checklist: all real content reachable; mobile layout ok; no dead links.
+- Notes: Astro 7 defaults to the Satteri markdown processor, so `astro.config.mjs` sets
+  `markdown.processor: unified({...})` from `@astrojs/markdown-remark` to run two rehype plugins:
+  `src/lib/rehype-base-links.mjs` (prefixes root-relative links with the base path) and
+  `src/lib/rehype-game-hooks.mjs` (wraps phrases listed in `src/chaos/hooks.mjs` in `<span data-game>`, so
+  CMS-edited text keeps its hooks; rollback = empty that list). Component-level hooks: hero logo
+  `flappy-eagle`, Freshers' Guide heading + "Watch the crawl" button `crawl`, college map image `pokemon`,
+  footer address `flight-sim`, footer arms image `floppy-crow`, Accommodation heading `qwop`, GSR heading
+  `crossy-road`, Formal Halls heading `operation`, Ents heading `pacman`, Buttery quick links `gelato`,
+  Sports card `breakout`, Environment card `bike-dino`. Phrase hooks: "TV with a Wii" `minecraft`,
+  "pool table" `eight-ball`, "Port & Sherry" `doodle-jump`, "sBrOILER ROOMS" `pacman`, "Swaps" `operation`,
+  "All Saints Passage" `crossy-road`, "CB2 1TP" `flight-sim`, "sinking passing punts" (history) `bumps`,
+  "Cycling in Cambridge" (guide) `bike-dino`. Upcoming events: `src/lib/events.ts` expands RRULEs with
+  `rrule` (local times as floating UTC); the page renders 15 upcoming occurrences and a client script
+  shows the next 5 not yet ended. Subscribe buttons already point at `/calendar.ics` (Phase 3 creates it).
+  Event detail links are left for Phase 3. Hero uses the raster arms (`arms-footer.png`); Phase 8 swaps in
+  the inline SVG. Some external links from the source content are dead or restricted (Drive/Forms need
+  a cam.ac.uk login; wiggle, upaychilli, tabsfm intranet, lgbt.cusu, sjcjcr in the guide); left as scraped.
+  Fixed small source typos (missing spaces, split "Port & Sherry" bold).
 
 ## Phase 3 - Events + exportable calendar  `[ ]`
 - `/events/<slug>` detail pages. Category filter on landing.

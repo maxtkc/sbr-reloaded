@@ -1,10 +1,33 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import SectionText from '../components/SectionText.astro';
+import UpcomingEvents from '../components/UpcomingEvents.astro';
+import WhatWeDo from '../components/WhatWeDo.astro';
+import Committee from '../components/Committee.astro';
+import Facilities from '../components/Facilities.astro';
+import Gallery from '../components/Gallery.astro';
+import Instagram from '../components/Instagram.astro';
+import QuickLinksStrip from '../components/QuickLinksStrip.astro';
+import HistoryTeaser from '../components/HistoryTeaser.astro';
 ---
 
 <BaseLayout title="Samuel Butler Room">
+  <Hero />
   <main>
-    <h1>Samuel Butler Room</h1>
-    <p>The St John's College Cambridge postgraduate society. Site under construction.</p>
+    <section class="section" id="welcome">
+      <div class="wrap">
+        <SectionText id="welcome" heading="h2" />
+        <SectionText id="keep-updated" heading="h3" />
+      </div>
+    </section>
+    <UpcomingEvents />
+    <WhatWeDo />
+    <Committee />
+    <Facilities />
+    <Gallery />
+    <Instagram />
+    <QuickLinksStrip />
+    <HistoryTeaser />
   </main>
 </BaseLayout>

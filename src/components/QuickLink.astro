@@ -1,0 +1,35 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { url } from '../lib/url';
+
+interface Props {
+  entry: CollectionEntry<'quicklinks'>;
+}
+const { entry } = Astro.props;
+// Buttery links launch the gelato game.
+const href = entry.data.url.startsWith('/') ? url(entry.data.url) : entry.data.url;
+const game = /buttery/i.test(entry.data.label) ? 'gelato' : undefined;
+---
+
+<a class="ql" href={href} data-game={game}>
+  {entry.data.label}
+</a>
+
+<style>
+  .ql {
+    display: block;
+    height: 100%;
+    padding: 0.8rem 1rem;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--gold);
+    border-radius: var(--radius);
+    color: var(--ink);
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .ql:hover {
+    border-left-color: var(--red);
+    color: var(--red);
+  }
+</style>

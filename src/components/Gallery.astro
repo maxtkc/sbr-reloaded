@@ -1,0 +1,34 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+
+const items = (await getCollection('gallery')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<section class="section" id="gallery">
+  <div class="wrap">
+    <h2>Gallery</h2>
+    {items.length === 0 ? (
+      <p class="lead">Photos from SBR events will appear here soon.</p>
+    ) : (
+      <div class="grid">
+        {items.map((g) => (
+          <figure>
+            <Image src={g.data.image} alt={g.data.alt} width={480} />
+            {g.data.caption && <figcaption>{g.data.caption}</figcaption>}
+          </figure>
+        ))}
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+  figure {
+    margin: 0;
+  }
+  figure :global(img) {
+    border-radius: var(--radius);
+    display: block;
+  }
+</style>

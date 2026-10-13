@@ -1,0 +1,37 @@
+---
+import { getCollection } from 'astro:content';
+import SectionText from './SectionText.astro';
+
+// Event category blurbs from the old Events page, with their easter egg hooks.
+const games: Record<string, string> = { formal: 'operation', ents: 'pacman' };
+const blocks = (
+  await getCollection('sections', (s) => s.data.page === 'events' && !!s.data.category)
+).sort((a, b) => a.data.order - b.data.order);
+---
+
+<section class="section" id="what-we-do">
+  <div class="wrap">
+    <h2>What we do</h2>
+    <div class="blocks">
+      {blocks.map((b) => (
+        <article class="card" id={b.data.category}>
+          <SectionText id={b.id} heading="h3" game={b.data.category && games[b.data.category]} />
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .blocks {
+    columns: 2 26rem;
+    column-gap: 1.25rem;
+  }
+  .blocks > :global(*) {
+    break-inside: avoid;
+    margin-bottom: 1.25rem;
+  }
+  .blocks :global(.prose) {
+    max-width: none;
+  }
+</style>

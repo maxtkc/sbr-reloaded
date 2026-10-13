@@ -1,0 +1,89 @@
+---
+import { Image } from 'astro:assets';
+import SectionText from './SectionText.astro';
+import armsFooter from '../assets/arms/arms-footer.png';
+import { url } from '../lib/url';
+---
+
+<footer class="site-footer">
+  <div class="wrap cols">
+    <div class="arms">
+      <Image src={armsFooter} alt="Arms of St John's College" width={140} data-game="floppy-crow" />
+    </div>
+    <address data-game="flight-sim">
+      <SectionText id="address" />
+    </address>
+    <div>
+      <p>
+        <a href="https://www.instagram.com/samuelsroom">Follow @samuelsroom on Instagram</a>
+      </p>
+      <ul class="links">
+        <li>
+          <a href={url('/#committee')}>Contact the committee</a>
+        </li>
+        <li>
+          <a href={url('/quick-links')}>Quick links</a>
+        </li>
+        <li>
+          <a href={url('/freshers')}>Freshers' Guide</a>
+        </li>
+        <li>
+          <a href={url('/history')}>History of the SBR</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap credits">
+    <p>
+      Arms of St John's College:{' '}
+      <a href="https://commons.wikimedia.org/wiki/File:Coat_of_arms_of_the_St_John%27s_College.svg">
+        Wikimedia Commons
+      </a>
+      , <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>. Portrait of
+      Samuel Butler: public domain. Map data &copy;{' '}
+      <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>,{' '}
+      <a href="https://opendatacommons.org/licenses/odbl/">ODbL</a>.
+    </p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--ink);
+    color: #e9e3d6;
+    padding: 2.5rem 0 1rem;
+    border-top: 4px solid var(--gold);
+  }
+  .site-footer a {
+    color: var(--gold);
+  }
+  .cols {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: auto 1fr 1fr;
+    align-items: start;
+  }
+  address {
+    font-style: normal;
+  }
+  address :global(p) {
+    margin: 0;
+  }
+  .links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .credits {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #3b362f;
+    font-size: 0.85rem;
+    color: #b5ad9e;
+  }
+  @media (max-width: 700px) {
+    .cols {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

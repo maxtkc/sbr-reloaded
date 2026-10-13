@@ -1,0 +1,44 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionText from '../components/SectionText.astro';
+import QuickLink from '../components/QuickLink.astro';
+
+const links = (await getCollection('quicklinks')).sort((a, b) => a.data.order - b.data.order);
+// Groups keep the order of their first link.
+const groups = [...new Set(links.map((l) => l.data.group))].map((name) => ({
+  name,
+  links: links.filter((l) => l.data.group === name),
+}));
+---
+
+<BaseLayout title="Quick links">
+  <main class="section">
+    <div class="wrap">
+      <h1>Quick links</h1>
+      <SectionText id="quicklinks-intro" />
+      {groups.map((g) => (
+        <section>
+          <h2>{g.name}</h2>
+          <ul class="links">
+            {g.links.map((l) => (
+              <li>
+                <QuickLink entry={l} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .links {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+  }
+</style>

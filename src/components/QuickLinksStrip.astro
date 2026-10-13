@@ -1,0 +1,38 @@
+---
+import { getCollection } from 'astro:content';
+import SectionText from './SectionText.astro';
+import QuickLink from './QuickLink.astro';
+import { url } from '../lib/url';
+
+const featured = (await getCollection('quicklinks', (q) => q.data.featured)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+
+<section class="section" id="quick-links">
+  <div class="wrap">
+    <h2>Quick links</h2>
+    <SectionText id="quicklinks-intro" />
+    <ul class="strip">
+      {featured.map((q) => (
+        <li>
+          <QuickLink entry={q} />
+        </li>
+      ))}
+    </ul>
+    <a class="btn secondary" href={url('/quick-links')}>
+      All quick links
+    </a>
+  </div>
+</section>
+
+<style>
+  .strip {
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0;
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+  }
+</style>

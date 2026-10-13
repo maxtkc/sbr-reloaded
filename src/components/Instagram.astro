@@ -1,0 +1,28 @@
+---
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('instagram')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<section class="section" id="instagram">
+  <div class="wrap">
+    <h2>Instagram</h2>
+    <p class="lead">
+      Event announcements, photos and the occasional sheep. Find us at @samuelsroom.
+    </p>
+    {posts.length > 0 && (
+      <ul class="grid">
+        {posts.map((p) => (
+          <li>
+            <a href={p.data.url}>{p.data.caption ?? p.data.url}</a>
+          </li>
+        ))}
+      </ul>
+    )}
+    <div class="btn-row">
+      <a class="btn" href="https://www.instagram.com/samuelsroom">
+        Follow @samuelsroom
+      </a>
+    </div>
+  </div>
+</section>
