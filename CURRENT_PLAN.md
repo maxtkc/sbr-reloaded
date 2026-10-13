@@ -157,7 +157,10 @@ src/games/<slug>/        index.ts (export default start(root: HTMLElement): () =
   Event detail links are left for Phase 3. Hero uses the raster arms (`arms-footer.png`); Phase 8 swaps in
   the inline SVG. Some external links from the source content are dead or restricted (Drive/Forms need
   a cam.ac.uk login; wiggle, upaychilli, tabsfm intranet, lgbt.cusu, sjcjcr in the guide); left as scraped.
-  Fixed small source typos (missing spaces, split "Port & Sherry" bold).
+  Fixed small source typos (missing spaces, split "Port & Sherry" bold). Favicons (`public/favicon.ico`,
+  `favicon-32.png`, `apple-touch-icon.png`) come from `scripts/arms/favicon.sh`: the crest eagle's head on a Johns
+  red rounded square (the full arms is unreadable at 16-32px), and both layouts link them through `url()` so the
+  base path is applied.
 
 ## Phase 3 - Events + exportable calendar  `[x]`
 - `/events/<slug>` detail pages. Category filter on landing.
