@@ -1,0 +1,70 @@
+---
+// The college arms reassembled from split parts, one <g data-part> per part for the animated-logo gag.
+import arms from '../data/arms-parts.json';
+
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+
+const urls = import.meta.glob<string>('../assets/arms/parts/*.svg', {
+  eager: true,
+  query: '?url',
+  import: 'default',
+});
+const href = (file: string) => urls[`../assets/arms/parts/${file}`];
+
+type Part = (typeof arms.parts)[number];
+const byName = (name: string) => arms.parts.find((p) => p.name === name)!;
+const origin = (p: Part) => `transform-origin: ${p.pivot[0]}px ${p.pivot[1]}px`;
+
+// Each yale's head pieces and body are contiguous in back-to-front order; they go into one group for the head-bob.
+const yaleOf = (name: string) => name.match(/^(left|right)-yale/)?.[1];
+type Item = { part: Part } | { yale: string; parts: Part[] };
+const items: Item[] = [];
+for (const part of arms.parts) {
+  const side = part.name.endsWith('-legs') ? undefined : yaleOf(part.name);
+  const last = items.at(-1);
+  if (side && last && 'yale' in last && last.yale === side) last.parts.push(part);
+  else if (side) items.push({ yale: side, parts: [part] });
+  else items.push({ part });
+}
+---
+
+<svg
+  class:list={['arms-anim', className]}
+  viewBox={arms.viewBox}
+  role="img"
+  aria-label="Arms of St John's College"
+>
+  {items.map((item) =>
+    'part' in item ? (
+      <g data-part={item.part.name} style={origin(item.part)}>
+        <image
+          href={href(item.part.file)}
+          x={item.part.x}
+          y={item.part.y}
+          width={item.part.width}
+          height={item.part.height}
+        />
+      </g>
+    ) : (
+      <g data-part={`${item.yale}-yale-group`} style={origin(byName(`${item.yale}-yale`))}>
+        {item.parts.map((p) => (
+          <g data-part={p.name} style={origin(p)}>
+            <image href={href(p.file)} x={p.x} y={p.y} width={p.width} height={p.height} />
+          </g>
+        ))}
+      </g>
+    ),
+  )}
+</svg>
+
+<style>
+  .arms-anim {
+    overflow: visible;
+  }
+  .arms-anim g {
+    transform-box: view-box;
+  }
+</style>

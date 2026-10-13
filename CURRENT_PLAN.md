@@ -256,9 +256,16 @@ src/games/<slug>/        index.ts (export default start(root: HTMLElement): () =
   when a game does. The `hello` game was verified in headless Chromium (open, X, Esc in parent and iframe, scroll
   lock, standalone, touch guard) and then removed. `startMatter` is type-checked but not yet run.
 
-## Phase 8 - Gag: animated logo  `[ ]`
+## Phase 8 - Gag: animated logo  `[x]`
 - Reassemble arms parts in an inline SVG; CSS/WAAPI animations: yale head-bob + tongue flick, horn swivel (independent,
   per heraldic lore), tail swish, eagle occasional wing flap. All of them; user trims later. Fallback: static logo.
+- Notes: `AnimatedArms.astro` (hero only; footer keeps the PNG) places each part as an `<image>` in one SVG, since the
+  part files reuse `cls-N` class names with different styles and would clash if inlined. Each part sits in a
+  `<g data-part>` with `transform-box: view-box` and its pivot as `transform-origin`. Each yale's ear, horns, tongue,
+  tail and body share a `<side>-yale-group` for the head-bob (pivot at the feet, so the whole yale sways; the head is
+  not a separate part). Legs stay static behind the shield. `gags/animated-logo.ts` runs one random-interval WAAPI
+  loop per motion (horns each on their own timer), pauses via the bus, and slows 3x under reduced motion. With the
+  gag disabled the SVG is the static logo. Wings flap downward from the raised rest pose.
 
 ## Phase 9 - Gag: Soleh-bot AI assistant  `[ ]`
 - Floating chat bubble with Soleh's cutout face. Never helpful.
