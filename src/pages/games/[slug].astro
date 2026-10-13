@@ -1,0 +1,16 @@
+---
+import GameLayout from '../../layouts/GameLayout.astro';
+import { games } from '../../chaos/registry';
+
+export function getStaticPaths() {
+  return Object.entries(games).map(([slug, game]) => ({
+    params: { slug },
+    props: { title: game.title },
+  }));
+}
+
+const { slug } = Astro.params;
+const { title } = Astro.props;
+---
+
+<GameLayout title={title} slug={slug} />

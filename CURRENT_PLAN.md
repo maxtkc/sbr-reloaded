@@ -240,11 +240,21 @@ src/games/<slug>/        index.ts (export default start(root: HTMLElement): () =
   move the whole yale or skip) and the tail (only the end tuft is a group; the tail itself is in the body path).
   Reassembled parts were checked against the original in headless Chromium: only edge antialiasing differs.
 
-## Phase 7 - Chaos infrastructure  `[ ]`
+## Phase 7 - Chaos infrastructure  `[x]`
 - Registry wiring on every page, overlay iframe (open/close, Esc, pause/resume event bus for gags), `GameLayout`,
   shared Kaplay/Matter bootstraps, tiny `sfx.ts` (WebAudio beeps), "desktop only" touch screen.
 - One dummy game `/games/hello` to prove the pipeline, removed at the end of the phase.
 - Checklist: clicking a `data-game` element opens and closes the overlay cleanly; standalone URL works.
+- Notes: `BaseLayout` loads `src/chaos/client.ts`, which inits enabled gags (each in try/catch) and handles clicks on
+  `[data-game]` or a game's `trigger` selector. Only slugs present in `games` open the overlay; other hooks stay inert
+  and links keep working. `src/chaos/bus.ts` has `onPause`/`onResume`/`isPaused`; the overlay pauses on open and
+  resumes on close. Overlay closes on its X, Esc, or `postMessage({ type: 'chaos:close' })` from the game iframe
+  (`GameLayout` sends it on Esc when embedded; standalone Esc/X go to `/`). Touch guard is
+  `(hover: none) and (pointer: coarse)` plus `touch: false`. `/games/[slug]` paths come from the registry.
+  `shared/kaplay.ts` (`startKaplay`, non-global context), `shared/matter.ts` (`startMatter`, optional `Render`),
+  `shared/sfx.ts` (`beep`, `blip`, `boom`, `fanfare`). kaplay/matter-js are dynamic imports, so pages only load them
+  when a game does. The `hello` game was verified in headless Chromium (open, X, Esc in parent and iframe, scroll
+  lock, standalone, touch guard) and then removed. `startMatter` is type-checked but not yet run.
 
 ## Phase 8 - Gag: animated logo  `[ ]`
 - Reassemble arms parts in an inline SVG; CSS/WAAPI animations: yale head-bob + tongue flick, horn swivel (independent,
