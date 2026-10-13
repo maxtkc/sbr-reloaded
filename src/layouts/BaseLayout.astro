@@ -3,6 +3,7 @@ import '../styles/global.css';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import AssistantData from '../components/AssistantData.astro';
+import { url } from '../lib/url';
 
 interface Props {
   title: string;
@@ -22,6 +23,9 @@ const fullTitle = title === 'Samuel Butler Room' ? title : `${title} | Samuel Bu
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
+    <link rel="icon" href={url('/favicon.ico')} sizes="any" />
+    <link rel="icon" type="image/png" href={url('/favicon-32.png')} />
+    <link rel="apple-touch-icon" href={url('/apple-touch-icon.png')} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
