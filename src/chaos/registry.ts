@@ -1,6 +1,7 @@
 // Single switchboard for all gags and games. Disable or remove entries here to roll back.
 import animatedLogo from './gags/animated-logo';
 import assistant from './gags/assistant';
+import captcha from './gags/captcha';
 
 export interface Gag {
   enabled: boolean;
@@ -28,6 +29,7 @@ export const config = {
 export const gags: Record<string, Gag> = {
   'animated-logo': { enabled: true, init: animatedLogo },
   assistant: { enabled: true, init: () => assistant(config.assistantMatcher) },
+  captcha: { enabled: true, init: captcha },
 };
 
 export const games: Record<string, Game> = {};

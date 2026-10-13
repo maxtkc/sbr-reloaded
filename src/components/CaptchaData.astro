@@ -1,0 +1,25 @@
+---
+// Copy for the captcha gag: validated joke file, as JSON for client code.
+import { getEntry } from 'astro:content';
+import { z } from 'astro/zod';
+
+const lines = z.array(z.string()).min(1);
+const schema = z.object({
+  brand: z.string(),
+  checkbox: z.string(),
+  hints: lines,
+  verifying: lines,
+  failures: lines,
+  giveUp: z.string(),
+  siren: lines,
+  sirenDetails: lines,
+  letThrough: lines,
+});
+
+const entry = await getEntry('jokes', 'captcha');
+const data = entry ? schema.parse(entry.data) : null;
+// Escape < so text cannot close the script tag.
+const json = data ? JSON.stringify(data).replace(/</g, '\\u003c') : null;
+---
+
+{json && <script type="application/json" id="captcha-data" set:html={json} />}

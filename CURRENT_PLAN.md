@@ -292,9 +292,24 @@ src/games/<slug>/        index.ts (export default start(root: HTMLElement): () =
   Verified in headless Chromium at 375/1280px (keyword replies, Esc/X, no horizontal scroll, nudge, absent on game pages,
   gag disabled leaves no widget) and embedding mode (first reply about 5s, paraphrases matched the right intents).
 
-## Phase 10 - Gag: "Are you a robot"  `[ ]`
+## Phase 10 - Gag: "Are you a robot"  `[x]`
 - Any form submit / issue-form link / CMS-ish button first shows a fake reCAPTCHA. Ticking it -> "Wrong! Robot detected,
   alerting the porters!" with a porter siren animation, then lets you through after a beat.
+- Also: a "select all images with a fox" grid where a selected fox slowly morphs into a cat. Never passes; a "Give up"
+  button appears after a few tries.
+- Notes: `src/chaos/gags/captcha/{index.ts,tiles.ts}`, copy in `src/content/jokes/captcha.yaml` (validated and
+  passed to the client by `CaptchaData.astro` in `BaseLayout`, same pattern as Solbee). Flow: checkbox (spinner) ->
+  3x3 grid of flat inline SVG tiles with 2-4 foxes -> every Verify fails with a random line and reshuffles -> after 3
+  fails "Give up" -> red/blue flashing siren panel (`sfx.siren()`, real Porters' Lodge number) -> action proceeds.
+  Esc or backdrop click cancels. Intercepted (capture phase): clicks and middle clicks on links to Google Forms,
+  `forms.gle`, `/issues/new`, `/admin`, or `[data-captcha]`, and every form submit except Solbee's. Same-tab links
+  navigate automatically; new-tab links (target `_blank`, modifier or middle click) get a Continue link so popup
+  blockers allow them; forms resubmit via `requestSubmit` with a one-shot bypass. Nothing is intercepted while a game
+  overlay is open. Fox tiles keep a cat drawing underneath: fur colour, ear scale and a fox/cat crossfade transition
+  over 3s once selected. Added a real "Suggest an event" link (GitHub issue form) to `SubscribeButtons`. `client.ts`
+  now registers the game-trigger click listener in the capture phase before gags init, so game triggers win over gag
+  handlers. Verified in headless Chromium at 375/1280px (welfare form and issue links open it, Esc cancels, morph,
+  give-up after 3, siren, Continue href, form resubmits, Solbee unaffected, no horizontal scroll, no page errors).
 
 ## Phase 11 - Gag: pong edges  `[ ]`
 - Cursor within ~20px of a viewport edge spawns a ball (fixed-position canvas overlay, pointer-events none except
