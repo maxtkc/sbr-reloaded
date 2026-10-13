@@ -1,0 +1,62 @@
+name: Event from issue
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: event-issue-${{ github.event.issue.number }}
+  cancel-in-progress: true
+
+jobs:
+  event-pr:
+    # Only issues created from the "Submit an event" form, once a maintainer adds "approved".
+    if: github.event.label.name == 'approved' && contains(github.event.issue.labels.*.name, 'event')
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      ISSUE: ${{ github.event.issue.number }}
+      BRANCH: event-issue-${{ github.event.issue.number }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Write event file
+        id: event
+        run: node scripts/event-issue/to-event.mjs "$GITHUB_EVENT_PATH"
+
+      - name: Check the site builds
+        run: |
+          npm ci
+          npm run build
+
+      - name: Open pull request
+        env:
+          EVENT_PATH: ${{ steps.event.outputs.path }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$BRANCH"
+          git add "$EVENT_PATH"
+          git commit -m "event: add $EVENT_PATH (#$ISSUE)"
+          git push --force origin "$BRANCH"
+          if [ -z "$(gh pr list --head "$BRANCH" --json number --jq '.[].number')" ]; then
+            gh pr create --base main --head "$BRANCH" \
+              --title "$ISSUE_TITLE" \
+              --body "Adds \`$EVENT_PATH\`. Closes #$ISSUE"
+          fi
+
+      - name: Report failure on the issue
+        if: failure()
+        run: |
+          gh issue comment "$ISSUE" --body "Could not create the event automatically. Check the form values, edit the issue, then remove and re-add the \`approved\` label. Log: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"

@@ -176,7 +176,7 @@ src/games/<slug>/        index.ts (export default start(root: HTMLElement): () =
   parsing with Python `icalendar` + `recurring-ical-events` (correct BST/GMT offsets, 18 BA Table dates per
   Michaelmas/Lent). icalendar.org validation and the Google subscribe test need the deployed URL.
 
-## Phase 4 - CMS + event issue form  `[ ]` (needs User action 2 to fully test)
+## Phase 4 - CMS + event issue form  `[x]` (needs User action 2 to fully test)
 - `public/admin/index.html` loading Sveltia CMS; `config.yml` with GitHub backend, `base_url` = Worker URL, collections
   mirroring Phase 1 schemas (events, committee, sections, quicklinks, gallery, instagram, jokes), media folder for gallery.
 - `.github/ISSUE_TEMPLATE/event.yml` issue form (title, date/time, location, category, description, ticket link).
@@ -184,6 +184,18 @@ src/games/<slug>/        index.ts (export default start(root: HTMLElement): () =
   open a PR referencing the issue.
 - Write `docs/cms-setup.md`: OAuth App + Worker deploy steps.
 - Checklist: `/admin` loads and lists collections (login once the Worker exists); a test issue with `approved` creates a PR.
+- Notes: Sveltia CMS pinned to 0.222.1 (unpkg). `config.yml` validated against the package's JSON schema
+  (`schema/sveltia-cms.json`). `base_url` is a `CHANGE-ME` placeholder until User action 2. Dates are plain string
+  fields with the same regex as zod (the datetime widget cannot store both `YYYY-MM-DD` and `YYYY-MM-DDTHH:MM`).
+  `output.omit_empty_optional_fields` keeps empty optional fields (e.g. `category: ''`) out of files so zod passes.
+  Committee/gallery images use collection-level relative media folders (`../../assets/<x>`) so `image()` resolves;
+  markdown body images go to `public/uploads`. `sections` is edit-only (no create/delete). `jokes` is a generic
+  `title` + `lines` list; structured joke files from later phases are edited in git. Issue form parsing lives in
+  `scripts/event-issue/to-event.mjs` (no deps, issue body never reaches a shell); the workflow requires labels
+  `event` + `approved`, runs `npm run build` before opening the PR (GITHUB_TOKEN PRs trigger no other workflows),
+  and comments on the issue on failure. All-day events store an inclusive last day, matching `ics.ts`. Verified
+  locally: build passes with generated events, `/admin` renders the login screen with the config loaded. Not yet
+  verified: GitHub login and the issue -> PR run (need User action 2 and the repo settings in `docs/cms-setup.md`).
 
 ## Phase 5 - Gallery + Instagram  `[ ]`
 - Gallery: masonry grid + lightbox (small lib or hand-rolled), images from `src/content/gallery`.

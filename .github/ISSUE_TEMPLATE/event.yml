@@ -1,0 +1,72 @@
+name: Submit an event
+description: Suggest an event for the SBR calendar. A committee member reviews it before it goes live.
+title: 'Event: '
+labels: [event]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Fill this in and a committee member will add it to the calendar once approved. All times are UK local time.
+  - type: input
+    id: title
+    attributes:
+      label: Event name
+      placeholder: Halloween sBrOILER ROOM
+    validations:
+      required: true
+  - type: input
+    id: date
+    attributes:
+      label: Date
+      description: Format YYYY-MM-DD
+      placeholder: '2026-10-31'
+    validations:
+      required: true
+  - type: input
+    id: start-time
+    attributes:
+      label: Start time
+      description: 24-hour HH:MM. Leave empty for an all-day event.
+      placeholder: '21:00'
+  - type: input
+    id: end-time
+    attributes:
+      label: End time
+      description: 24-hour HH:MM. Leave empty for 2 hours after the start. An end time earlier than the start means the next day.
+      placeholder: '01:00'
+  - type: input
+    id: end-date
+    attributes:
+      label: Last day (multi-day all-day events only)
+      description: Format YYYY-MM-DD. Leave empty for a single day.
+  - type: input
+    id: location
+    attributes:
+      label: Location
+      placeholder: The Samuel Butler Room, I2 First Court
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - Academic
+        - Ents
+        - Formal Halls
+        - "Freshers' Fortnight"
+        - Sans Frontieres
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Markdown is fine.
+    validations:
+      required: true
+  - type: input
+    id: ticket-url
+    attributes:
+      label: Ticket link
+      description: Optional. Full URL starting with https://
