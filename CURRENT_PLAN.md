@@ -185,7 +185,7 @@ src/games/<slug>/        index.ts (export default start(root: HTMLElement): () =
 - Write `docs/cms-setup.md`: OAuth App + Worker deploy steps.
 - Checklist: `/admin` loads and lists collections (login once the Worker exists); a test issue with `approved` creates a PR.
 - Notes: Sveltia CMS pinned to 0.222.1 (unpkg). `config.yml` validated against the package's JSON schema
-  (`schema/sveltia-cms.json`). `base_url` is a `CHANGE-ME` placeholder until User action 2. Dates are plain string
+  (`schema/sveltia-cms.json`). `base_url` is `https://sveltia-cms-auth.maxtkc.workers.dev`. Dates are plain string
   fields with the same regex as zod (the datetime widget cannot store both `YYYY-MM-DD` and `YYYY-MM-DDTHH:MM`).
   `output.omit_empty_optional_fields` keeps empty optional fields (e.g. `category: ''`) out of files so zod passes.
   Committee/gallery images use collection-level relative media folders (`../../assets/<x>`) so `image()` resolves;

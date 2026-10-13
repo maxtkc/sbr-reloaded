@@ -4,7 +4,7 @@ backend:
   repo: maxtkc/sbr-reloaded
   branch: main
   # OAuth Worker URL (see docs/cms-setup.md).
-  base_url: https://sveltia-cms-auth.CHANGE-ME.workers.dev
+  base_url: https://sveltia-cms-auth.maxtkc.workers.dev
   commit_messages:
     create: 'cms: create {{collection}} "{{slug}}"'
     update: 'cms: update {{collection}} "{{slug}}"'
