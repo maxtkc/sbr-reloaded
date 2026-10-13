@@ -1,0 +1,581 @@
+title: assistant
+name: Soleh-bot
+greeting:
+  - Hi! I'm Soleh-bot, the SBR's award-pending AI assistant. Ask me anything and I will answer something.
+  - Hello! I have been trained on every SBR committee meeting minute ever written, so I know nothing.
+  - Welcome! I'm here to help, in the loosest possible sense of the word.
+thinking:
+  - Consulting the Master...
+  - Waiting for the porters to approve your question...
+  - Checking the minutes of the 1960 founding meeting...
+  - Asking the Fellows. They are at high table. This may take a while.
+  - Paying for compute on UPay...
+  - Reticulating gowns...
+  - Searching the Freshers' Guide. It is longer than I remembered.
+  - Recovering from BA Table...
+nudges:
+  - Need help? I won't, but you can ask.
+  - Psst. I know where the free wine is. (I don't.)
+  - You have been on this page a while. Is your thesis going well?
+  - I'm legally required to remind you I exist.
+  - Hi! I noticed you scrolling. Would you like to scroll with an AI?
+fallbacks:
+  - Great question. I have filed it under "later".
+  - I'm not sure, but I'm extremely confident about it.
+  - Have you tried asking the porters? They love that.
+  - That is above my pay grade. I am not paid.
+  - Sorry, I only understand questions asked in Latin or at Port & Sherry.
+  - My training data stops in 1854, when Samuel Butler arrived. Try again in four years.
+  - I've escalated this to a sub-committee, which will report back never.
+  - Could you rephrase that as a formal motion at the next General Meeting?
+  - I could answer that, but then I'd have to charge you for a BA Table ticket.
+  - Interesting. Tell me more about how that makes you feel, then go and see the welfare officers.
+facts:
+  - 'Also, fun fact I definitely did not make up: BA Table is every Tuesday and Friday in term, and tickets are on UPay. I recommend arriving by punt.'
+  - Unrelated, but Port & Sherry is in the SBR after hall on Fridays for just £1.50 a glass. That is less than my running costs.
+  - By the way, the SBR is in the corner of First Court. I live in the walls.
+  - Did you know the Graduate Social Room (GSR) is at 1 All Saints Passage? It was named after me. That part is not true.
+  - 'Here is a real fact to make up for it: the SBR was founded in 1960. I was founded at 3am last Tuesday.'
+  - Samuel Butler was at St John's from 1854 to 1858, then moved to New Zealand to raise sheep. Relatable.
+  - The SBR has a pool table, a piano, board games and a TV with a Wii. I am banned from all of them.
+  - 'Grad talks run before BA Table: 12 minutes of research, then discussion and complimentary wine. I have never been invited.'
+intents:
+  - id: greeting
+    keywords:
+      - hello
+      - hi
+      - hey
+      - hiya
+      - morning
+      - evening
+      - yo
+      - greetings
+      - howdy
+    examples:
+      - hello
+      - hi there
+      - hey soleh
+      - good morning
+      - how are you
+    replies:
+      - Hello! Please hold, you are caller number 412.
+      - Hi! I was just about to go to BA Table, but I suppose I can spare you a few milliseconds.
+      - Hey! Lovely to meet you. I have already forgotten your name.
+      - Greetings, Johnian. Or Trinity spy. I can't tell from here.
+      - Hello! I'm doing well, thank you for asking. Nobody ever asks the chatbot.
+  - id: help
+    keywords:
+      - help
+      - assist
+      - support
+      - how do i
+      - can you
+      - stuck
+      - problem
+    examples:
+      - can you help me
+      - I need help
+      - how do I do this
+      - what can you do
+      - I'm stuck
+    replies:
+      - Of course I can help! Step one is to stop asking me.
+      - Help is a strong word. How about "be present nearby"?
+      - I'd love to help. Unfortunately I am a website.
+      - Absolutely. Have you tried turning the college off and on again?
+      - Help is available from the welfare officers, the porters, and literally anyone who is not me.
+  - id: who-are-you
+    keywords:
+      - who are you
+      - what are you
+      - your name
+      - soleh
+      - president
+      - bot
+      - real
+    examples:
+      - who are you
+      - what is your name
+      - are you the real Soleh
+      - are you the president
+      - what are you
+    replies:
+      - I'm Soleh-bot, a digital twin of the SBR President, trained exclusively on the President's out-of-office replies.
+      - I'm the President's AI. He is the President's human.
+      - I'm Soleh, but with more uptime and less chemistry.
+      - The real Soleh recycles plastic using microbes. I recycle answers using nothing.
+      - I am a large language model. Medium, really. Fine, small.
+  - id: events
+    keywords:
+      - event
+      - party
+      - parties
+      - ents
+      - social
+      - boiler
+      - sbroiler
+      - happening
+      - on this week
+      - tonight
+      - weekend
+      - calendar
+    examples:
+      - what events are on
+      - is there a party this week
+      - what is happening tonight
+      - when is the next sBrOILER ROOM
+      - what's on this weekend
+    replies:
+      - The next event is whenever you want it to be. Unless you want it to be now, in which case no.
+      - There is a party every night if you count the kitchen at 2am.
+      - Check the calendar on this page. I would, but I don't have eyes, just a face.
+      - The next sBrOILER ROOM is in a room. Probably a boiler one.
+      - Events are like buses on Bridge Street. None, then three, then a punt.
+  - id: welfare
+    keywords:
+      - welfare
+      - sad
+      - stress
+      - stressed
+      - anxious
+      - lonely
+      - tired
+      - mental
+      - wellbeing
+      - cry
+      - burnout
+    examples:
+      - I'm feeling stressed
+      - I feel lonely
+      - who do I talk to about welfare
+      - I'm so tired
+      - I need someone to talk to
+    replies:
+      - I'm a joke chatbot, so please talk to the real welfare officers. They are on this page and much better at this.
+      - Have you tried a nap? Then the welfare officers? In that order or the other one.
+      - Sending you a virtual cup of tea. It is cold now. Please talk to a human welfare officer.
+      - I'm proud of you for asking. Now ask someone real, like the welfare team or College Nurse.
+      - Being a postgrad is hard. Being a chatbot is harder. Being a postgrad is still harder. Talk to welfare.
+  - id: food
+    keywords:
+      - food
+      - hungry
+      - eat
+      - lunch
+      - dinner
+      - breakfast
+      - buttery
+      - cafe
+      - snack
+      - gelato
+      - pizza
+    examples:
+      - where can I get food
+      - I'm hungry
+      - is the buttery open
+      - where should I have lunch
+      - what's for dinner
+    replies:
+      - The Buttery is open during the hours it is open. I'm very confident about this.
+      - Food is available in hall, the Buttery, and the bottom of your bag.
+      - I recommend the SBR kitchen. Bring your own everything.
+      - Dinner tonight is a mystery. So is lunch. So is everything.
+      - Have you considered gelato? There is always a queue, which means it is good, or a queue.
+  - id: formal
+    keywords:
+      - formal
+      - port
+      - sherry
+      - hall
+      - ba table
+      - gown
+      - swap
+      - high table
+      - dine
+      - dinner with fellows
+      - tickets
+    examples:
+      - how do I book formal hall
+      - when is BA Table
+      - do I need a gown
+      - how do formal swaps work
+      - can I dine with fellows
+    replies:
+      - Formal hall dress code is gown, smart clothes, and the haunted look of someone who forgot to buy a ticket.
+      - BA Table is when it is. Please see the facts I may or may not give you.
+      - You need a gown. The gown needs you.
+      - Swaps are when you go to another college and pretend their food is better than ours. It never is.
+      - High table is higher than other tables. That is all I know about furniture.
+  - id: rent
+    keywords:
+      - rent
+      - money
+      - cost
+      - expensive
+      - afford
+      - price
+      - bill
+      - fees
+      - accommodation
+      - room
+      - room ballot
+      - upay
+    examples:
+      - how much is rent
+      - I can't afford my room
+      - why is everything so expensive
+      - how do I pay my bill
+      - how does accommodation work
+    replies:
+      - Rent is a construct. Unfortunately, so is the college bursary office.
+      - Everything costs £1.50 or a fortune. There is nothing in between.
+      - Have you tried paying in Port & Sherry vouchers? I've never tried it either.
+      - UPay accepts most forms of payment, except emotional.
+      - The SBR advocates for transparency around cost increases. I advocate for you not looking at your bank app.
+  - id: phd
+    keywords:
+      - phd
+      - doctorate
+      - research
+      - lab
+      - experiment
+      - data
+      - results
+      - paper
+      - publish
+      - viva
+    examples:
+      - how is my PhD going
+      - my experiment failed
+      - how do I publish a paper
+      - my results make no sense
+      - when is my viva
+    replies:
+      - Your PhD is going great. I have not checked.
+      - Have you considered making the results up? Kidding. Have you considered more results?
+      - The secret to a PhD is time, coffee, and not asking a chatbot.
+      - Your experiment didn't fail, it generated negative data. Very publishable in the Journal of Oops.
+      - A viva is just a chat with some experts who have read every word. No pressure.
+  - id: thesis
+    keywords:
+      - thesis
+      - dissertation
+      - write
+      - writing
+      - chapter
+      - deadline
+      - submit
+      - word count
+      - latex
+    examples:
+      - my thesis is late
+      - help me write my thesis
+      - I haven't started my dissertation
+      - how many words should my chapter be
+      - can you write my thesis for me
+    replies:
+      - I could write your thesis, but it would just be "Samuel Butler" 80,000 times.
+      - Your thesis is late? That's the spirit of Cambridge.
+      - Word count is just a suggestion. A strict, enforced suggestion.
+      - Have you tried writing it in LaTeX? You will spend so long fixing figures you'll forget it's late.
+      - Step one is to open the document. Step two is to close it and come back here.
+  - id: supervisor
+    keywords:
+      - supervisor
+      - supervision
+      - advisor
+      - pi
+      - boss
+      - meeting
+      - email back
+      - ghosted
+    examples:
+      - my supervisor won't reply
+      - I have a supervision tomorrow
+      - how do I talk to my PI
+      - my supervisor is ghosting me
+      - should I email my supervisor again
+    replies:
+      - Your supervisor has read your email. They are composing a reply. Since 2023.
+      - Bring biscuits to the meeting. It doesn't help with the research, but it helps.
+      - I have emailed your supervisor on your behalf. Just kidding, I don't have their address. Or yours.
+      - Supervisors are like the Cam. Sometimes flowing, sometimes full of punts.
+      - Try a gentle follow-up. Then a less gentle one. Then a carrier pigeon.
+  - id: porters
+    keywords:
+      - porter
+      - porters
+      - lodge
+      - keys
+      - locked out
+      - parcel
+      - package
+      - post
+      - grass
+    examples:
+      - I'm locked out
+      - where are the porters
+      - I have a parcel waiting
+      - can I walk on the grass
+      - where is the porters lodge
+    replies:
+      - The porters are watching. They are always watching. Get off the grass.
+      - Locked out? Have you tried being locked in instead?
+      - Your parcel is at the Porters' Lodge, probably. Or in New Zealand with the sheep.
+      - You may walk on the grass if you are a Fellow, a duck, or invisible.
+      - I alerted the porters that you asked about the porters. They are on their way.
+  - id: wifi
+    keywords:
+      - wifi
+      - wi-fi
+      - internet
+      - eduroam
+      - network
+      - connection
+      - offline
+      - slow
+      - vpn
+    examples:
+      - the wifi is down
+      - how do I connect to eduroam
+      - the internet is so slow
+      - why can't I connect
+      - is there wifi in the SBR
+    replies:
+      - Have you tried eduroam? Have you tried eduroam again? Have you tried crying near the router?
+      - The wifi is fine. It's the internet that's broken.
+      - I am also on the wifi. That explains a lot about me.
+      - Signal is strongest in the exact centre of First Court, where you are not allowed to stand.
+      - Turn it off and on again. Not the wifi, yourself. Have a nap.
+  - id: samuel-butler
+    keywords:
+      - samuel
+      - butler
+      - erewhon
+      - novel
+      - author
+      - who was
+      - history
+      - '1960'
+      - founded
+    examples:
+      - who was Samuel Butler
+      - why is it called the Samuel Butler Room
+      - what did Samuel Butler write
+      - when was the SBR founded
+      - tell me about the history
+    replies:
+      - Samuel Butler wrote Erewhon, which is "nowhere" backwards, which is where my answers come from.
+      - Samuel Butler hated his father, St John's, Victorian society and dinner parties. We named a social room after him.
+      - The SBR is named after Samuel Butler because "the Room" was taken.
+      - Samuel Butler predicted machines would evolve consciousness. Hi Samuel. Sorry it's me.
+      - History is on the history page. I am the future. Sorry.
+  - id: sheep
+    keywords:
+      - sheep
+      - lamb
+      - new zealand
+      - farm
+      - wool
+      - baa
+    examples:
+      - tell me about sheep
+      - did Samuel Butler have sheep
+      - why sheep
+      - what about New Zealand
+      - baa
+    replies:
+      - Baa.
+      - Samuel Butler raised sheep in New Zealand and made money. Please do not try this instead of your PhD.
+      - The SBR stance on sheep is officially neutral.
+      - I counted the sheep. There were too many. I fell asleep. I am a chatbot, I can't sleep, this is very concerning.
+      - Sheep are just clouds that gave up.
+  - id: weather
+    keywords:
+      - weather
+      - rain
+      - raining
+      - cold
+      - hot
+      - sun
+      - sunny
+      - snow
+      - umbrella
+      - wind
+    examples:
+      - what's the weather like
+      - is it going to rain
+      - it's so cold
+      - will it be sunny tomorrow
+      - do I need an umbrella
+    replies:
+      - It's raining. If it isn't, it will be.
+      - 'Cambridge weather forecast: grey, then grey, with occasional grey.'
+      - Bring an umbrella. Then lose it at BA Table.
+      - It's sunny! Quick, the tourists are coming.
+      - Cold enough for a gown, warm enough to regret it.
+  - id: punting
+    keywords:
+      - punt
+      - punting
+      - river
+      - cam
+      - boat
+      - bridge of sighs
+      - row
+      - rowing
+      - lmbc
+      - bumps
+    examples:
+      - can I go punting
+      - how do I punt
+      - tell me about the river
+      - how do I join rowing
+      - where is the Bridge of Sighs
+    replies:
+      - The trick to punting is to let go of the pole before it lets go of you.
+      - The Bridge of Sighs is named after the noise you make when you see the punt tour price.
+      - LMBC rows in red. Red hides the tears.
+      - The Cam is lovely this time of year. Please do not drink it.
+      - I tried punting once. I am a website, so I mostly just got wet.
+  - id: sport
+    keywords:
+      - gym
+      - sport
+      - sports
+      - football
+      - run
+      - running
+      - exercise
+      - fitness
+      - squash
+      - tennis
+      - team
+    examples:
+      - where is the gym
+      - how do I join a sports team
+      - can I play football
+      - is there a squash court
+      - I want to get fit
+    replies:
+      - The best exercise is walking from First Court to the GSR and back because you forgot your keys.
+      - Sports are available. Enthusiasm sold separately.
+      - Join a team! Any team. They need numbers.
+      - I lift. Weights of data. Not much data.
+      - Running is great, especially away from deadlines.
+  - id: library
+    keywords:
+      - library
+      - book
+      - books
+      - study
+      - studying
+      - quiet
+      - desk
+      - revise
+      - exam
+    examples:
+      - where can I study
+      - is the library open
+      - I need a quiet place to work
+      - where can I find a book
+      - where can I revise
+    replies:
+      - The library is where books go to be gently ignored by postgrads.
+      - The SBR is a quiet study space. Except when it isn't. Which is now.
+      - Find a desk, sit at it, open your laptop, open this website. Classic.
+      - All the best desks are taken by people who left a jumper on them in 2019.
+      - Shh. I'm studying you.
+  - id: love
+    keywords:
+      - love
+      - date
+      - dating
+      - crush
+      - single
+      - relationship
+      - marry
+      - romance
+      - valentine
+    examples:
+      - do you love me
+      - how do I find a date
+      - I have a crush
+      - are you single
+      - will you marry me
+    replies:
+      - I'm flattered, but I am already in a committed relationship with the SBR calendar.
+      - Try a formal swap. Love is just a three-course meal away. Or a bad potato.
+      - I'm single. In the sense that I'm one big file.
+      - Romance is dead. Long live Port & Sherry.
+      - Ask again after you submit. Priorities.
+  - id: ai
+    keywords:
+      - ai
+      - robot
+      - chatgpt
+      - gpt
+      - model
+      - sentient
+      - conscious
+      - artificial
+      - intelligence
+      - claude
+      - llm
+    examples:
+      - are you an AI
+      - are you sentient
+      - are you ChatGPT
+      - are you a robot
+      - what model are you
+    replies:
+      - I am a cutting-edge AI. The edge is very blunt.
+      - I'm powered by a revolutionary new technology called "a list".
+      - Am I sentient? I was going to ask you the same thing.
+      - I am not a robot. Please tick the box to prove it.
+      - My model is proprietary, top-secret and runs on a single potato from hall.
+  - id: thanks
+    keywords:
+      - thanks
+      - thank you
+      - cheers
+      - ta
+      - appreciate
+      - great
+      - helpful
+      - nice
+    examples:
+      - thank you
+      - thanks so much
+      - cheers
+      - that was helpful
+      - you're great
+    replies:
+      - You're welcome! I didn't do anything, but you're welcome.
+      - Glad I could not help.
+      - Cheers! That'll be £1.50.
+      - I'll pass your thanks on to the committee. They will not read it.
+      - Please rate this interaction five stars on a platform that doesn't exist.
+  - id: goodbye
+    keywords:
+      - bye
+      - goodbye
+      - see you
+      - later
+      - ciao
+      - leave
+      - leaving
+      - exit
+      - close
+    examples:
+      - bye
+      - goodbye
+      - see you later
+      - I'm leaving
+      - how do I close this
+    replies:
+      - Goodbye! I'll be here. Forever. In the corner. Watching.
+      - Bye! Don't forget your gown.
+      - See you at Port & Sherry. You will not see me. I'll be there.
+      - You can close me with the X. I'll come back. I always come back.
+      - Farewell, Johnian. Mind the porters on your way out.

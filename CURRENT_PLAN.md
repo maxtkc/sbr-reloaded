@@ -267,7 +267,7 @@ src/games/<slug>/        index.ts (export default start(root: HTMLElement): () =
   loop per motion (horns each on their own timer), pauses via the bus, and slows 3x under reduced motion. With the
   gag disabled the SVG is the static logo. Wings flap downward from the raised rest pose.
 
-## Phase 9 - Gag: Soleh-bot AI assistant  `[ ]`
+## Phase 9 - Gag: Soleh-bot AI assistant  `[x]`
 - Floating chat bubble with Soleh's cutout face. Never helpful.
 - `src/content/jokes/assistant.yaml`: ~20 intents (events, welfare, food, formal, rent, PhD, thesis, porters, wifi,
   greeting, help, who-are-you, Samuel Butler, sheep, ...) each with example phrases and 5+ replies, plus fallbacks.
@@ -275,6 +275,19 @@ src/games/<slug>/        index.ts (export default start(root: HTMLElement): () =
   Transformers.js `Xenova/all-MiniLM-L6-v2` lazy-loaded on first message, cosine against precomputed intent example
   embeddings (computed in browser on load, cached). Typing indicator, sometimes "thinks" for too long.
 - Real info: occasionally gives a real fact wrapped in nonsense (BA Table days, Port & Sherry price).
+- Notes: `src/chaos/gags/assistant/{index.ts,match.ts}`. Data reaches the client through
+  `src/components/AssistantData.astro` (in `BaseLayout`, so not on game pages): it validates `assistant.yaml` with a zod
+  schema (a bad edit fails the build) and adds Soleh's cutout as a 128px webp, as `<script id="assistant-data">` JSON.
+  `assistant.yaml` has `greeting`, `thinking`, `nudges`, `fallbacks`, `facts` and 23 `intents` (`keywords`, `examples`,
+  `replies`). It is edited in git: the CMS jokes form (`title` + `lines`) does not fit its structure. Quote numbers and
+  lines containing ": " in it, or YAML parses them as numbers/maps. `config.assistantMatcher` in `registry.ts`
+  picks the matcher. Keyword: keywords of 5+ characters match word prefixes, shorter ones whole words; most hits wins.
+  Embedding: `@huggingface/transformers` 4.3.0 (dynamic import, separate ~540KB chunk) loads
+  `Xenova/all-MiniLM-L6-v2` from the Hugging Face hub on the first message, embeds all examples once, best cosine above
+  0.35 wins, and it falls back to keywords if loading fails. Replies wait 0.6-2.5s, 1 in 7 "think" for 8-15s with
+  `thinking` lines, 1 in 5 append a `facts` line. One nudge popup 30-60s after load, timer stopped while paused.
+  Verified in headless Chromium at 375/1280px (keyword replies, Esc/X, no horizontal scroll, nudge, absent on game pages,
+  gag disabled leaves no widget) and embedding mode (first reply about 5s, paraphrases matched the right intents).
 
 ## Phase 10 - Gag: "Are you a robot"  `[ ]`
 - Any form submit / issue-form link / CMS-ish button first shows a fake reCAPTCHA. Ticking it -> "Wrong! Robot detected,

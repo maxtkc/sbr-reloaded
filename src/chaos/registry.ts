@@ -1,5 +1,6 @@
 // Single switchboard for all gags and games. Disable or remove entries here to roll back.
 import animatedLogo from './gags/animated-logo';
+import assistant from './gags/assistant';
 
 export interface Gag {
   enabled: boolean;
@@ -19,8 +20,14 @@ export interface Game {
   load: () => Promise<GameModule>;
 }
 
+export const config = {
+  // Soleh-bot intent matcher: keyword hits, or MiniLM embeddings (downloads the model on first message).
+  assistantMatcher: 'keyword' as 'keyword' | 'embedding',
+};
+
 export const gags: Record<string, Gag> = {
   'animated-logo': { enabled: true, init: animatedLogo },
+  assistant: { enabled: true, init: () => assistant(config.assistantMatcher) },
 };
 
 export const games: Record<string, Game> = {};

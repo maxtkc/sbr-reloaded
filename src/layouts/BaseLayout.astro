@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import AssistantData from '../components/AssistantData.astro';
 
 interface Props {
   title: string;
@@ -32,6 +33,7 @@ const fullTitle = title === 'Samuel Butler Room' ? title : `${title} | Samuel Bu
     <SiteHeader />
     <slot />
     <SiteFooter />
+    <AssistantData />
     <script>
       import '../chaos/client';
     </script>
