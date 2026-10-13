@@ -1,5 +1,7 @@
 ---
-// Shared shell for /games/<slug> pages. Wiring (start, close, touch guard) comes in a later phase.
+// Shared shell for /games/<slug>: title bar, close/back, touch guard, and game start/cleanup.
+import { url } from '../lib/url';
+
 interface Props {
   title: string;
   slug: string;
@@ -11,10 +13,116 @@ const { title, slug } = Astro.props;
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <title>{title} | Samuel Butler Room</title>
   </head>
   <body>
-    <div id="game-root" data-slug={slug}></div>
+    <header class="bar">
+      <h1>{title}</h1>
+      <a class="close" href={url('/')} aria-label="Close game">
+        &times;
+      </a>
+    </header>
+    <main id="game-root" data-slug={slug}></main>
+    <template id="desktop-only">
+      <div class="notice">
+        <h2>Desktop only</h2>
+        <p>
+          This game requires a keyboard, a desk, and a sense of purpose. Please return with all
+          three.
+        </p>
+      </div>
+    </template>
   </body>
 </html>
+
+<style is:global>
+  html,
+  body {
+    margin: 0;
+    height: 100%;
+    background: #14141e;
+    color: #f4efe4;
+    font-family: system-ui, sans-serif;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+  body {
+    display: flex;
+    flex-direction: column;
+  }
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.4rem 0.75rem;
+    background: #7a0f1f;
+    border-bottom: 3px solid #d1b948;
+  }
+  .bar h1 {
+    margin: 0;
+    font:
+      700 1.2rem/1.2 Georgia,
+      serif;
+  }
+  .close {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.8rem;
+    line-height: 1;
+    padding: 0 0.3rem;
+  }
+  /* The parent overlay draws its own X when embedded. */
+  .embed .close {
+    visibility: hidden;
+  }
+  #game-root {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    touch-action: none;
+  }
+  .notice {
+    max-width: 28rem;
+    margin: 15vh auto 0;
+    padding: 1rem;
+    text-align: center;
+  }
+</style>
+
+<script>
+  import { games } from '../chaos/registry';
+
+  const root = document.getElementById('game-root')!;
+  const slug = root.dataset.slug!;
+  const embedded = new URLSearchParams(location.search).has('embed') && parent !== window;
+  if (embedded) document.documentElement.classList.add('embed');
+
+  // Embedded: ask the parent overlay to close. Standalone: follow the back link.
+  function exit(): void {
+    if (embedded) parent.postMessage({ type: 'chaos:close' }, location.origin);
+    else location.href = document.querySelector<HTMLAnchorElement>('.close')!.href;
+  }
+  addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') exit();
+  });
+
+  const game = games[slug];
+  const touchOnly = matchMedia('(hover: none) and (pointer: coarse)').matches;
+  if (game && touchOnly && !game.touch) {
+    root.append(
+      document.querySelector<HTMLTemplateElement>('#desktop-only')!.content.cloneNode(true),
+    );
+  } else if (game) {
+    game
+      .load()
+      .then((mod) => {
+        const cleanup = mod.default(root);
+        addEventListener('pagehide', () => cleanup(), { once: true });
+      })
+      .catch((err) => {
+        console.error(err);
+        root.textContent = 'This game failed to load. The porters have been informed.';
+      });
+  }
+</script>
