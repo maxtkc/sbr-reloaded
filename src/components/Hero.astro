@@ -1,19 +1,12 @@
 ---
-import { Image } from 'astro:assets';
-import armsFooter from '../assets/arms/arms-footer.png';
+import AnimatedArms from './AnimatedArms.astro';
 import { url } from '../lib/url';
 ---
 
 <section class="hero">
   <div class="wrap inner">
     <div class="logo" data-game="flappy-eagle">
-      <Image
-        src={armsFooter}
-        alt="Arms of St John's College"
-        width={280}
-        densities={[1, 2]}
-        loading="eager"
-      />
+      <AnimatedArms />
     </div>
     <div>
       <p class="kicker">St John's College, Cambridge</p>
@@ -47,7 +40,7 @@ import { url } from '../lib/url';
     gap: 2.5rem;
     align-items: center;
   }
-  .logo img {
+  .logo :global(svg) {
     width: clamp(150px, 24vw, 260px);
     height: auto;
     display: block;

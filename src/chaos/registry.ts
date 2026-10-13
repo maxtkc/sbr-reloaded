@@ -1,4 +1,5 @@
 // Single switchboard for all gags and games. Disable or remove entries here to roll back.
+import animatedLogo from './gags/animated-logo';
 
 export interface Gag {
   enabled: boolean;
@@ -18,6 +19,8 @@ export interface Game {
   load: () => Promise<GameModule>;
 }
 
-export const gags: Record<string, Gag> = {};
+export const gags: Record<string, Gag> = {
+  'animated-logo': { enabled: true, init: animatedLogo },
+};
 
 export const games: Record<string, Game> = {};
