@@ -1,7 +1,7 @@
 ---
 title: BA Table (Easter 2027)
-start: '2027-04-27T19:30'
-end: '2027-04-27T21:15'
+start: 2027-04-27T19:30
+end: 2027-04-27T21:15
 allDay: false
 rrule: FREQ=WEEKLY;BYDAY=TU,FR;UNTIL=20270618T235959Z
 location: Hall, St John's College

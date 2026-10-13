@@ -1,7 +1,7 @@
 ---
 title: BA Table (Lent 2027)
-start: '2027-01-19T19:30'
-end: '2027-01-19T21:15'
+start: 2027-01-19T19:30
+end: 2027-01-19T21:15
 allDay: false
 rrule: FREQ=WEEKLY;BYDAY=TU,FR;UNTIL=20270319T235959Z
 location: Hall, St John's College

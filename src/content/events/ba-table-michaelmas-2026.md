@@ -1,7 +1,7 @@
 ---
 title: BA Table (Michaelmas 2026)
-start: '2026-10-06T19:30'
-end: '2026-10-06T21:15'
+start: 2026-10-06T19:30
+end: 2026-10-06T21:15
 allDay: false
 rrule: FREQ=WEEKLY;BYDAY=TU,FR;UNTIL=20261204T235959Z
 location: Hall, St John's College

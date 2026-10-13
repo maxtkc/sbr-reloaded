@@ -1,7 +1,7 @@
 ---
 title: Freshers' Fortnight 2026
-start: '2026-09-28'
-end: '2026-10-11'
+start: 2026-09-28
+end: 2026-10-11
 allDay: true
 location: St John's College
 category: freshers

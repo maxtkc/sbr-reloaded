@@ -1,7 +1,7 @@
 ---
 title: Grad Talks
-start: '2027-02-09T18:30'
-end: '2027-02-09T19:15'
+start: 2027-02-09T18:30
+end: 2027-02-09T19:15
 allDay: false
 location: The Samuel Butler Room, I2 First Court
 category: academic

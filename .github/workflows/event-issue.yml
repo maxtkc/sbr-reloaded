@@ -30,14 +30,14 @@ jobs:
           node-version: 22
           cache: npm
 
+      - run: npm ci
+
       - name: Write event file
         id: event
         run: node scripts/event-issue/to-event.mjs "$GITHUB_EVENT_PATH"
 
       - name: Check the site builds
-        run: |
-          npm ci
-          npm run build
+        run: npm run build
 
       - name: Open pull request
         env:
