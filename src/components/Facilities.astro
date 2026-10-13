@@ -1,0 +1,67 @@
+---
+import { Image } from 'astro:assets';
+import SectionText from './SectionText.astro';
+import collegeMap from '../assets/college-map.jpg';
+import { url } from '../lib/url';
+---
+
+<section class="section" id="facilities">
+  <div class="wrap">
+    <h2>Resources & facilities</h2>
+    <SectionText id="facilities-intro" />
+    <div class="blocks">
+      <article class="card" id="freshers-guide">
+        <SectionText id="freshers-guide" heading="h3" game="crawl" />
+        <a class="btn" href={url('/freshers')}>
+          Read the guide
+        </a>
+      </article>
+      <article class="card" id="welfare">
+        <SectionText id="welfare" heading="h3" />
+      </article>
+      <article class="card" id="accommodation">
+        <SectionText id="accommodation" heading="h3" game="qwop" />
+      </article>
+      <article class="card" id="gsr">
+        <SectionText id="gsr" heading="h3" game="crossy-road" />
+      </article>
+      <article class="card" id="sbr-room">
+        <SectionText id="sbr-room" heading="h3" />
+      </article>
+      <article class="card" id="college-map">
+        <SectionText id="college-map" heading="h3" />
+        <a href={collegeMap.src} class="map">
+          <Image
+            src={collegeMap}
+            alt="Map of St John's College with locations for postgraduates highlighted"
+            width={700}
+            data-game="pokemon"
+          />
+        </a>
+        <p>
+          <a href={collegeMap.src}>Open the full-size map</a>
+        </p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<style>
+  .blocks {
+    columns: 2 26rem;
+    column-gap: 1.25rem;
+    margin-top: 1.5rem;
+  }
+  .blocks > :global(*) {
+    break-inside: avoid;
+    margin-bottom: 1.25rem;
+  }
+  .blocks :global(.prose) {
+    max-width: none;
+  }
+  .map :global(img) {
+    display: block;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+  }
+</style>

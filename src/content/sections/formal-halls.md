@@ -11,4 +11,4 @@ category: formal
 
 - **Swaps.** Swaps are inter-collegiate dining events where we dine at other Cambridge colleges and invite them to dine with us. These events may include parties, and we also have swaps with colleges like Balliol (Oxford), Trinity (Dublin), Ghislieri (Italy), and Uppsala (Sweden).
 
-- **Port** **& Sherry.** Port & Sherry is offered in the SBR after hall on Fridays, for just £1.50 per glass.
+- **Port & Sherry.** Port & Sherry is offered in the SBR after hall on Fridays, for just £1.50 per glass.

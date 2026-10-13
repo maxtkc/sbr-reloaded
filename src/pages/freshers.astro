@@ -1,0 +1,96 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { Content, getHeadings } from '../data/guide.md';
+
+const chapters = getHeadings().filter((h) => h.depth === 2);
+---
+
+<BaseLayout title="Freshers' Guide" description="The SBR Postgraduate Freshers' Guide 2026-2027.">
+  <main class="section">
+    <div class="wrap layout">
+      <aside>
+        <nav aria-label="Guide contents">
+          <h2>Contents</h2>
+          <ol>
+            {chapters.map((h) => (
+              <li>
+                <a href={`#${h.slug}`}>{h.text}</a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      </aside>
+      <article class="prose">
+        <h1>Postgraduate Freshers' Guide 2026-2027</h1>
+        <p class="lead">
+          Produced by the SBR Committee and the Postgraduate Office. Skim it once, then dip in as
+          you need it.
+        </p>
+        <div class="btn-row">
+          <a
+            class="btn secondary"
+            href="https://drive.google.com/file/d/1vPmbdIw2yIEAaw-goCRs07Y6I4Q2S2XQ/view?usp=sharing"
+          >
+            Download the PDF
+          </a>
+          <button type="button" class="btn" data-game="crawl">
+            Watch the crawl
+          </button>
+        </div>
+        <Content />
+      </article>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .layout {
+    display: grid;
+    grid-template-columns: 15rem 1fr;
+    gap: 2.5rem;
+    align-items: start;
+  }
+  aside {
+    position: sticky;
+    top: 4.5rem;
+    max-height: calc(100vh - 5.5rem);
+    overflow-y: auto;
+  }
+  aside h2 {
+    font-size: 1.3rem;
+    margin-top: 0;
+  }
+  aside h2::after {
+    display: none;
+  }
+  aside ol {
+    padding-left: 1.2rem;
+    font-size: 0.95rem;
+  }
+  article h1 {
+    margin-top: 0;
+  }
+  article :global(h2) {
+    border-top: 2px solid var(--line);
+    padding-top: 1rem;
+  }
+  article :global(table) {
+    border-collapse: collapse;
+    display: block;
+    overflow-x: auto;
+  }
+  article :global(th),
+  article :global(td) {
+    border: 1px solid var(--line);
+    padding: 0.3rem 0.6rem;
+  }
+  @media (max-width: 860px) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+    aside {
+      position: static;
+      max-height: none;
+    }
+  }
+</style>

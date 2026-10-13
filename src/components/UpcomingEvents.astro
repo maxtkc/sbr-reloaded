@@ -1,0 +1,103 @@
+---
+import SectionText from './SectionText.astro';
+import { allOccurrences, notEnded, formatWhen, categoryLabels } from '../lib/events';
+import { url } from '../lib/url';
+
+const SHOW = 5;
+// Extra items are rendered so the client can drop ones that ended since the last build.
+const list = notEnded(await allOccurrences()).slice(0, SHOW + 10);
+const icsUrl = new URL(url('/calendar.ics'), Astro.site).href;
+const webcal = icsUrl.replace(/^https?:/, 'webcal:');
+const google = `https://calendar.google.com/calendar/r?cid=${encodeURIComponent(webcal)}`;
+---
+
+<section class="section" id="events">
+  <div class="wrap">
+    <h2>Upcoming events</h2>
+    <SectionText id="events-intro" />
+    {list.length === 0 ? (
+      <p>No upcoming events right now. Check back soon.</p>
+    ) : (
+      <ol class="events" data-show={SHOW}>
+        {list.map((o, i) => (
+          <li
+            class="card event"
+            data-end={o.event.data.allDay ? `${o.end}T23:59` : o.end}
+            hidden={i >= SHOW}
+          >
+            <div class="when">
+              {formatWhen(o)}
+              {o.event.data.tbc && <span class="tbc">date tbc</span>}
+            </div>
+            <h3>{o.event.data.title}</h3>
+            <p class="meta">
+              <span class="tag">{categoryLabels[o.event.data.category]}</span>{' '}
+              {o.event.data.location}
+            </p>
+            {o.event.data.ticketUrl && <a href={o.event.data.ticketUrl}>Tickets</a>}
+          </li>
+        ))}
+      </ol>
+    )}
+    <div class="btn-row">
+      <a class="btn" href={webcal}>
+        Subscribe to the calendar
+      </a>
+      <a class="btn secondary" href={google}>
+        Add to Google Calendar
+      </a>
+      <a class="btn secondary" href={url('/calendar.ics')} download>
+        Download .ics
+      </a>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Hides occurrences that ended after the build and shows the next ones instead.
+  const list = document.querySelector<HTMLOListElement>('ol.events');
+  if (list) {
+    const show = Number(list.dataset.show);
+    const now = new Date()
+      .toLocaleString('sv-SE', { timeZone: 'Europe/London', hour12: false })
+      .replace(' ', 'T')
+      .slice(0, 16);
+    let shown = 0;
+    for (const li of list.querySelectorAll<HTMLLIElement>('li[data-end]')) {
+      const live = (li.dataset.end ?? '') >= now;
+      li.hidden = !live || shown >= show;
+      if (live && !li.hidden) shown++;
+    }
+  }
+</script>
+
+<style>
+  .events {
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0;
+    display: grid;
+    gap: 0.8rem;
+  }
+  .event {
+    display: grid;
+    gap: 0.2rem;
+    border-left: 5px solid var(--red);
+  }
+  .event h3 {
+    margin: 0;
+    font-size: 1.35rem;
+  }
+  .when {
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .tbc {
+    margin-left: 0.5rem;
+    font-weight: 400;
+    font-style: italic;
+  }
+  .meta {
+    margin: 0;
+  }
+</style>

@@ -1,0 +1,20 @@
+---
+// Renders a `sections` entry, optionally with its title as a heading.
+import { getEntry, render } from 'astro:content';
+
+interface Props {
+  id: string;
+  heading?: 'h2' | 'h3' | false;
+  game?: string;
+}
+const { id, heading = false, game } = Astro.props;
+const entry = await getEntry('sections', id);
+if (!entry) throw new Error(`Missing section: ${id}`);
+const { Content } = await render(entry);
+const Heading = heading || null;
+---
+
+{Heading && <Heading data-game={game}>{entry.data.title}</Heading>}
+<div class="prose">
+  <Content />
+</div>

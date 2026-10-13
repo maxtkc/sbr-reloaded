@@ -1,0 +1,37 @@
+---
+import { getEntry, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const entry = await getEntry('sections', 'history');
+if (!entry) throw new Error('Missing section: history');
+const { Content } = await render(entry);
+---
+
+<BaseLayout title="History">
+  <main class="section">
+    <article class="wrap prose">
+      <p class="kicker">History of the SBR</p>
+      <h1>{entry.data.title}</h1>
+      {entry.data.author && <p class="byline">By {entry.data.author}</p>}
+      <Content />
+    </article>
+  </main>
+</BaseLayout>
+
+<style>
+  h1 {
+    margin-top: 0.2rem;
+  }
+  .kicker {
+    margin: 0;
+    color: var(--gold-dark);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.85rem;
+  }
+  .byline {
+    color: var(--muted);
+    font-style: italic;
+  }
+</style>

@@ -1,0 +1,91 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import SectionText from './SectionText.astro';
+import butler from '../assets/committee/samuel-butler.jpg';
+
+// Easter egg hooks on committee cards by role.
+const games: Record<string, string> = { Sports: 'breakout', Environment: 'bike-dino' };
+const members = (await getCollection('committee')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<section class="section" id="committee">
+  <div class="wrap">
+    <h2>Committee</h2>
+    <SectionText id="committee-intro" />
+    <ul class="members">
+      {members.map((m) => (
+        <li class="card member" data-game={games[m.data.role]}>
+          <Image
+            src={m.data.photo ?? butler}
+            alt={
+              m.data.photo ? m.data.name : `Samuel Butler (stand-in portrait for ${m.data.name})`
+            }
+            width={240}
+            height={240}
+            densities={[1, 2]}
+            fit="cover"
+            class:list={['photo', { placeholder: !m.data.photo }]}
+          />
+          <h3>{m.data.name}</h3>
+          <p class="role">{m.data.role}</p>
+          <a href={`mailto:${m.data.email}`}>{m.data.email}</a>
+          {m.data.bio && (
+            <details>
+              <summary>About</summary>
+              {m.data.bio.split(/\n\s*\n/).map((p) => (
+                <p>{p}</p>
+              ))}
+            </details>
+          )}
+        </li>
+      ))}
+    </ul>
+    <SectionText id="associate-membership" heading="h3" />
+  </div>
+</section>
+
+<style>
+  .members {
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 13rem), 1fr));
+  }
+  .member {
+    text-align: center;
+    font-size: 0.95rem;
+    overflow-wrap: anywhere;
+  }
+  .member :global(.photo) {
+    width: 9rem;
+    height: 9rem;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--gold);
+  }
+  .member :global(.placeholder) {
+    filter: sepia(0.5);
+  }
+  .member h3 {
+    margin: 0.6rem 0 0;
+    font-size: 1.3rem;
+  }
+  .role {
+    margin: 0 0 0.3rem;
+    color: var(--blue);
+    font-weight: 600;
+  }
+  details {
+    text-align: left;
+    margin-top: 0.6rem;
+  }
+  summary {
+    cursor: pointer;
+    text-align: center;
+    color: var(--red);
+    font-weight: 600;
+  }
+</style>

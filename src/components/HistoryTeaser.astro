@@ -1,0 +1,14 @@
+---
+import SectionText from './SectionText.astro';
+import { url } from '../lib/url';
+---
+
+<section class="section" id="history">
+  <div class="wrap">
+    <h2>History of the SBR</h2>
+    <SectionText id="history-teaser" />
+    <a class="btn" href={url('/history')}>
+      How the graduates took the SBR
+    </a>
+  </div>
+</section>
