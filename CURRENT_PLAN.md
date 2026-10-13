@@ -216,7 +216,7 @@ src/games/<slug>/        index.ts (export default start(root: HTMLElement): () =
   375/768/1280px (no horizontal scroll, all lightbox controls) and that the iframe loads only on scroll; the embed
   endpoint allows framing, but a rendered real post is unverified until a real post URL is added.
 
-## Phase 6 - Asset pipeline (faces, arms parts)  `[ ]`
+## Phase 6 - Asset pipeline (faces, arms parts)  `[x]`
 - `scripts/faces/` (Python, `-I`, venv): MediaPipe face detection or OpenCV DNN on each committee photo -> square crop
   with padding + circular-mask PNG + background-removed cutout (`rembg`) -> `src/assets/faces/<slug>.{png,cutout.png}`.
   Commit outputs. Soleh's cutout is the AI assistant avatar.
@@ -227,6 +227,18 @@ src/games/<slug>/        index.ts (export default start(root: HTMLElement): () =
   use the whole-image fallbacks.
 - `src/chaos/shared/faces.ts` exports the game roster.
 - Checklist: all 9 faces centered and recognizable; parts reassemble to the original logo.
+- Notes: faces use OpenCV's Haar frontal-face cascade (pinned `opencv-python-headless<5`, 5.x dropped it) instead of
+  MediaPipe, plus `rembg` (`u2net_human_seg`) for cutouts, in a uv venv on Python 3.12. Detection missed Laura (face
+  turned) and picked Davide's shirt, so both have hand-set boxes in `OVERRIDES`; detected boxes land in
+  `scripts/faces/boxes.json`. Crops are 512px PNGs; `faces.ts` serves them as 256px webp via `getImage`.
+  `faces.ts` is build-time only (`getRoster()` uses `astro:content`); client code gets the roster as JSON from the
+  page. Arms split (`scripts/arms/split.py`, inkscape for bounding boxes, svgo for output) gives 19 parts in
+  `src/assets/arms/parts/`, listed back-to-front in `src/data/arms-parts.json` with box and pivot in source
+  coordinates: per yale `legs`, `ear`, `horn-back`, `horn-front`, `tongue`, `tail`, body; `eagle-wing-l/r`,
+  `eagle-body` (with chain and crown), `shield` (with the coronet's red cap), `coronet`. The forelegs are drawn behind
+  the shield in the source. Not split: the yale head (its outline is part of the single body path, so head-bob must
+  move the whole yale or skip) and the tail (only the end tuft is a group; the tail itself is in the body path).
+  Reassembled parts were checked against the original in headless Chromium: only edge antialiasing differs.
 
 ## Phase 7 - Chaos infrastructure  `[ ]`
 - Registry wiring on every page, overlay iframe (open/close, Esc, pause/resume event bus for gags), `GameLayout`,
