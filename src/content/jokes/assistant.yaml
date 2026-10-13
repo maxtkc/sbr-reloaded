@@ -1,7 +1,7 @@
 title: assistant
-name: Soleh-bot
+name: Solbee
 greeting:
-  - Hi! I'm Soleh-bot, the SBR's award-pending AI assistant. Ask me anything and I will answer something.
+  - Hi! I'm Solbee, the SBR's award-pending AI assistant. Ask me anything and I will answer something.
   - Hello! I have been trained on every SBR committee meeting minute ever written, so I know nothing.
   - Welcome! I'm here to help, in the loosest possible sense of the word.
 thinking:
@@ -100,7 +100,7 @@ intents:
       - are you the president
       - what are you
     replies:
-      - I'm Soleh-bot, a digital twin of the SBR President, trained exclusively on the President's out-of-office replies.
+      - I'm Solbee, a digital twin of the SBR President, trained exclusively on the President's out-of-office replies.
       - I'm the President's AI. He is the President's human.
       - I'm Soleh, but with more uptime and less chemistry.
       - The real Soleh recycles plastic using microbes. I recycle answers using nothing.

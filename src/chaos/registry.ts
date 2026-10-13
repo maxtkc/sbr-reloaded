@@ -21,7 +21,7 @@ export interface Game {
 }
 
 export const config = {
-  // Soleh-bot intent matcher: keyword hits, or MiniLM embeddings (downloads the model on first message).
+  // Solbee intent matcher: keyword hits, or MiniLM embeddings (downloads the model on first message).
   assistantMatcher: 'keyword' as 'keyword' | 'embedding',
 };
 
