@@ -103,7 +103,7 @@ src/games/<slug>/        index.ts (export default start(root: HTMLElement): () =
 - Notes: Astro 7.3.8. TypeScript pinned to 6 because `astro check` does not support TS 7. `npm run build` runs
   `astro check` first. `astro dev` daemonizes in Astro 7 (`astro dev stop` to stop).
 
-## Phase 1 - Content scrape + data model  `[ ]`
+## Phase 1 - Content scrape + data model  `[x]`
 - `scripts/scrape/`: fetch all 5 Google Site pages, extract text into content collections (markdown/YAML), download
   images (committee photos, college map, decorative footer image), preserve all links. Commit outputs; the scraper is
   a one-off, not run in CI.
@@ -118,6 +118,16 @@ src/games/<slug>/        index.ts (export default start(root: HTMLElement): () =
 - Seed events: recurring BA Table (Tue+Fri in full term), Port & Sherry (Fri), plus one-off placeholders for grad talks,
   symposium (Lent), Freshers' Fortnight. Use the real 2026-27 Cambridge full-term dates (look them up).
 - Checklist: every scraped link present; 15 committee entries; photo-to-member mapping looks right (user confirms).
+- Notes: pipeline is `scripts/scrape/{scrape.py,to_content.py,assets.py}` (system python with bs4, lxml, pyyaml,
+  Pillow) and `scripts/guide/extract.py` (venv with pymupdf) producing a draft that was hand-cleaned into
+  `src/data/guide.md` (`##` = chapter, `###`/`####` = subsections). Raw page markdown in `scripts/scrape/out/*.md`.
+  Photos sit in the same source block as each member's name, so the mapping is structural, not by layout order.
+  Source `mailto:` hrefs for 7 members wrongly point at js2430; the displayed (correct) addresses are used.
+  Content links are root-relative (`/#committee`, `/history`, `/freshers`); Phase 2 must prefix the base path
+  when rendering markdown. Guide links to the old SBR site were rewritten to these paths. Event times are local
+  Europe/London strings (`YYYY-MM-DD` or `YYYY-MM-DDTHH:MM`); placeholder dates carry `tbc: true`. The old site's
+  footer image is a raster of the arms (`src/assets/arms/arms-footer.png`). Quick links get `order` and `featured`
+  (8 for the landing strip). Em/en dashes in scraped text replaced with hyphens.
 
 ## Phase 2 - Landing page + subpages  `[ ]`
 - Theme tokens (Johns red, arms gold/blue), serif heading font (Google Fonts), responsive.

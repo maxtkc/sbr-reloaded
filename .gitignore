@@ -8,3 +8,5 @@ npm-debug.log*
 .DS_Store
 .venv/
 __pycache__/
+scripts/scrape/out/images/
+scripts/scrape/out/html/
