@@ -1,7 +1,7 @@
 ---
 title: Postgraduate Research Symposium
-start: '2027-02-27T09:30'
-end: '2027-02-27T18:00'
+start: 2027-02-27T09:30
+end: 2027-02-27T18:00
 allDay: false
 location: St John's College
 category: academic

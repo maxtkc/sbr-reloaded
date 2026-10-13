@@ -2,6 +2,7 @@
 // Usage: node to-event.mjs <event.json>   (defaults to $GITHUB_EVENT_PATH)
 // Writes `slug` and `path` to $GITHUB_OUTPUT when set.
 import { readFileSync, writeFileSync, existsSync, appendFileSync } from 'node:fs';
+import { toFrontmatter } from '../lib/yaml-format.mjs';
 
 const categories = {
   Academic: 'academic',
@@ -51,9 +52,6 @@ function slugify(s) {
     .replace(/-$/, '');
 }
 
-// JSON strings are valid YAML double-quoted scalars.
-const q = (s) => JSON.stringify(s);
-
 export function toEvent(body) {
   const f = parseForm(body);
   const title = f['Event name'] || fail('Missing event name');
@@ -89,18 +87,9 @@ export function toEvent(body) {
   }
 
   const slug = `${slugify(title) || 'event'}-${date}`;
-  const lines = [
-    '---',
-    `title: ${q(title)}`,
-    `start: ${q(start)}`,
-    `end: ${q(end)}`,
-    `allDay: ${allDay}`,
-    `location: ${q(location)}`,
-    `category: ${category}`,
-  ];
-  if (ticketUrl) lines.push(`ticketUrl: ${q(ticketUrl)}`);
-  lines.push('---', '', description, '');
-  return { slug, content: lines.join('\n') };
+  const data = { title, start, end, allDay, location, category };
+  if (ticketUrl) data.ticketUrl = ticketUrl;
+  return { slug, content: toFrontmatter(data, description) };
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
