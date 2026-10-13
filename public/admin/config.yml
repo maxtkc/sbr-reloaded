@@ -1,0 +1,267 @@
+# Sveltia CMS config. Collections mirror the zod schemas in src/content.config.ts.
+backend:
+  name: github
+  repo: maxtkc/sbr-reloaded
+  branch: main
+  # OAuth Worker URL (see docs/cms-setup.md).
+  base_url: https://sveltia-cms-auth.CHANGE-ME.workers.dev
+  commit_messages:
+    create: 'cms: create {{collection}} "{{slug}}"'
+    update: 'cms: update {{collection}} "{{slug}}"'
+    delete: 'cms: delete {{collection}} "{{slug}}"'
+    uploadMedia: 'cms: upload "{{path}}"'
+    deleteMedia: 'cms: delete "{{path}}"'
+
+site_url: https://maxtkc.github.io/sbr-reloaded/
+display_url: https://maxtkc.github.io/sbr-reloaded/
+
+# Images inserted into markdown bodies. Served from public/, so the base path is included.
+media_folder: public/uploads
+public_folder: /sbr-reloaded/uploads
+
+# Empty optional fields would fail the zod schemas (e.g. category: ''), so drop them.
+output:
+  omit_empty_optional_fields: true
+
+slug:
+  encoding: ascii
+  clean_accents: true
+  maxlength: 60
+
+collections:
+  - name: events
+    label: Events
+    label_singular: Event
+    folder: src/content/events
+    extension: md
+    format: yaml-frontmatter
+    create: true
+    slug: '{{title}}'
+    identifier_field: title
+    summary: '{{title}} ({{start}})'
+    sortable_fields: [start, title, category]
+    fields:
+      - { name: title, label: Title, widget: string }
+      - name: start
+        label: Start
+        widget: string
+        hint: 'Local UK time. YYYY-MM-DDTHH:MM (e.g. 2026-11-03T19:30), or YYYY-MM-DD for all-day events.'
+        pattern: ['^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2})?$', 'Use YYYY-MM-DD or YYYY-MM-DDTHH:MM']
+      - name: end
+        label: End
+        widget: string
+        hint: 'Same format as Start. For all-day events, the last day of the event.'
+        pattern: ['^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2})?$', 'Use YYYY-MM-DD or YYYY-MM-DDTHH:MM']
+      - { name: allDay, label: All day, widget: boolean, default: false, required: false }
+      - name: rrule
+        label: Repeat rule
+        widget: string
+        required: false
+        hint: 'Optional RFC 5545 RRULE, e.g. FREQ=WEEKLY;BYDAY=TU,FR;UNTIL=20261204T235959Z'
+      - { name: location, label: Location, widget: string }
+      - name: category
+        label: Category
+        widget: select
+        options:
+          - { label: Academic, value: academic }
+          - { label: Ents, value: ents }
+          - { label: Formal Halls, value: formal }
+          - { label: "Freshers' Fortnight", value: freshers }
+          - { label: Sans Frontieres, value: sans-frontieres }
+      - name: ticketUrl
+        label: Ticket link
+        widget: string
+        required: false
+        pattern: ['^https?://', 'Must be a full URL starting with https://']
+      - { name: tbc, label: Date to be confirmed, widget: boolean, default: false, required: false }
+      - { name: body, label: Description, widget: markdown }
+
+  - name: committee
+    label: Committee
+    label_singular: Committee member
+    folder: src/content/committee
+    extension: yaml
+    format: yaml
+    create: true
+    slug: '{{name}}'
+    identifier_field: name
+    summary: '{{order}}. {{name}} - {{role}}'
+    sortable_fields: [order, name]
+    media_folder: ../../assets/committee
+    public_folder: ../../assets/committee
+    fields:
+      - { name: name, label: Name, widget: string }
+      - { name: role, label: Role, widget: string }
+      - {
+          name: email,
+          label: Email,
+          widget: string,
+          pattern: ['^[^@\s]+@[^@\s]+\.[^@\s]+$', 'Must be an email address'],
+        }
+      - {
+          name: order,
+          label: Order,
+          widget: number,
+          value_type: int,
+          hint: 'Position in the committee grid (1 = first).',
+        }
+      - {
+          name: photo,
+          label: Photo,
+          widget: image,
+          required: false,
+          hint: 'Members without a photo get the Samuel Butler portrait.',
+        }
+      - {
+          name: inGames,
+          label: Appears in games,
+          widget: boolean,
+          default: false,
+          required: false,
+          hint: 'Only for members with a photo.',
+        }
+      - { name: bio, label: Bio, widget: text, required: false }
+
+  - name: sections
+    label: Page text
+    label_singular: Text block
+    folder: src/content/sections
+    extension: md
+    format: yaml-frontmatter
+    # Blocks are wired to fixed places on the site, so only existing ones are edited.
+    create: false
+    delete: false
+    identifier_field: title
+    summary: '{{page}}: {{title}}'
+    sortable_fields: [page, order, title]
+    view_groups:
+      - { label: Page, field: page }
+    fields:
+      - { name: title, label: Title, widget: string }
+      - name: page
+        label: Page
+        widget: select
+        options: [home, events, facilities, committee, quicklinks, history, footer]
+      - { name: order, label: Order, widget: number, value_type: int }
+      - name: category
+        label: Event category
+        widget: select
+        required: false
+        options: [academic, ents, formal, freshers, sans-frontieres]
+      - { name: author, label: Author, widget: string, required: false }
+      - { name: body, label: Text, widget: markdown }
+
+  - name: quicklinks
+    label: Quick links
+    label_singular: Quick link
+    folder: src/content/quicklinks
+    extension: yaml
+    format: yaml
+    create: true
+    slug: '{{label}}'
+    identifier_field: label
+    summary: '{{group}}: {{label}}'
+    sortable_fields: [order, group, label]
+    view_groups:
+      - { label: Group, field: group }
+    fields:
+      - { name: label, label: Label, widget: string }
+      - {
+          name: url,
+          label: URL,
+          widget: string,
+          pattern: ['^(https?://|mailto:|/)', 'Must be a full URL, mailto: or a site path'],
+        }
+      - name: group
+        label: Group
+        widget: select
+        options:
+          - Quick Links
+          - Requests
+          - Information Packs
+          - College Services
+          - Forms
+          - Moodle
+          - Accommodation
+      - { name: order, label: Order, widget: number, value_type: int }
+      - {
+          name: featured,
+          label: Show on landing page,
+          widget: boolean,
+          default: false,
+          required: false,
+        }
+
+  - name: gallery
+    label: Gallery
+    label_singular: Photo
+    folder: src/content/gallery
+    extension: yaml
+    format: yaml
+    create: true
+    slug: '{{year}}-{{month}}-{{day}}-{{alt}}'
+    identifier_field: alt
+    summary: '{{alt}}'
+    sortable_fields: [order, date]
+    media_folder: ../../assets/gallery
+    public_folder: ../../assets/gallery
+    fields:
+      - { name: image, label: Image, widget: image }
+      - {
+          name: alt,
+          label: Description (alt text),
+          widget: string,
+          hint: 'What is in the photo, for screen readers.',
+        }
+      - { name: caption, label: Caption, widget: string, required: false }
+      - {
+          name: date,
+          label: Date,
+          widget: datetime,
+          time_format: false,
+          format: YYYY-MM-DD,
+          required: false,
+        }
+      - { name: order, label: Order, widget: number, value_type: int, default: 0, required: false }
+
+  - name: instagram
+    label: Instagram posts
+    label_singular: Instagram post
+    folder: src/content/instagram
+    extension: yaml
+    format: yaml
+    create: true
+    slug: '{{year}}{{month}}{{day}}-{{uuid_short}}'
+    identifier_field: url
+    summary: '{{url}}'
+    sortable_fields: [order]
+    fields:
+      - name: url
+        label: Post URL
+        widget: string
+        hint: 'e.g. https://www.instagram.com/p/ABC123xyz/ (no ?query part)'
+        pattern:
+          [
+            '^https://www\.instagram\.com/(p|reel)/[\w-]+/?$',
+            'Use https://www.instagram.com/p/<id>/ or /reel/<id>/',
+          ]
+      - { name: caption, label: Caption, widget: string, required: false }
+      - { name: order, label: Order, widget: number, value_type: int, default: 0, required: false }
+
+  - name: jokes
+    label: Jokes
+    label_singular: Joke list
+    folder: src/content/jokes
+    extension: yaml
+    format: yaml
+    create: true
+    slug: '{{title}}'
+    identifier_field: title
+    fields:
+      - { name: title, label: Title, widget: string }
+      - {
+          name: lines,
+          label: Lines,
+          widget: list,
+          field: { name: line, label: Line, widget: text },
+        }
