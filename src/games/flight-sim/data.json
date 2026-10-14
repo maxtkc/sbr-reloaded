@@ -1,0 +1,61 @@
+{
+  "title": "Johnian Flight Simulator",
+  "intro": "St John's College and the Backs, extruded from OpenStreetMap. Fly through the five gold rings over the landmarks. Cambridge City Council has not approved any of this.",
+  "address": "The Samuel Butler Room, St John's College, CB2 1TP. Postcode for the satnav. You are not a satnav.",
+  "pilot": "Your pilot today: {name}, {role}.",
+  "noPilot": "Your pilot today: an unnamed postgrad on a stipend.",
+  "controls": [
+    ["W / S", "throttle up / down"],
+    ["Up / Down", "pitch (nose down / up, like a real plane)"],
+    ["Left / Right", "roll"],
+    ["A / D", "rudder"],
+    ["C", "chase / cockpit camera"],
+    ["P", "pause"],
+    ["Esc", "leave the airfield"]
+  ],
+  "start": "Click or press Space to take off",
+  "paused": "Paused. Click or press Space to continue",
+  "restart": "Click or press Space to fly again",
+  "markers": {
+    "sbr": "Samuel Butler Room: the graduate society of St John's since 1960, and its room at I2 First Court with a TV, a Wii, a pool table, a piano and board games.",
+    "gsr": "Graduate Study Room: 1 All Saints Passage, across St John's Street. Your University Card gets you in. A plane does not.",
+    "chapel": "St John's College Chapel, by George Gilbert Scott, finished in 1869. Its tower is the tallest thing you are about to hit.",
+    "bridge": "The Bridge of Sighs, 1831, by Henry Hutchinson. It links Third Court to New Court over the Cam. Do not fly under it. Fine, try.",
+    "gate": "The Great Gate, early 1500s, with the college arms: two yales holding the shield, the eagle on top. St John's was founded in 1511."
+  },
+  "allVisited": "All five landmarks done. The Porters' Lodge asks that you land, ideally not on the grass.",
+  "remaining": "Landmarks",
+  "stall": "STALL",
+  "offMap": "You have left the college. The Porters' Lodge is radioing you back.",
+  "landed": [
+    "Landed. A porter is walking over with a clipboard.",
+    "Touchdown. Please do not park on the Backs.",
+    "Landed. That will be GBP1.50 on UPay for the parking."
+  ],
+  "crash": {
+    "building": [
+      "You flew into a listed building. The Domestic Bursar has been informed.",
+      "Impact! The building was there first, in some cases since the 1500s.",
+      "The building wins. It usually does in Cambridge."
+    ],
+    "ground": [
+      "You hit the ground too hard. Keep off the grass also applies to aircraft.",
+      "Hard landing. The groundsmen will never forgive you.",
+      "You found the ground. It was where everyone said it would be."
+    ],
+    "water": [
+      "You ditched in the Cam. A punt tour is already selling tickets to the wreck.",
+      "Splashdown in the Cam. The ducks have filed a complaint.",
+      "You landed on the river. The punt chauffeurs want their commission."
+    ]
+  },
+  "facts": [
+    "The Samuel Butler Room was founded in 1960 for St John's postgraduates.",
+    "Samuel Butler studied at St John's from 1854 to 1858, long before powered flight.",
+    "BA Table is on Tuesdays and Fridays in full term. Port & Sherry follows on Fridays, GBP1.50.",
+    "The SBR room is in I2, First Court: TV with a Wii, pool table, piano, board games, a small kitchen.",
+    "The Graduate Study Room (GSR) is at 1 All Saints Passage.",
+    "The Bridge of Sighs was built in 1831 by Henry Hutchinson.",
+    "The SBR address: The Samuel Butler Room, St John's College, CB2 1TP."
+  ]
+}

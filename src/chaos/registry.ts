@@ -59,6 +59,12 @@ export const games: Record<string, Game> = {
     touch: true,
     load: () => import('../games/flappy-eagle'),
   },
+  'flight-sim': {
+    title: 'Johnian Flight Simulator',
+    trigger: '',
+    touch: false,
+    load: () => import('../games/flight-sim'),
+  },
   minecraft: {
     title: 'Johncraft',
     trigger: '',

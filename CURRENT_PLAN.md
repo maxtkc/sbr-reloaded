@@ -328,6 +328,9 @@ src/games/<slug>/        index.ts (export default start(root: HTMLElement): () =
   cracks, score, bubble, clicks pass through, rally with a still paddle lasted ~14s, no horizontal scroll, no page
   errors) and iPhone emulation (no canvas). Pause/resume was not exercised: no game is registered yet to open the
   overlay.
+  Follow-up: the AI paddle (and its face disc) is gold when it sits on the top edge, since red clashes with the
+  header. Cracks are at z `2147482500`, above the ragdoll canvas, the pong canvas and Solbee, below the overlay and
+  captcha.
 
 ## Phase 12 - Gag: 3-minute ragdoll  `[x]`
 - After 180s on any page (and every 180s after), a Matter.js ragdoll with a random roster face drops from the top
@@ -346,46 +349,205 @@ src/games/<slug>/        index.ts (export default start(root: HTMLElement): () =
   sped-up interval (drop, landing, bubble, grab cursor, drag and fling, link click unaffected, pile, no horizontal
   scroll, no page errors). Pause/resume not exercised: still no game registered.
 
-## Phase 13 - Gag: gravity collapse  `[ ]`
+## Phase 13 - Gag: gravity collapse  `[x]`
 - Reaching the bottom of the page converts visible elements (leaf-ish blocks: headings, paragraphs, cards, images,
   nav items) into Matter bodies (absolute-positioned clones, originals hidden) that fall and pile up. Stays fallen,
   draggable (Google Gravity style). Reload restores.
+- Notes: `src/chaos/gags/gravity.ts`, no copy file. Triggers on a scroll that arrives at the page bottom (edge
+  triggered; scroll in the first 1s is ignored so restored scroll on reload does not collapse; non-scrolling pages
+  never trigger). Each arrival collapses any not-yet-fallen visible blocks (cap 160). Blocks: DOM walk from `body`
+  taking the outermost element in the viewport that matches an atom selector (headings, p, li, img, svg, figure,
+  button, `.card`, ...) or has only inline children, fits in the viewport, and has no iframe (Instagram embeds stay);
+  fixed elements and chaos UI are skipped, the sticky header's items fall. Clones get computed styles inlined
+  recursively (not inside SVGs), ids removed, and live in one page-sized absolute `.gv-layer`; originals get
+  `.gv-gone` (visibility hidden, layout kept). Inline-only blocks shrink to their text width so full-width headings
+  fall as tight cards; transparent blocks get the nearest ancestor background plus a light shadow. World is in page
+  coordinates: floor at the document bottom, side walls at the page width, rebuilt on resize (blocks pushed back
+  inside). Sleeping enabled, speeds clamped, `boom` on collapse and throttled hard impacts. Drag via a constraint
+  from capture-phase `pointerdown` on a clone; the click is swallowed only if the pointer moved over 6px, so fallen
+  links still work. Clones use `touch-action: pan-y` so the pile never traps scrolling on touch. Pause stops the
+  runner and draw loop; reduced motion halves `timeScale`. Pong skips `.gv-layer`/`.gv-gone`. Verified in headless
+  Chromium at 1280px and 390px mobile emulation on home, history, quick-links, freshers and an event page (collapse,
+  pile, drag and fling, fallen link click navigates, resize, reload at bottom does not collapse, no horizontal
+  scroll, no page errors). Pause/resume not exercised: still no game registered.
 
-## Phase 14 - OSM extract pipeline  `[ ]`
+## Phase 14 - OSM extract pipeline  `[x]`
 - `scripts/osm/fetch.mjs`: Overpass query for a bbox around St John's (roughly Magdalene Bridge to Trinity St to the
   Backs; include All Saints Passage and Fisher Building), buildings (with `height`/`building:levels`), landuse/leisure
   grass, water (Cam), highways, named POIs. Save `src/data/osm.geojson` + local metric projection helper.
 - `scripts/osm/tilemap.mjs`: rasterize to a ~1 tile = 4m grid -> `src/data/tilemap.json`
   (wall/grass/tallgrass/water/path/road/door + names).
 - Checklist: rendered debug PNG of tilemap is recognizable as St John's.
+- Notes: no new deps. `fetch.mjs` POSTs one Overpass query (overpass-api.de, kumi mirror fallback; `--cached` reuses
+  `scripts/osm/out/raw.json`) for bbox S,W,N,E `52.2042, 0.1042, 52.2134, 0.1212` (covers the rotated tilemap crop: Grange Road and the
+  playing fields to All Saints Passage, Trinity Great Court to Northampton Street; 180 s server timeout, third mirror
+  overpass.private.coffee) and converts it itself: nodes to Points, closed area ways to Polygons, multipolygon relations
+  stitched into (Multi)Polygons. Kept tags are whitelisted, plus `osm_id` and `height_m` (height, else levels x 3.2,
+  else 10; OSM has no heights here, so everything is 10). Top level carries `bbox`, `origin` (bbox centre),
+  `attribution`, `fetched`. One feature per line (prettier-ignored). Projection is `src/chaos/shared/geo.ts`
+  (`makeProjection(origin)`: x metres east, y metres south), imported by the scripts via Node's type stripping.
+  `tilemap.mjs` projects around a fixed `ORIGIN`, rotates 61 degrees clockwise (west up, north right like the college
+  map image; St John's courts end up square to the grid) and crops to `CROP` in rotated metres, giving 145x243 tiles
+  at 4 m. Default tile is `path` (paved courts); paint order grass (grass, garden, park, pitch, recreation ground) ->
+  pitch (`leisure=pitch`) -> tallgrass (wood, scrub, meadow, flowerbed) -> water (polygons + widened waterway lines)
+  -> road -> path lines and bridges -> wall (buildings except `roof`) -> footways (not indoor or underground) and
+  `tunnel`/`covered` roads carved back through walls with a 4-connected stroke, plus footway loose ends under 2.5
+  tiles apart joined (screens passages and gate arches are often unmapped) -> trees (`natural=tree` points,
+  `tree_row` every 2 tiles, and about 1 in 4 wood tiles away from paths; only ever on grass/tallgrass/pitch) -> door
+  (each `entrance` node snapped to the nearest wall tile bordering open ground; doors with open ground on opposite
+  sides become path, since they are passages through thin walls).
+  `tilemap.json`: `origin`, `rotation`, `crop`, `legend` (`.` path, `,` grass, `;` tallgrass, `~` water, `=` road,
+  `#` wall, `D` door, `T` tree, `P` pitch), `rows`
+  (one string per row), `names` ({name, kind, x, y} for buildings, courts, greens, bridges, POIs; streets and water
+  once each at the longest way's midpoint). Duplicate names exist across colleges (e.g. two "First Court"s).
+  Debug PNG at `scripts/osm/out/tilemap.png` (gitignored): playing fields top left, Cam across the middle, St John's
+  courts and Great Gate side lower right, all read clearly.
 
 ## Game phases
 Each game phase: build `src/games/<slug>/`, register in the registry with its trigger, data/jokes in `data.json`,
 keep graphics simple (shapes + faces), include the listed real info. Checklist for every game: opens from trigger,
 playable for 30s without errors, closes cleanly, standalone URL works, touch behaviour as specified.
 
-### Phase 15 - Flappy Eagle  `[ ]`  trigger: logo eagle | touch: yes
+### Phase 15 - Flappy Eagle  `[x]`  trigger: logo eagle | touch: yes
 - Gold crest eagle from arms parts, real wings flap on input, chained crown jangles. Obstacles: St John's chapel tower /
   Gatehouse pinnacles. Score milestones show SBR facts (founded 1960, etc).
+- Notes: `src/games/flappy-eagle/{index.ts,data.json}`, registered as `flappy-eagle`. Triggers: the existing
+  `data-game` on the hero `.logo` (whole logo) plus the registry selector `.arms-anim [data-part^="eagle-"]`. Kaplay,
+  immediate-mode drawing in one `onDraw` (no game objects). The eagle is `eagle-wing-l`, `eagle-wing-r` and
+  `eagle-body` loaded as sprites from the arms parts (`?url`) and placed with `arms-parts.json` coordinates, mirrored
+  to face right; wings rotate about their pivots for a 0.25s downstroke per flap. The crown and chain are baked into
+  `eagle-body`, so the "jangle" is a decaying wobble of the body about the neck plus two high chinks. Obstacles: a
+  "Cambridge drizzle" raincloud column from the top, and below the gap either the Chapel tower (stone, four pinnacles,
+  lancet windows) or the Great Gate (brick, turrets, arms panel, arch). Ground is "The Backs" with the Cam. Everything
+  scales with viewport height; the gap shrinks from 0.31H to 0.25H with score. Circle hitbox (forgiving), the ceiling
+  clamps, the ground kills. Facts at scores in `milestones` (then every 10) in a red/gold banner with a fanfare; death
+  shows a random `deaths` line, score and best (localStorage, try/catch). Restart 0.7s after death. Reduced motion
+  runs at 0.7x. `pixelDensity: devicePixelRatio` keeps it crisp on phones. Verified in headless Chromium: standalone
+  at 1280px, overlay opened from the logo, Esc and X close it, iPhone emulation taps, and a temporary autopilot hook
+  (removed) scored 10 and showed the first fact banner, with no page errors.
 
-### Phase 16 - Star Wars crawl  `[ ]`  trigger: Freshers' Guide link | touch: tap to speed
+### Phase 16 - Star Wars crawl  `[x]`  trigger: Freshers' Guide link | touch: tap to speed
 - Full `guide.md` as a perspective crawl, "Episode N: <section>" per section, starfield, arrow keys/scroll speed
   control, section skip. Opening "A long time ago in a college far, far away...".
+- Notes: `src/games/crawl/{index.ts,markdown.ts,data.json}`, registered as `crawl` with no extra selector (the
+  existing `data-game="crawl"` hooks on the landing Freshers' Guide heading and the `/freshers` "Watch the crawl"
+  button launch it). DOM + CSS 3D, no Kaplay: `guide.md?raw` is split on `##` into 7 episodes, each rendered by
+  `markdown.ts` (headings, paragraphs, lists, `- [ ]` checklists, pipe tables, bold, italic, links as text only,
+  `<br>`; DOM built without innerHTML). Each episode header is "Episode N: <chapter>" plus a joke title from
+  `data.json` `episodes`; an `end` card follows the last one. The text plane is `rotateX(25deg)` with perspective
+  0.6x the stage height, moved by `translateY` in a rAF loop, top faded with a mask. Sequence: blue opening line
+  (0-4.5s), outlined "FRESHERS' GUIDE" logo shrinking away with a fanfare (4.5-11s), crawl starting at 8s, loop back
+  to the opening after the end card leaves the top. Static canvas starfield. Controls: Up/Down and wheel change the
+  speed multiplier (-4 to 12, rewind stops at the start), Right/PageDown/N next episode, Left/PageUp/P back to the
+  start of this episode then the previous one, Space pause, any key/tap/wheel skips the intro; tap gives a decaying
+  speed burst, hold (over 0.25s) fast-forwards 6x; a controls hint at the bottom and a corner label with episode and
+  speed. Registry `autoOpen: '/freshers'` opens it on page load there (`client.ts`), and `closeLabel: 'Boring mode'`
+  replaces the X in the overlay and on the standalone page; closing it leaves the plain guide. Base speed 2 em/s (x0.7 under reduced motion).
+  Verified in headless Chromium: standalone at 1280px (opening, logo, crawl, speed, skip, pause, end loop) and
+  iPhone emulation (tap skip and tap speed-up, no horizontal scroll), opened from `/` and `/freshers`, Esc and X
+  close, no raw markdown in the output, no page errors.
 
-### Phase 17 - Pokemon map  `[ ]`  trigger: college map image | touch: on-screen d-pad (simple)
+### Phase 17 - Pokemon map  `[x]`  trigger: college map image | touch: on-screen d-pad (simple)
 - Top-down tile game from `tilemap.json`. Tall grass -> random encounters (Wild Porter, Tourist, Goose, Punt tout,
   Supervisor) with a joke battle menu. Committee NPCs at hand-placed spots in `npcs.json` (e.g. Treasurer at the Buttery,
   Welfare at the GSR, President in the SBR at I2 First Court), dialogue from their real bios. A glowing "portal" block
   launches Minecraft.
+- Notes: `src/games/pokemon/{index.ts,world.ts,battle.ts,data.json,npcs.json}`, registered as `pokemon` ("Pocket
+  Johnians") with no extra selector (the existing `data-game` on the college map image launches it). Kaplay,
+  immediate-mode drawing like Flappy Eagle. `world.ts` reads `tilemap.json`: walls, doors, trees and water block,
+  everything else is walkable (buildings cannot be entered); `fromLonLat()` maps a coordinate into the rotated tile
+  frame; `snap()` moves hand-placed coords to the nearest
+  walkable tile; `nearestArea()` (buildings, courts, greens, bridges, streets within 7 tiles, no shops) drives a
+  Pokemon-style area banner. Grid movement (0.16s per tile, x0.7 speed under reduced motion), a short tap only turns,
+  camera centred on the player, tile size `min(H/15, W/9)`. Start in St John's First Court by the SBR. Doors draw as plain wall. Trees are
+  a trunk and round canopy drawn in the y-sorted sprite pass so they overlap the tile above; pitches are striped grass
+  with white touchlines. On-map labels (cream pills, overlap-skipped, never over the player): courts, greens, bridges,
+  water and streets from `tilemap.json` names, a building allowlist `labelBuildings` with short names, `labelExtra`
+  (Great Gate, Hall, SBR, GSR by lon/lat) and `labelRename`, all in `data.json`. Encounters:
+  tall grass is 1 in 9 per step (any foe), and since the nearest tall grass is ~86 steps from the start, lawns also
+  roll 1 in 20 for a Porter ("keep off the grass"); a few grace steps at start and after each battle. Battle: FIGHT
+  (4 joke moves), BAG, SBR (heals), RUN (fails 1 in 3), typewriter text, HP bars, simple shape sprites per foe, each info box placed beside its own sprite (enemy box left of the
+  foe, player box right of the player, falling back to above the sprite when there is no room); win,
+  lose (wake up back at the SBR) or flee each end on a real fact. NPCs: 9 roster members placed in `npcs.json` by lon/lat (as are `start` and `portal`)
+  (President in First Court, Treasurer at the Buttery, Welfare at the GSR, Secretary by the Chapel, Co-VPs at the
+  Third Court end of the Bridge of Sighs (beside the 1-tile path, not on it) and Kitchen Bridge, Academic by the Library, Environment on the Backs, Comms at the Forecourt);
+  A while facing one shows their face, name and role, their bio paged by sentence, then a joke line; a "Committee
+  met" counter, fanfare when all 9 are found. `RosterData.astro` takes `full` (adds `slug` and `bio`) and
+  `GameLayout` renders `<RosterData full />`, so every game page has `#roster-data` with bios. Portal next to the
+  President: if `games.minecraft` is registered it navigates to `/games/minecraft` keeping `?embed=1` (the overlay
+  iframe switches game), otherwise a "still loading" message. Controls: arrows/WASD, Space/Enter/Z = A, X/Backspace
+  = B, clicks advance text and pick battle options. On `(pointer: coarse)` an HTML d-pad + A/B is added (hidden in
+  battles, where options are tapped directly) and dialogue moves to the top of the screen. Kaplay's text atlas
+  leaves faint marks under spaces on dark backgrounds, so both text boxes are cream. Verified in headless Chromium:
+  standalone at 1280px (intro, walking, Soleh's bio pages, portal message, lawn encounter, FIGHT/moves/BAG/SBR/RUN,
+  win back to the map, 20s random walking), opened from the map image on `/` with Esc and X closing it, iPhone
+  emulation (pad walking, A, no horizontal scroll), no page errors. Tall-grass encounters were not walked to in the
+  test (same code path as lawns).
 
-### Phase 18 - Minecraft  `[ ]`  trigger: portal in Pokemon + "TV with a Wii" text in the SBR room description | touch: desktop-only
+### Phase 18 - Minecraft  `[x]`  trigger: portal in Pokemon + "TV with a Wii" text in the SBR room description | touch: desktop-only
 - three.js voxel world from `osm.geojson` (~200x200 blocks; buildings as stone columns at height, grass, water, paths),
   greedy-meshed chunks, pointer-lock first-person, break/place blocks. Mobs: many creepers that chase and blow
   craters (very destructive, chain reactions), zombies with roster faces. Signs with real building names.
+- Notes: `src/games/minecraft/{index.ts,world.ts,body.ts,mobs.ts,data.json}`, registered as `minecraft` ("Johncraft",
+  `touch: false`) with no extra selector: the existing rehype hook already wraps "TV with a Wii" in the SBR room text,
+  and the Pokemon portal navigates to it. New deps `three` (+ `@types/three` dev), added to `optimizeDeps`. The
+  rasterizer moved from `tilemap.mjs` into `scripts/osm/raster.mjs` (`rasterize({tile, origin, rotateDeg, crop})`,
+  widths now in metres; `tilemap.json` output byte-identical) and also returns per-tile building heights.
+  `scripts/osm/voxels.mjs` runs it at 2 m over the same rotated frame, cropped to x -120..280, y -100..300 (200x200:
+  New Court and the Backs to All Saints Passage, Trinity to Magdalene Bridge) -> `src/data/voxels.json` (`rows` as
+  in tilemap, `heights` one base-36 char per tile in blocks at 1.5 m per block, so every 10 m building is 7 blocks,
+  `names`, `spawn` = the Pokemon start outside the SBR) + `scripts/osm/out/voxels.png`. `tilemap.json` and
+  `voxels.json` are prettier-ignored (generated). World: 200x48x200, bedrock, dirt, surface at y 4; water sunk to
+  y 2-3; buildings solid stone with a roof layer and wooden door blocks at entrances; OSM trees plus extra trees on
+  open lawns and bushes in tall grass. 16x16 chunk columns, greedy-meshed with vertex colours (Lambert, hemisphere +
+  sun, fog), water in a separate transparent mesh, up to 6 dirty chunks remeshed per frame. AABB physics per axis
+  in sub-steps (shared by player and mobs), outside the map is a wall. Sprite signs for every building, court,
+  bridge, street, green and water name (deduped), plus an SBR sign ("TV with a Wii, pool table...") in front of the
+  spawn view; HUD shows the nearest name. Controls: WASD, Shift sprint, Space jump/swim, mouse look, left click
+  break/hit/light TNT, right click place, 1-6/wheel hotbar (planks, stone, dirt, grass, leaves, TNT). Bedrock is
+  unbreakable. Mobs: 32 creepers kept topped up (spawned 20-60 blocks away, roofs included), chase within 26, light
+  at 2.4 (1.5 s fuse, flash and swell, defuse beyond 7 unless chain-lit); blast radius 4 removes a rough sphere,
+  flings and hurts everything within 8, lights nearby creepers and TNT on short fuses (chain reactions). One zombie
+  per roster member (black gown, face crop greened on the head front, name and role tag), 2 damage per hit with
+  knockback, 4 hits to kill, respawn after 15 s; generic zombies if the roster is empty. Real info: death screen and
+  pause screen show a fact from `data.json`, zombie lines ("Zombie <name> (<role>) has resigned..."), and a running
+  "Damage to listed buildings: GBP" bill (GBP4,500 per stone/roof/door block) with porter notes at 1, 4, 16... x the
+  first block's cost, at most one per 4 s. 20 HP, regen after 5 s unhurt, fall damage, death -> click to respawn at
+  the SBR (clears mobs within 14). Pause: Esc releases the mouse and pauses (the game swallows that Esc and calls
+  `exitPointerLock`), a second Esc closes via `GameLayout`. If pointer lock is refused it falls back to drag-to-look.
+  Reduced motion: mobs and particles x0.7, smaller shake. The game chunk is ~650 kB (three + voxel data), lazy-loaded.
+  Verified in headless Chromium (SwiftShader): standalone at 1280px (menu, pointer lock, walking, break/place,
+  explosion crater and porter notes, 30 s with mobs chasing until a zombie killed the player, death screen), a
+  roster-faced zombie close up, overview from above with building signs, opened from "TV with a Wii" on `/` with
+  first Esc pausing and second Esc closing the overlay, `?embed=1` URL as used by the portal, iPhone emulation shows
+  the desktop-only notice, no page errors. A temporary debug hook used for the checks was removed.
 
-### Phase 19 - Flight sim  `[ ]`  trigger: address / CB2 1TP | touch: desktop-only
+### Phase 19 - Flight sim  `[x]`  trigger: address / CB2 1TP | touch: desktop-only
 - three.js: OSM buildings extruded by height over a flat ground with OSM-colored landuse and the Cam. Simple arcade
   plane physics (pitch/roll/throttle). Labeled floating markers for SBR, GSR, Chapel, Bridge of Sighs. Attribution: OSM.
+- Notes: `src/games/flight-sim/{index.ts,world.ts,plane.ts,data.json}`, registered as `flight-sim` ("Johnian Flight
+  Simulator", `touch: false`) with no extra selector (the footer `<address data-game>` and the "CB2 1TP" phrase hook
+  already launch it). `scripts/osm/flight.mjs` turns `osm.geojson` into `src/data/flight.json` (~325 kB,
+  prettier-ignored): local metres around the extract origin (x east, z south, no rotation), 0.5 m rounding,
+  `buildings` (rings with holes, height, class stone/brick/shop), `areas` (town, court, grass, pitch, wood, water),
+  `ribbons` (roads, paths, waterways with widths), `markers` and `start`. Heights: OSM `height`, else levels x 3.2 +
+  1.5, else a per-type default with a deterministic jitter, plus name overrides; the Chapel is 24 m with a 13 m
+  square, 50 m tower added at its centroid aligned to its longest edge. World: ground plane (polygon offset) with the
+  layers drawn on top without depth writes in a fixed render order; buildings extruded and merged into one
+  vertex-coloured mesh (roofs darker). Collision: spatial grid of building polygons (body and nose point below the
+  roof = crash) and water (areas plus river ribbons). Plane: box model in red/gold/blue with a random roster face
+  as the pilot; arcade physics with throttle, pitch (Up = nose down), roll with auto-level, rudder, bank-induced
+  turn, stall below 17 m/s (sinks, nose drops), ceiling at 380 m. Landing works on any ground (sink under 8 m/s,
+  bank under 25 degrees, nose not steeply down); taxi and take off again. Water touchdown, hard landings and
+  buildings crash (fireball, debris, `boom`, crash line + real fact). Past 250 m off the extract the plane banks
+  itself back. Five gold rings (SBR, GSR, Chapel, Bridge of Sighs, Great Gate) over beams with name labels, stacked
+  when close; flying through one shows its real fact with a fanfare. HUD: speed (kt), altitude, throttle, arrow and
+  distance to the nearest unvisited ring, counter, OSM attribution. Chase camera or cockpit (C), P or blur pauses,
+  Esc is left to `GameLayout`. Reduced motion runs at 0.7x with less shake. Verified in headless Chromium
+  (SwiftShader): standalone at 1280px (menu, flying, banking, cockpit, diving into a building, restart, climb), all
+  five rings, landing on the playing fields, taxi and take-off, ditching in the Cam, opened from the footer address
+  on `/` with Esc closing it, iPhone emulation shows the desktop-only notice, no page errors. A temporary debug hook
+  used for the checks was removed.
 
 ### Phase 20 - Breakout: Bridge of Sighs  `[ ]`  trigger: Sports officer / punt mention | touch: drag
 - Bricks form the Bridge of Sighs outline (1831, Henry Hutchinson) over the Cam. Paddle is a punt with a pole-wielding
@@ -433,6 +595,60 @@ playable for 30s without errors, closes cleanly, standalone URL works, touch beh
 ### Phase 30 - Floppy Crow  `[ ]`  trigger: welfare / footer image | touch: yes
 - Crow flapper with deliberately floppy physics, ceiling hazard of St John's Chapel roofline / gothic arches, foxes on the ground that jump to
   catch the crow.
+
+## Follow-up phases
+
+### Phase 31 - Samuel Butler photo transforms  `[ ]`
+- Every Samuel Butler portrait (the stand-in photo on the committee and anywhere else it shows) gets a random
+  transform per element on each load: flip, hue-rotate, swirl/skew, invert, upside down, googly eyes overlay, slow
+  spin, pixelate. Registered as a gag in `registry.ts` so it rolls back with the rest.
+
+### Phase 32 - Committee: Samuel Butler himself  `[x]`
+- Add a committee entry "Samuel Butler", role "Antisocial", with the Butler portrait. Its email link opens an in-page
+  overlay with a rickroll (YouTube embed, autoplay) instead of `mailto:`. Excluded from game rosters (no photo).
+- Notes: `src/chaos/gags/butler.ts` (gag `butler` in the registry, so not in the committee collection). It clones a
+  stand-in card from `#committee .members`, renames it, drops the sepia, sets `sb1835@cam.ac.uk`, a one-line bio, and
+  appends it last. The email click opens `.rr` (fixed, z `2147483000`) with a youtube-nocookie embed, autoplay;
+  X, Esc or a backdrop click closes it. Pauses gags via the bus while open. Pong and gravity skip `.rr`. Verified in
+  headless Chromium at 1280px (card, modal opens with no mailto navigation, Esc closes).
+
+### Phase 33 - Daily puzzle lock  `[ ]`
+- Classic daily puzzles (Wordle, Connections, Mini crossword, Spelling Bee, Strands), seeded by date so everyone gets
+  the same puzzle each day. A random share of internal link clicks are stopped with "This page is locked. Solve
+  today's daily puzzle first." Failing is allowed with unlimited retries; Wordle-style limited guesses reset on a new
+  attempt. Solved state lasts the day (localStorage, wrapped in try/catch). Words and clues are SBR/St John's themed,
+  in a jokes data file.
+
+### Phase 34 - Fox to cat morph rework  `[x]`
+- Captcha fox tiles become one shared SVG face (ears, snout, eyes, nose, whiskers, tail, fur) with fox and cat as two
+  states. CSS transitions on transforms and colours (and `d` where supported) slide each feature from one shape to
+  the other instead of crossfading.
+- Notes: the FOX tile in `captcha/tiles.ts` is one set of paths (ears, inner ears, head, mask, eyes, nose) with the fox
+  shape in `d`; `.cap-morph` sets the cat shape with CSS `d: path(...)` using the same commands, so they tween over
+  3s. Fills tween (orange to grey fur, dark to green eyes, black to pink nose and inner ears), slit pupils and
+  whiskers scale in. No tail (the tile is a face). Browsers without CSS `d` (Safari) keep the fox shapes but still get
+  the colours, pupils and whiskers. Verified in headless Chromium (frames at 0, 1, 2.3 and 3.8s).
+
+### Phase 35 - Ragdoll timing and water  `[ ]`
+- No pile of drops on returning to the tab: while hidden/blurred at most one drop is queued, and it happens once on
+  return.
+- After 10 minutes on the page a shallow band of water rises at the bottom and the dolls float in it (buoyancy plus
+  drag below the waterline, light bobbing, wave drawn on the canvas).
+
+### Phase 36 - Logo hover frenzy  `[ ]`
+- Hovering the hero arms speeds up and exaggerates every loop in `animated-logo.ts` (faster timers, bigger amplitudes,
+  shake). After 10 s of continuous hover the logo explodes: parts fly apart (WAAPI or Matter), `boom()`, and it
+  reassembles after a while. Touch: long press counts as hover.
+
+### Phase 37 - Layout width cleanup  `[x]`
+- Header nav, hero title (`Hero.astro` `max-width: 34rem`) and body text (`global.css` `46rem` prose, `.wrap`
+  `--wrap`) each sit on a different width. Use one container width for nav, title and section edges, and one prose
+  measure left-aligned inside it. Check at 375/860/1280px.
+- Notes: `--wrap` is now `56rem`, and `.prose`, `.lead` and the hero tagline have no cap of their own, so the header
+  brand and nav, hero, headings, text and card grids share the same left and right edges (192/1088px at 1280px).
+  Header still fits one row at 900px; at 860px and below it stacks as before. The gallery lightbox caption keeps
+  its 46rem cap (it sits in a modal). Verified home, history, freshers and quick-links at 375/860/900/1280px, no
+  horizontal scroll.
 
 ## Verification (whole project)
 - `npm run build` clean; `npm run preview` and walk every trigger in the egg table.
