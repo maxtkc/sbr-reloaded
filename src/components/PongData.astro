@@ -1,0 +1,20 @@
+---
+// Copy for the pong edges gag: validated joke file, as JSON for client code.
+import { getEntry } from 'astro:content';
+import { z } from 'astro/zod';
+
+const lines = z.array(z.string()).min(1);
+const schema = z.object({
+  you: z.string(),
+  taunts: lines,
+  excuses: lines,
+  smashes: lines,
+});
+
+const entry = await getEntry('jokes', 'pong');
+const data = entry ? schema.parse(entry.data) : null;
+// Escape < so text cannot close the script tag.
+const json = data ? JSON.stringify(data).replace(/</g, '\\u003c') : null;
+---
+
+{json && <script type="application/json" id="pong-data" set:html={json} />}
