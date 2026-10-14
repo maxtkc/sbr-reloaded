@@ -1,0 +1,15 @@
+---
+// Game roster (photo members with face crops), as JSON for client code.
+import { getRoster } from '../chaos/shared/faces';
+
+const roster = (await getRoster()).map(({ name, role, face, cutout }) => ({
+  name,
+  role,
+  face,
+  cutout,
+}));
+// Escape < so text cannot close the script tag.
+const json = roster.length ? JSON.stringify(roster).replace(/</g, '\\u003c') : null;
+---
+
+{json && <script type="application/json" id="roster-data" set:html={json} />}
