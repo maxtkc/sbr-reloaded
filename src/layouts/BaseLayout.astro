@@ -6,6 +6,7 @@ import AssistantData from '../components/AssistantData.astro';
 import CaptchaData from '../components/CaptchaData.astro';
 import RosterData from '../components/RosterData.astro';
 import PongData from '../components/PongData.astro';
+import RagdollData from '../components/RagdollData.astro';
 import { url } from '../lib/url';
 
 interface Props {
@@ -44,6 +45,7 @@ const fullTitle = title === 'Samuel Butler Room' ? title : `${title} | Samuel Bu
     <CaptchaData />
     <RosterData />
     <PongData />
+    <RagdollData />
     <script>
       import '../chaos/client';
     </script>
