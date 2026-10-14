@@ -311,10 +311,23 @@ src/games/<slug>/        index.ts (export default start(root: HTMLElement): () =
   handlers. Verified in headless Chromium at 375/1280px (welfare form and issue links open it, Esc cancels, morph,
   give-up after 3, siren, Continue href, form resubmits, Solbee unaffected, no horizontal scroll, no page errors).
 
-## Phase 11 - Gag: pong edges  `[ ]`
+## Phase 11 - Gag: pong edges  `[x]`
 - Cursor within ~20px of a viewport edge spawns a ball (fixed-position canvas overlay, pointer-events none except
   paddles). Player paddle on the nearest edge, AI paddle with a random game-roster face on the opposite edge.
   Missed ball smashes a random visible element (shake + crack). Score in corner. No-op on touch.
+- Notes: `src/chaos/gags/pong.ts`, copy in `src/content/jokes/pong.yaml` (`you`, `taunts`, `excuses`, `smashes`;
+  validated by `PongData.astro`). `RosterData.astro` (in `BaseLayout`) emits the game roster as `#roster-data`
+  JSON (`name`, `role`, `face`, `cutout`) for client gags; Phase 12 can reuse it. The canvas is fully
+  `pointer-events: none`: the player paddle follows the cursor via a document `mousemove` listener, so the page stays
+  clickable during a rally. The player edge is fixed per rally; each rally picks a new roster face. The AI chases the
+  ball at a capped speed with a random aim error, re-rolled on every player hit, and the ball speeds up 8% per hit.
+  On a miss the ball flies into a random visible block element (skipping chaos UI and fixed/sticky containers), which
+  shakes and gets a page-positioned SVG crack with a `smashes` label (max 25, oldest removed); the AI says a
+  taunt/excuse in a bubble. 1s cooldown between rallies, no rally while paused or the captcha is open, speeds halved
+  under reduced motion. Score box bottom-left. Verified in headless Chromium at 1280px (all four edges, misses,
+  cracks, score, bubble, clicks pass through, rally with a still paddle lasted ~14s, no horizontal scroll, no page
+  errors) and iPhone emulation (no canvas). Pause/resume was not exercised: no game is registered yet to open the
+  overlay.
 
 ## Phase 12 - Gag: 3-minute ragdoll  `[ ]`
 - After 180s on any page (and every 180s after), a Matter.js ragdoll with a random roster face drops from the top
