@@ -28,7 +28,7 @@ const MAX_CRACKS = 25;
 // Elements a missed ball can smash.
 const TARGETS = 'h1,h2,h3,p,li,img,figure,blockquote,button,.card';
 // Chaos UI that never gets smashed.
-const SKIP = '.sbot,.cap,.pong-crack,.pong-score,.pong-bubble,.chaos-overlay';
+const SKIP = '.sbot,.cap,.pong-crack,.pong-score,.pong-bubble,.chaos-overlay,.rr,.gv-layer,.gv-gone';
 
 const CSS = `
 .pong-canvas{position:fixed;inset:0;z-index:2147481000;pointer-events:none;display:none}
@@ -38,7 +38,7 @@ border:2px solid var(--gold,#d1b948);border-radius:.3rem;padding:.4rem .6rem;dis
 .pong-bubble{position:fixed;z-index:2147481000;pointer-events:none;max-width:14rem;background:#fff;color:#1d1a17;
 font:400 .85rem/1.3 var(--sans,system-ui,sans-serif);border:2px solid var(--red,#a3162b);border-radius:.6rem;
 padding:.4rem .6rem;box-shadow:0 4px 12px rgba(0,0,0,.25)}
-.pong-crack{position:absolute;pointer-events:none;z-index:2147480000;overflow:hidden}
+.pong-crack{position:absolute;pointer-events:none;z-index:2147482500;overflow:hidden}
 .pong-crack svg{position:absolute;inset:0;width:100%;height:100%}
 .pong-crack span{position:absolute;transform:translate(-50%,-50%) rotate(-6deg);white-space:nowrap;
 font:700 .75rem/1 var(--sans,system-ui,sans-serif);color:#fff;background:var(--red,#a3162b);padding:.25rem .4rem;
@@ -384,14 +384,16 @@ export default function pong(): (() => void) | void {
     ctx.setLineDash([]);
 
     paddle(r.edge, playerU(r.edge), INSET, '#1f3d7a');
-    paddle(r.edge, r.ai, D - INSET - THICK, '#a3162b');
+    // AI paddle is gold on the top edge, where red clashes with the header.
+    const aiColor = r.edge === 'bottom' ? '#d1b948' : '#a3162b';
+    paddle(r.edge, r.ai, D - INSET - THICK, aiColor);
 
     // AI face just inside its paddle.
     const [fx, fy] = toScreen(r.edge, r.ai, D - INSET - THICK - FACE - 2);
     ctx.save();
     ctx.beginPath();
     ctx.arc(fx, fy, FACE, 0, Math.PI * 2);
-    ctx.fillStyle = '#a3162b';
+    ctx.fillStyle = aiColor;
     ctx.fill();
     if (r.img.complete && r.img.naturalWidth) {
       ctx.clip();

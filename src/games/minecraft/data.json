@@ -1,0 +1,67 @@
+{
+  "title": "Johncraft",
+  "intro": "St John's College, rebuilt from OpenStreetMap at one block per two metres. The courts are solid stone because nobody mapped the insides. The creepers did not read the listed building consent.",
+  "controls": [
+    ["WASD", "walk"],
+    ["Shift", "sprint"],
+    ["Space", "jump / swim"],
+    ["Mouse", "look"],
+    ["Left click", "break / hit / light TNT"],
+    ["Right click", "place"],
+    ["1-6, wheel", "pick block"],
+    ["Esc", "pause"]
+  ],
+  "start": "Click to play",
+  "resume": "Paused. Click to resume",
+  "noLock": "Your browser will not lock the mouse. Hold a button and drag to look.",
+  "respawn": "Click to respawn at the SBR",
+  "sbrSign": "Samuel Butler Room - I2, First Court",
+  "sbrSign2": "TV with a Wii, pool table, piano, board games",
+  "blocks": ["Planks", "Stone", "Dirt", "Grass", "Leaves", "TNT"],
+  "welcome": [
+    "You spawn outside the SBR, I2 First Court. The Wii is inside. You cannot get inside.",
+    "Hint: creepers have no respect for Grade I listed buildings."
+  ],
+  "facts": [
+    "The Samuel Butler Room was founded in 1960, for St John's postgraduates.",
+    "The SBR room is in the corner of First Court: TV with a Wii, board games, a pool table, a piano and a small kitchen.",
+    "Samuel Butler studied at St John's from 1854 to 1858. He would have hated creepers.",
+    "BA Table is on Tuesdays and Fridays in term. Port & Sherry follows on Fridays, GBP1.50.",
+    "The Graduate Study Room (GSR) is at 1 All Saints Passage.",
+    "The Bridge of Sighs was built in 1831 by Henry Hutchinson. It is not blast rated.",
+    "Your University Card opens both the SBR and the postgraduate study room.",
+    "The SBR address: The Samuel Butler Room, St John's College, CB2 1TP."
+  ],
+  "deaths": {
+    "creeper": [
+      "You were blown up by a creeper. The Domestic Bursar would like a word.",
+      "A creeper redeveloped you without planning permission.",
+      "You were blown up by a creeper. It did not pay for formal either."
+    ],
+    "zombie": [
+      "You were caught by Zombie {name} ({role}). They wanted to talk about the AGM.",
+      "Zombie {name} ({role}) got you. Committee meetings run long.",
+      "You were slain by Zombie {name}, {role}, with a minuted motion."
+    ],
+    "fall": ["You hit the ground too hard. Health and safety will be in touch."]
+  },
+  "zombieDown": [
+    "Zombie {name} ({role}) has resigned from the committee.",
+    "You defeated Zombie {name} ({role}). They will be back by the next election.",
+    "Zombie {name} ({role}) has gone to BA Table instead."
+  ],
+  "zombieGreet": [
+    "Brains... and a quorum...",
+    "Have you paid your UPay...",
+    "Come to the SBR...",
+    "Port and sherry... Fridays...",
+    "Nominations are open..."
+  ],
+  "porters": [
+    "The Porters' Lodge has been notified of damage to a listed building.",
+    "A porter writes: please stop removing the college one block at a time.",
+    "The Fabric Committee has convened an emergency meeting.",
+    "Historic England is typing..."
+  ],
+  "billLabel": "Damage to listed buildings"
+}

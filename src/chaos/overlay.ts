@@ -7,6 +7,7 @@ const CSS = `
 .chaos-overlay iframe{flex:1;border:0;width:100%;height:100%}
 .chaos-overlay .chaos-close{position:absolute;top:.5rem;right:.5rem;z-index:1;width:2.5rem;height:2.5rem;
 border:0;border-radius:50%;background:rgba(255,255,255,.9);color:#000;font:700 1.4rem/1 sans-serif;cursor:pointer}
+.chaos-overlay .chaos-close.labelled{width:auto;height:2.2rem;padding:0 .9rem;border-radius:1.1rem;font-size:.95rem}
 `;
 
 let current: { el: HTMLElement; opener: Element | null; overflow: string } | null = null;
@@ -31,7 +32,8 @@ export function isOpen(): boolean {
   return current !== null;
 }
 
-export function open(slug: string): void {
+// closeLabel replaces the X with a text button.
+export function open(slug: string, closeLabel?: string): void {
   if (current) close();
   injectStyles();
   const el = document.createElement('div');
@@ -47,8 +49,9 @@ export function open(slug: string): void {
   const x = document.createElement('button');
   x.type = 'button';
   x.className = 'chaos-close';
-  x.setAttribute('aria-label', 'Close game');
-  x.textContent = '×';
+  x.setAttribute('aria-label', closeLabel ?? 'Close game');
+  x.textContent = closeLabel ?? '×';
+  if (closeLabel) x.classList.add('labelled');
   x.addEventListener('click', close);
 
   el.append(iframe, x);

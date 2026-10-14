@@ -1,13 +1,15 @@
 ---
-// Game roster (photo members with face crops), as JSON for client code.
+// Game roster (photo members with face crops), as JSON for client code. `full` adds slug and bio.
 import { getRoster } from '../chaos/shared/faces';
 
-const roster = (await getRoster()).map(({ name, role, face, cutout }) => ({
-  name,
-  role,
-  face,
-  cutout,
-}));
+interface Props {
+  full?: boolean;
+}
+const { full = false } = Astro.props;
+
+const roster = (await getRoster()).map(({ slug, name, role, bio, face, cutout }) =>
+  full ? { slug, name, role, bio, face, cutout } : { name, role, face, cutout },
+);
 // Escape < so text cannot close the script tag.
 const json = roster.length ? JSON.stringify(roster).replace(/</g, '\\u003c') : null;
 ---
