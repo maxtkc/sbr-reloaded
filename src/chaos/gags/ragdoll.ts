@@ -130,6 +130,8 @@ export default function ragdoll(): (() => void) | void {
       if (isPaused()) w.Matter.Runner.stop(w.runner);
       return w;
     });
+    // A failed load is retried on the next drop.
+    loading.catch(() => (loading = null));
     return loading;
   }
 
