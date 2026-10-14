@@ -1,4 +1,4 @@
-// Flat inline SVG tiles for the image challenge. The fox tile holds a cat underneath and morphs into it.
+// Flat inline SVG tiles for the image challenge. The fox tile morphs into a cat.
 
 export interface Tile {
   label: string;
@@ -9,26 +9,18 @@ export interface Tile {
 const svg = (body: string, bg: string) =>
   `<svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" fill="${bg}"/>${body}</svg>`;
 
-// Ears are shared and shrink; the fox and cat faces crossfade on top of them.
+// One face whose features tween from fox to cat: each path holds the fox shape in `d`, and `.cap-morph` swaps in the
+// cat shape via CSS `d` (same commands, so browsers that support it interpolate).
 const FOX = svg(
-  `<g class="cap-ears">
-    <polygon class="cap-fur" points="16,50 26,8 46,34"/><polygon class="cap-fur" points="84,50 74,8 54,34"/>
-    <polygon fill="#3a2418" points="23,40 27,18 38,33"/><polygon fill="#3a2418" points="77,40 73,18 62,33"/>
-  </g>
-  <g class="cap-fox">
-    <polygon class="cap-fur" points="12,38 88,38 76,66 50,94 24,66"/>
-    <polygon fill="#fff" points="18,52 50,94 82,52 50,70"/>
-    <ellipse cx="35" cy="50" rx="5" ry="3" fill="#1d1a17"/><ellipse cx="65" cy="50" rx="5" ry="3" fill="#1d1a17"/>
-    <circle cx="50" cy="88" r="5" fill="#1d1a17"/>
-  </g>
-  <g class="cap-cat">
-    <circle class="cap-fur" cx="50" cy="60" r="34"/>
-    <ellipse cx="50" cy="74" rx="14" ry="10" fill="#e8e2da"/>
-    <circle cx="37" cy="54" r="6" fill="#9bc53d"/><circle cx="63" cy="54" r="6" fill="#9bc53d"/>
-    <ellipse cx="37" cy="54" rx="1.6" ry="5" fill="#1d1a17"/><ellipse cx="63" cy="54" rx="1.6" ry="5" fill="#1d1a17"/>
-    <polygon fill="#e58fa0" points="46,68 54,68 50,73"/>
-    <path d="M44 74 20 70M44 76 20 80M56 74 80 70M56 76 80 80" stroke="#1d1a17" stroke-width="1.2"/>
-  </g>`,
+  `<path class="cap-fur cap-earl" d="M16 50 L26 8 L46 34 Z"/><path class="cap-fur cap-earr" d="M84 50 L74 8 L54 34 Z"/>
+  <path class="cap-inner cap-inl" d="M23 40 L27 18 L38 33 Z"/><path class="cap-inner cap-inr" d="M77 40 L73 18 L62 33 Z"/>
+  <path class="cap-fur cap-head" d="M12 38 C25 38 37 38 50 38 C63 38 75 38 88 38 C84 50 70 80 50 94 C30 80 16 50 12 38 Z"/>
+  <path class="cap-mask" d="M18 52 C29 66 40 80 50 94 C60 80 71 66 82 52 C71 58 61 64 50 70 C39 64 29 58 18 52 Z"/>
+  <path class="cap-eye cap-eyel" d="M29 48 C32 44 38 46 41 51 C37 53 31 52 29 48 Z"/>
+  <path class="cap-eye cap-eyer" d="M71 48 C68 44 62 46 59 51 C63 53 69 52 71 48 Z"/>
+  <ellipse class="cap-pupil" cx="37" cy="54" rx="1.6" ry="5"/><ellipse class="cap-pupil" cx="63" cy="54" rx="1.6" ry="5"/>
+  <path class="cap-nose" d="M45 87 C45 82 55 82 55 87 C55 92 50 93 50 93 C50 93 45 92 45 87 Z"/>
+  <path class="cap-whiskers" d="M44 74 20 70M44 76 20 80M56 74 80 70M56 76 80 80"/>`,
   '#cfe3c1',
 );
 

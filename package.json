@@ -17,11 +17,13 @@
     "astro": "^7.3.8",
     "kaplay": "^3001.0.19",
     "matter-js": "^0.20.0",
-    "rrule": "^2.8.1"
+    "rrule": "^2.8.1",
+    "three": "^0.186.1"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
     "@types/matter-js": "^0.20.2",
+    "@types/three": "^0.186.0",
     "prettier": "^3.9.10",
     "prettier-plugin-astro": "^1.1.1",
     "svgo": "^4.1.0",

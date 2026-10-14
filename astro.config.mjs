@@ -11,6 +11,10 @@ export default defineConfig({
   site: 'https://maxtkc.github.io',
   base,
   trailingSlash: 'ignore',
+  vite: {
+    // Pre-bundle deps that are only reached through dynamic imports, so dev does not re-optimize mid-session.
+    optimizeDeps: { include: ['matter-js', 'kaplay', 'three'] },
+  },
   markdown: {
     processor: unified({
       rehypePlugins: [

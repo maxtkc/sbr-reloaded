@@ -5,12 +5,12 @@ import { games } from '../../chaos/registry';
 export function getStaticPaths() {
   return Object.entries(games).map(([slug, game]) => ({
     params: { slug },
-    props: { title: game.title },
+    props: { title: game.title, closeLabel: game.closeLabel },
   }));
 }
 
 const { slug } = Astro.params;
-const { title } = Astro.props;
+const { title, closeLabel } = Astro.props;
 ---
 
-<GameLayout title={title} slug={slug} />
+<GameLayout title={title} slug={slug} closeLabel={closeLabel} />

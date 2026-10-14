@@ -1,0 +1,22 @@
+{
+  "opening": "A long time ago in a college far, far away....",
+  "logoSmall": "The Samuel Butler Room presents",
+  "logo": "FRESHERS' GUIDE",
+  "logoYear": "2026-2027",
+  "episodes": {
+    "Welcome": "A NEW COHORT",
+    "Introduction to the SBR": "THE ROOM AT I2 FIRST COURT",
+    "Arriving in Cambridge": "THE TRAIN STRIKES BACK",
+    "College Life": "RETURN OF THE BA TABLE",
+    "Cambridge": "THE BIKE MENACE",
+    "Checklists": "ATTACK OF THE TO-DO LIST",
+    "About Samuel Butler": "A NEW ZEALAND HOPE"
+  },
+  "end": [
+    "THE END",
+    "Port & Sherry: Fridays after hall, GBP1.50.",
+    "The saga continues at the Freshers' Fortnight."
+  ],
+  "hint": "Up/Down or scroll: speed. Left/Right: episode. Space: pause. Tap or hold to speed up.",
+  "touchHint": "Tap to speed up. Hold to fast forward."
+}

@@ -57,14 +57,32 @@ animation:cap-rot calc(.8s * var(--cap-slow)) linear infinite}
 .cap-tile.cap-on svg{transform:scale(.82)}
 .cap-tile.cap-on::after{content:"";position:absolute;top:.3rem;left:.3rem;width:1.3rem;height:1.3rem;border-radius:50%;
 background:#4a90e2 no-repeat center/70% url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1 5l3 3 5-6' fill='none' stroke='white' stroke-width='1.6'/%3E%3C/svg%3E")}
-.cap-fur{fill:#d9622b;transition:fill calc(3s * var(--cap-slow)) ease-in-out}
-.cap-ears{transform-box:view-box;transform-origin:50px 50px;transition:transform calc(3s * var(--cap-slow)) ease-in-out}
-.cap-fox,.cap-cat{transition:opacity calc(3s * var(--cap-slow)) ease-in-out}
-.cap-cat{opacity:0}
+.cap-tile path,.cap-tile ellipse{--cap-t:calc(3s * var(--cap-slow)) ease-in-out;
+transition:d var(--cap-t),fill var(--cap-t),opacity var(--cap-t),transform var(--cap-t)}
+.cap-fur{fill:#d9622b}
+.cap-inner{fill:#3a2418}
+.cap-mask{fill:#fff}
+.cap-eye,.cap-pupil{fill:#1d1a17}
+.cap-nose{fill:#1d1a17}
+.cap-pupil{opacity:0;transform-box:fill-box;transform-origin:center;transform:scaleY(0)}
+.cap-whiskers{fill:none;stroke:#1d1a17;stroke-width:1.2;opacity:0;transform-box:fill-box;transform-origin:center;
+transform:scaleX(.2)}
 .cap-morph .cap-fur{fill:#8a8580}
-.cap-morph .cap-ears{transform:scale(.85,.75)}
-.cap-morph .cap-fox{opacity:0}
-.cap-morph .cap-cat{opacity:1}
+.cap-morph .cap-inner{fill:#e58fa0}
+.cap-morph .cap-mask{fill:#e8e2da}
+.cap-morph .cap-eye{fill:#9bc53d}
+.cap-morph .cap-nose{fill:#e58fa0}
+.cap-morph .cap-pupil{opacity:1;transform:none}
+.cap-morph .cap-whiskers{opacity:1;transform:none}
+.cap-morph .cap-earl{d:path("M18 46 L24 16 L46 32 Z")}
+.cap-morph .cap-earr{d:path("M82 46 L76 16 L54 32 Z")}
+.cap-morph .cap-inl{d:path("M24 40 L27 22 L38 32 Z")}
+.cap-morph .cap-inr{d:path("M76 40 L73 22 L62 32 Z")}
+.cap-morph .cap-head{d:path("M16 60 C16 41.2 31.2 26 50 26 C68.8 26 84 41.2 84 60 C84 78.8 68.8 94 50 94 C31.2 94 16 78.8 16 60 Z")}
+.cap-morph .cap-mask{d:path("M36 74 C36 79.5 42.3 84 50 84 C57.7 84 64 79.5 64 74 C64 68.5 57.7 64 50 64 C42.3 64 36 68.5 36 74 Z")}
+.cap-morph .cap-eyel{d:path("M31 54 C31 46 43 46 43 54 C43 62 31 62 31 54 Z")}
+.cap-morph .cap-eyer{d:path("M69 54 C69 46 57 46 57 54 C57 62 69 62 69 54 Z")}
+.cap-morph .cap-nose{d:path("M46 68 C48 68 52 68 54 68 C53 70 51 72 50 73 C49 72 47 70 46 68 Z")}
 .cap-foot{display:flex;align-items:center;gap:.5rem;padding:.6rem;border-top:1px solid #e4e4e4}
 .cap-msg{flex:1;font-size:.85rem;color:#c0392b;min-height:1.2em}
 .cap-btn{border:0;border-radius:.2rem;background:#4a90e2;color:#fff;font:600 .9rem var(--sans,sans-serif);

@@ -1,0 +1,35 @@
+{
+  "intro": "Tap, click or press Space to flap",
+  "subtitle": "The crest eagle has slipped its chain. Fly it over Cambridge.",
+  "labels": {
+    "chapel": "Chapel",
+    "gate": "Great Gate",
+    "cloud": "Cambridge drizzle",
+    "ground": "The Backs"
+  },
+  "milestones": [1, 3, 5, 8, 12, 16, 20, 25, 30, 40, 50],
+  "facts": [
+    "The Samuel Butler Room was founded in 1960.",
+    "Samuel Butler studied at St John's from 1854 to 1858.",
+    "The SBR room is at I2, First Court.",
+    "The GSR is at 1 All Saints Passage.",
+    "BA Table: Tuesdays and Fridays in term.",
+    "Port & Sherry: Fridays after hall, GBP1.50.",
+    "The SBR room has a TV with a Wii, a pool table and a piano.",
+    "St John's was founded in 1511 by Lady Margaret Beaufort.",
+    "The eagle is the emblem of St John the Evangelist.",
+    "The Chapel is by George Gilbert Scott, finished in 1869.",
+    "Swaps run with Balliol, Trinity College Dublin, Ghislieri and Uppsala.",
+    "Post: The Samuel Butler Room, St John's College, CB2 1TP."
+  ],
+  "deaths": [
+    "The porters would like a word.",
+    "Flying over the grass is a fineable offence.",
+    "The eagle has landed. Badly.",
+    "Crown handed in to Lost Property.",
+    "You have been gated.",
+    "Please report this via the anonymous welfare form.",
+    "The heraldry committee is disappointed.",
+    "Wings are decorative, apparently."
+  ]
+}

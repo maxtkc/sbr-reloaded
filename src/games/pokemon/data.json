@@ -1,0 +1,190 @@
+{
+  "intro": [
+    "Welcome to the world of Pocket Johnians!",
+    "This map is real: it is drawn from OpenStreetMap, 4 metres to a tile.",
+    "You are standing in First Court, outside the Samuel Butler Room (I2).",
+    "Find the committee. Avoid tall grass. Never walk on the lawns, the porters are watching."
+  ],
+  "controls": "Arrows/WASD move, Space/Z talk, X back",
+  "touchControls": "D-pad moves, A talks, B goes back",
+  "you": "POSTGRAD",
+  "youLevel": 4,
+  "wildIntro": "A wild {name} appeared!",
+  "fightPrompt": "What will POSTGRAD do?",
+  "menu": ["FIGHT", "BAG", "SBR", "RUN"],
+  "moves": [
+    {
+      "name": "CITE YOURSELF",
+      "lines": [
+        "It's super effective!",
+        "Your h-index rises by 0.01.",
+        "Nobody checks the reference."
+      ]
+    },
+    {
+      "name": "MENTION FUNDING",
+      "lines": [
+        "Everyone in range looks sad.",
+        "Your stipend flinches.",
+        "A grant officer appears and leaves."
+      ]
+    },
+    {
+      "name": "ASK EXTENSION",
+      "lines": [
+        "Your tutor's signature is required.",
+        "It's not very effective.",
+        "The deadline moves one day. Backwards."
+      ]
+    },
+    {
+      "name": "QUOTE BUTLER",
+      "lines": [
+        "\"Life is the art of drawing sufficient conclusions from insufficient premises.\"",
+        "Samuel Butler studied here 1854-58. It shows.",
+        "Erewhon is confused. So is the foe."
+      ]
+    }
+  ],
+  "bag": [
+    "You find a crumpled UPay receipt. You take 3 damage from looking at it.",
+    "You find a gown. You put it on. It is for BA Table, which is Tuesdays and Fridays.",
+    "You find a draft chapter. You put it back.",
+    "You find GBP1.50. That is exactly enough for Port & Sherry on Friday.",
+    "You find a punt pole. It does not fit in the bag. It never did."
+  ],
+  "sbr": [
+    "You call the SBR committee. They are at BA Table. You feel slightly better.",
+    "The Welfare Officers send a biscuit. HP restored!",
+    "The SBR room has a pool table, a piano and a TV with a Wii. You think about them. HP restored!",
+    "The President promises to raise it with College. HP restored, eventually."
+  ],
+  "runFail": [
+    "Can't escape! The Great Gate is locked after midnight.",
+    "Can't escape! You tried to cut across the grass.",
+    "Can't escape! Your supervisor has your location."
+  ],
+  "runOk": "Got away safely!",
+  "youFaint": "POSTGRAD blacked out! You wake up in the SBR, slightly poorer.",
+  "factPrefix": "Real info: ",
+  "encounters": [
+    {
+      "name": "PORTER",
+      "kind": "porter",
+      "hp": 40,
+      "intro": "It adjusts its bowler hat.",
+      "attacks": ["KEEP OFF GRASS", "STERN LOOK", "INCIDENT REPORT"],
+      "taunts": [
+        "Is that your bike, sir?",
+        "Lawns are for Fellows.",
+        "I'll be informing your tutor."
+      ],
+      "win": "The porter returns to the Lodge to fill in a form about you.",
+      "flee": "The porter writes down your name anyway.",
+      "fact": "The Porters' Lodge is at the Great Gate, phone 01223 338671."
+    },
+    {
+      "name": "TOURIST",
+      "kind": "tourist",
+      "hp": 30,
+      "intro": "It is blocking the entire passage for a photo.",
+      "attacks": ["SELFIE STICK", "STOP SUDDENLY", "ASK FOR HARRY POTTER"],
+      "taunts": [
+        "Is this Oxford?",
+        "Can I go inside? It says private.",
+        "Where is the Mathematical Bridge?"
+      ],
+      "win": "The tourist leaves for the Bridge of Sighs. Everyone does.",
+      "flee": "The tourist photographs you leaving.",
+      "fact": "The Bridge of Sighs was built in 1831, designed by Henry Hutchinson."
+    },
+    {
+      "name": "GOOSE",
+      "kind": "goose",
+      "hp": 55,
+      "intro": "It has no natural predators on the Backs.",
+      "attacks": ["HONK", "HISS", "WING SLAP"],
+      "taunts": ["HONK.", "HONK!", "Hhhhhhsssss."],
+      "win": "The goose waddles off. It will remember this.",
+      "flee": "The goose wins. The goose always wins.",
+      "fact": "The SBR is the graduate society of St John's, founded in 1960."
+    },
+    {
+      "name": "PUNT TOUT",
+      "kind": "tout",
+      "hp": 35,
+      "intro": "It has a laminated leaflet and no fear.",
+      "attacks": ["SPECIAL OFFER", "FOLLOW YOU", "BLOCK BRIDGE"],
+      "taunts": [
+        "Punting today?",
+        "Student price, just for you.",
+        "The tour goes past the Bridge of Sighs!"
+      ],
+      "win": "The tout finds a coach party instead.",
+      "flee": "The tout lowers the price. You are already gone.",
+      "fact": "College punts run from the Cripps Porters' Lodge, Easter Term to October, GBP8/hour."
+    },
+    {
+      "name": "SUPERVISOR",
+      "kind": "supervisor",
+      "hp": 70,
+      "intro": "It has read your draft.",
+      "attacks": ["TRACK CHANGES", "\"QUICK CHAT\"", "MOVE GOALPOSTS"],
+      "taunts": [
+        "Just a few small comments.",
+        "Have you seen this 1987 paper?",
+        "Let's discuss it at 8am."
+      ],
+      "win": "The supervisor goes on sabbatical. For a year.",
+      "flee": "The supervisor sends a follow-up email.",
+      "fact": "Your College tutor can help with problems with your supervisor."
+    }
+  ],
+  "portalBroken": [
+    "A glowing portal hums next to the SBR's TV with a Wii.",
+    "The portal fizzles. Something blocky is still loading."
+  ],
+  "portalOpen": "The portal pulls you in...",
+  "labelBuildings": {
+    "St John's College Chapel": "Chapel",
+    "St John's College Library": "Library",
+    "Old Library": "Old Library",
+    "Buttery and Kitchen": "Buttery",
+    "Old Divinity School": "Old Divinity School",
+    "Cripps Building": "Cripps",
+    "Fisher Building (St John's College)": "Fisher Building",
+    "Merton Hall": "Merton Hall",
+    "School of Pythagoras": "School of Pythagoras",
+    "Round Church": "Round Church",
+    "Cambridge Union Society": "Cambridge Union",
+    "Trinity College Chapel": "Trinity Chapel",
+    "Kettle's Yard Gallery": "Kettle's Yard"
+  },
+  "labelExtra": [
+    {
+      "name": "Great Gate",
+      "lon": 0.117864,
+      "lat": 52.207821
+    },
+    {
+      "name": "Hall",
+      "lon": 0.117282,
+      "lat": 52.208142
+    },
+    {
+      "name": "SBR",
+      "lon": 0.11767,
+      "lat": 52.207681
+    },
+    {
+      "name": "GSR",
+      "lon": 0.119255,
+      "lat": 52.207801
+    }
+  ],
+  "labelRename": {
+    "St John's College Playing Fields": "Playing Fields",
+    "Saint John's Punt Pool": "Punt Pool",
+    "Queen's Road (shared-use path)": ""
+  }
+}

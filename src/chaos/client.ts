@@ -1,6 +1,7 @@
 // Page runtime: starts enabled gags and turns game triggers into overlay launches.
 import { gags, games } from './registry';
 import { open } from './overlay';
+import { url } from '../lib/url';
 
 // Finds the registered game a clicked element belongs to, if any.
 function gameFor(target: Element): string | undefined {
@@ -20,10 +21,19 @@ document.addEventListener(
     if (!slug) return;
     e.preventDefault();
     e.stopImmediatePropagation();
-    open(slug);
+    open(slug, games[slug].closeLabel);
   },
   true,
 );
+
+// Opens a game straight away on its autoOpen page.
+const here = location.pathname.replace(/\/$/, '');
+for (const [slug, game] of Object.entries(games)) {
+  if (game.autoOpen && url(game.autoOpen).replace(/\/$/, '') === here) {
+    open(slug, game.closeLabel);
+    break;
+  }
+}
 
 for (const [id, gag] of Object.entries(gags)) {
   if (!gag.enabled) continue;

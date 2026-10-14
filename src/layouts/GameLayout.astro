@@ -1,12 +1,14 @@
 ---
 // Shared shell for /games/<slug>: title bar, close/back, touch guard, and game start/cleanup.
+import RosterData from '../components/RosterData.astro';
 import { url } from '../lib/url';
 
 interface Props {
   title: string;
   slug: string;
+  closeLabel?: string;
 }
-const { title, slug } = Astro.props;
+const { title, slug, closeLabel } = Astro.props;
 ---
 
 <!doctype html>
@@ -22,8 +24,12 @@ const { title, slug } = Astro.props;
   <body>
     <header class="bar">
       <h1>{title}</h1>
-      <a class="close" href={url('/')} aria-label="Close game">
-        &times;
+      <a
+        class:list={['close', { labelled: closeLabel }]}
+        href={url('/')}
+        aria-label={closeLabel ?? 'Close game'}
+      >
+        {closeLabel ?? '\u00d7'}
       </a>
     </header>
     <main id="game-root" data-slug={slug}></main>
@@ -36,6 +42,7 @@ const { title, slug } = Astro.props;
         </p>
       </div>
     </template>
+    <RosterData full />
   </body>
 </html>
 
@@ -74,6 +81,12 @@ const { title, slug } = Astro.props;
     font-size: 1.8rem;
     line-height: 1;
     padding: 0 0.3rem;
+  }
+  .close.labelled {
+    font-size: 0.95rem;
+    border: 1px solid #fff;
+    border-radius: 1rem;
+    padding: 0.25rem 0.75rem;
   }
   /* The parent overlay draws its own X when embedded. */
   .embed .close {

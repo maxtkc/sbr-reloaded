@@ -1,0 +1,75 @@
+{
+  "start": {
+    "lon": 0.117543,
+    "lat": 52.207944
+  },
+  "portal": {
+    "lon": 0.117426,
+    "lat": 52.207873
+  },
+  "npcs": [
+    {
+      "slug": "soleh-anderlini",
+      "lon": 0.117602,
+      "lat": 52.208016,
+      "place": "the SBR, I2 First Court",
+      "line": "The SBR room is right here. Pool, piano, Wii. Mind the portal."
+    },
+    {
+      "slug": "alexander-corbett",
+      "lon": 0.116666,
+      "lat": 52.207981,
+      "place": "the Buttery",
+      "line": "That walk cost you GBP0.40 on UPay. I've checked."
+    },
+    {
+      "slug": "laura-li-yu",
+      "lon": 0.119187,
+      "lat": 52.207837,
+      "place": "the GSR, All Saints Passage",
+      "line": "The GSR is at 1 All Saints Passage. Drink some water. And mind the bikes."
+    },
+    {
+      "slug": "luke-hodgkiss",
+      "lon": 0.117719,
+      "lat": 52.20834,
+      "place": "the Chapel",
+      "line": "I am taking minutes of this conversation."
+    },
+    {
+      "slug": "audrey-chan",
+      "lon": 0.115958,
+      "lat": 52.208386,
+      "place": "the Bridge of Sighs",
+      "line": "Built in 1831. Still sighing."
+    },
+    {
+      "slug": "marina-rodriguez-lopez",
+      "lon": 0.115606,
+      "lat": 52.208016,
+      "place": "Kitchen Bridge",
+      "line": "Best view of the Bridge of Sighs. Tourists know it too."
+    },
+    {
+      "slug": "merve-gulmus",
+      "lon": 0.116839,
+      "lat": 52.20852,
+      "place": "the Library",
+      "line": "Grad talks happen before BA Table. Come and heckle politely."
+    },
+    {
+      "slug": "davide-rosetti",
+      "lon": 0.114256,
+      "lat": 52.208016,
+      "place": "the Backs",
+      "line": "Cycle, don't drive. Also, do not cycle on this grass."
+    },
+    {
+      "slug": "tea-milanovic",
+      "lon": 0.118013,
+      "lat": 52.208448,
+      "place": "the Forecourt",
+      "line": "Follow @samuelsroom on Instagram. I am contractually obliged."
+    }
+  ]
+}
