@@ -6,3 +6,4 @@ package-lock.json
 src/data/osm.geojson
 src/data/tilemap.json
 src/data/voxels.json
+src/data/flight.json
