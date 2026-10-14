@@ -1,0 +1,19 @@
+---
+// Copy for the ragdoll gag: validated joke file, as JSON for client code.
+import { getEntry } from 'astro:content';
+import { z } from 'astro/zod';
+
+const lines = z.array(z.string()).min(1);
+const schema = z.object({
+  arrivals: lines,
+  grabbed: lines,
+  flung: lines,
+});
+
+const entry = await getEntry('jokes', 'ragdoll');
+const data = entry ? schema.parse(entry.data) : null;
+// Escape < so text cannot close the script tag.
+const json = data ? JSON.stringify(data).replace(/</g, '\\u003c') : null;
+---
+
+{json && <script type="application/json" id="ragdoll-data" set:html={json} />}
