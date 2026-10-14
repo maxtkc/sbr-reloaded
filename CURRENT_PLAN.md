@@ -329,9 +329,22 @@ src/games/<slug>/        index.ts (export default start(root: HTMLElement): () =
   errors) and iPhone emulation (no canvas). Pause/resume was not exercised: no game is registered yet to open the
   overlay.
 
-## Phase 12 - Gag: 3-minute ragdoll  `[ ]`
+## Phase 12 - Gag: 3-minute ragdoll  `[x]`
 - After 180s on any page (and every 180s after), a Matter.js ragdoll with a random roster face drops from the top
   into a full-viewport overlay world, lands on the viewport bottom, can be grabbed and flung. Cap count (~5).
+- Notes: `src/chaos/gags/ragdoll.ts`, copy in `src/content/jokes/ragdoll.yaml` (`arrivals`, `grabbed`, `flung`;
+  validated by `RagdollData.astro`), faces from `#roster-data`. A 1s interval counts seconds only while not paused and
+  the tab is visible; every 180 drops a doll. matter-js loads (via `startMatter`, no renderer) on the first drop. World:
+  floor at the viewport bottom, tall side walls, no ceiling; rebuilt on resize. Doll = head circle, torso, upper/lower
+  arms and legs joined by length-0 constraints, one collision group per doll. Red blazer, blue trousers, face image on
+  the head with a gold ring, drawn on one `pointer-events: none` canvas. Grab: capture-phase `pointerdown` hit-tests the
+  dolls (`Query.point`) and drags with a constraint; release keeps the velocity (clamped to avoid tunneling). The click
+  after a drag is swallowed in window capture, so links under a doll do not fire. Non-passive `touchstart` blocks
+  scrolling only on a doll hit. Hover shows a grab cursor. Speech bubble follows the head: an `arrivals` line on first
+  landing, `grabbed` 1 in 3, `flung` 1 in 2 on a fast release. Cap 5 (oldest removed). Pause stops the runner and
+  draw loop. Reduced motion halves `timeScale`. Verified in headless Chromium at 1280px and iPhone emulation with a
+  sped-up interval (drop, landing, bubble, grab cursor, drag and fling, link click unaffected, pile, no horizontal
+  scroll, no page errors). Pause/resume not exercised: still no game registered.
 
 ## Phase 13 - Gag: gravity collapse  `[ ]`
 - Reaching the bottom of the page converts visible elements (leaf-ish blocks: headings, paragraphs, cards, images,

@@ -3,6 +3,7 @@ import animatedLogo from './gags/animated-logo';
 import assistant from './gags/assistant';
 import captcha from './gags/captcha';
 import pong from './gags/pong';
+import ragdoll from './gags/ragdoll';
 
 export interface Gag {
   enabled: boolean;
@@ -32,6 +33,7 @@ export const gags: Record<string, Gag> = {
   assistant: { enabled: true, init: () => assistant(config.assistantMatcher) },
   captcha: { enabled: true, init: captcha },
   pong: { enabled: true, init: pong },
+  ragdoll: { enabled: true, init: ragdoll },
 };
 
 export const games: Record<string, Game> = {};
