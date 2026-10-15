@@ -1,7 +1,8 @@
 // Gravity collapse: reaching the bottom of the page turns the visible blocks into physics bodies that fall and pile
-// up on the page bottom. Fallen blocks stay fallen and can be dragged and flung. Reload restores the page.
+// up on the page bottom. Fallen blocks can be dragged and flung until "Call the Porters" flies them back into place.
 import type MatterNS from 'matter-js';
 import { isPaused, onPause, onResume } from '../bus';
+import { found as foundEgg } from '../eggs';
 import { startMatter, type MatterWorld } from '../shared/matter';
 import { blip, boom } from '../shared/sfx';
 
@@ -10,6 +11,8 @@ interface Block {
   body: MatterNS.Body;
   w: number;
   h: number;
+  // Page position of the original's centre.
+  home: { x: number; y: number };
 }
 
 // Elements taken whole as one body.
@@ -17,7 +20,7 @@ const ATOMS =
   'h1,h2,h3,h4,h5,h6,p,li,img,svg,picture,video,canvas,button,input,select,textarea,figure,blockquote,pre,table,dt,dd,label,hr,.card';
 // Elements that never fall: chaos UI, fallen clones and their hidden originals.
 const SKIP =
-  '.sbot,.cap,.pong-crack,.pong-score,.pong-bubble,.chaos-overlay,.rr,.rd-canvas,.rd-bubble,.gv-layer,.gv-gone,script,style,template,noscript,iframe';
+  '.sbot,.cap,.pong-crack,.pong-score,.pong-bubble,.chaos-overlay,.rr,.rd-canvas,.rd-bubble,.gv-layer,.gv-gone,.gv-porters,.gv-toast,.eggs-toggle,.eggs-list,script,style,template,noscript,iframe';
 // Elements that get no fallback background.
 const MEDIA = 'img,svg,picture,video,canvas';
 // Logical box properties dropped from a clone root.
@@ -46,11 +49,22 @@ const HARD = 10;
 const DRAG_SLOP = 6;
 // Delay before scroll position counts, so restored scroll on reload does not collapse the page.
 const SETTLE = 1000;
+// Flight time of one block back to its home, and the delay between block launches, in ms.
+const FLY = 600;
+const STAGGER = 15;
+const TOAST = 'The Porters have tidied up. Please keep off the grass.';
 
 const CSS = `
 .gv-layer{position:absolute;left:0;top:0;overflow:hidden;pointer-events:none;z-index:2147479000}
 .gv-gone,.gv-gone *{visibility:hidden!important}
 .gv-grabbing,.gv-grabbing *{cursor:grabbing!important;user-select:none!important}
+.gv-porters,.gv-toast{position:absolute;left:50%;transform:translateX(-50%);z-index:2147480000;
+font:600 .95rem/1.2 var(--sans,system-ui,sans-serif);border-radius:999px;white-space:nowrap;
+box-shadow:0 4px 14px rgba(0,0,0,.3)}
+.gv-porters{padding:.6rem 1.2rem;border:2px solid var(--accent-light,#ff6b7d);background:var(--accent,#c8102e);
+color:#fff;cursor:pointer}
+.gv-porters:hover{background:var(--accent-dark,#8f0b20)}
+.gv-toast{padding:.6rem 1.2rem;background:var(--primary,#1b2a4a);color:#fff;transition:opacity .4s}
 `;
 
 const transparent = (c: string) => c === 'transparent' || /^rgba\(.*,\s*0\)$/.test(c);
@@ -71,7 +85,7 @@ function backdrop(el: Element): string {
     const bg = getComputedStyle(n).backgroundColor;
     if (!transparent(bg)) return bg;
   }
-  return '#fbf8f2';
+  return '#f6f7fa';
 }
 
 // True if el has text and only inline children.
@@ -145,6 +159,12 @@ export default function gravity(): (() => void) | void {
   let lastBoom = 0;
   let wasAtBottom = true;
   let collapsing = false;
+  let restoring = false;
+  let porters: HTMLButtonElement | null = null;
+  // Page y of the topmost fallen element below the header, clamped to the header bottom.
+  let topY = 0;
+  let toast: HTMLElement | null = null;
+  let toastTimer = 0;
   let drag: {
     block: Block;
     constraint: MatterNS.Constraint;
@@ -315,6 +335,11 @@ export default function gravity(): (() => void) | void {
       buildWalls();
       // Clone everything before hiding anything, so later rects are not affected.
       const made = found.map((el) => ({ el, ...makeClone(el) }));
+      const header = document.querySelector('.site-header');
+      const below = made.filter((m) => !header?.contains(m.el)).map((m) => m.y - m.h / 2);
+      // Kept below the sticky header, which can cover the top of the topmost element.
+      const headerBottom = (header?.getBoundingClientRect().bottom ?? 0) + scrollY;
+      topY = Math.max(headerBottom, below.length ? Math.min(...below) : 0);
       for (const m of made) {
         m.el.classList.add('gv-gone');
         layer.append(m.clone);
@@ -326,17 +351,98 @@ export default function gravity(): (() => void) | void {
           { friction: 0.5, frictionAir: 0.01, restitution: 0.1 },
         );
         Matter.Body.setAngularVelocity(body, (Math.random() - 0.5) * 0.04);
-        const block = { el: m.clone, body, w: m.w, h: m.h };
+        const block = { el: m.clone, body, w: m.w, h: m.h, home: { x: m.x, y: m.y } };
         blocks.push(block);
         byEl.set(m.clone, block);
         Matter.Composite.add(engine.world, body);
         place(block);
       }
       boom(90, 0.2);
+      foundEgg('gravity');
+      showPorters();
       if (!raf && !isPaused()) raf = requestAnimationFrame(frame);
     } finally {
       collapsing = false;
     }
+  }
+
+  // Pins el on the page where the topmost fallen element below the header was.
+  function mount(el: HTMLElement) {
+    el.style.top = `${topY + 16}px`;
+    document.body.append(el);
+  }
+
+  function showPorters() {
+    if (porters) return;
+    porters = document.createElement('button');
+    porters.type = 'button';
+    porters.className = 'gv-porters';
+    porters.textContent = 'Call the Porters';
+    porters.addEventListener('click', () => void restore());
+    mount(porters);
+  }
+
+  function showToast(text: string) {
+    clearTimeout(toastTimer);
+    toast?.remove();
+    toast = document.createElement('div');
+    toast.className = 'gv-toast';
+    toast.setAttribute('role', 'status');
+    toast.textContent = text;
+    mount(toast);
+    toastTimer = window.setTimeout(() => {
+      toast!.style.opacity = '0';
+      toastTimer = window.setTimeout(() => (toast?.remove(), (toast = null)), 400);
+    }, 3500);
+  }
+
+  // Flies every block from its resting place back to its home, last fallen first, then shows the originals again.
+  async function restore() {
+    if (restoring || collapsing || !mw || !blocks.length) return;
+    restoring = true;
+    release();
+    porters?.remove();
+    porters = null;
+    const { Matter, engine } = mw;
+    cancelAnimationFrame(raf);
+    raf = 0;
+    Matter.Composite.remove(
+      engine.world,
+      blocks.map((b) => b.body),
+    );
+    const flights = [...blocks].reverse().map((b, i) => {
+      const { x, y } = b.body.position;
+      // Shortest turn back to upright.
+      const a = Math.atan2(Math.sin(b.body.angle), Math.cos(b.body.angle));
+      return { b, x, y, a, start: i * STAGGER };
+    });
+    if (!slow) {
+      blip();
+      await new Promise<void>((done) => {
+        const t0 = performance.now();
+        const end = flights.length ? flights.at(-1)!.start + FLY : 0;
+        function tick(now: number) {
+          const t = now - t0;
+          for (const f of flights) {
+            const k = Math.min(1, Math.max(0, (t - f.start) / FLY));
+            const e = 1 - (1 - k) ** 3;
+            const x = f.x + (f.b.home.x - f.x) * e;
+            const y = f.y + (f.b.home.y - f.y) * e;
+            f.b.el.style.transform = `translate(${x - f.b.w / 2}px,${y - f.b.h / 2}px) rotate(${f.a * (1 - e)}rad)`;
+          }
+          if (t < end) requestAnimationFrame(tick);
+          else done();
+        }
+        requestAnimationFrame(tick);
+      });
+    }
+    for (const b of blocks) b.el.remove();
+    blocks.length = 0;
+    byEl.clear();
+    for (const el of document.querySelectorAll('.gv-gone')) el.classList.remove('gv-gone');
+    blip();
+    showToast(TOAST);
+    restoring = false;
   }
 
   function place(b: Block) {
@@ -355,13 +461,13 @@ export default function gravity(): (() => void) | void {
     const bottom = atBottom();
     const arrived = bottom && !wasAtBottom;
     wasAtBottom = bottom;
-    if (!arrived || performance.now() < settled) return;
+    if (!arrived || restoring || performance.now() < settled) return;
     if (isPaused() || document.querySelector('.cap')) return;
     collapse().catch((err) => console.error('gravity collapse failed', err));
   }
 
   function onPointerDown(e: PointerEvent) {
-    if (e.button !== 0 || drag || !mw || isPaused()) return;
+    if (e.button !== 0 || drag || restoring || !mw || isPaused()) return;
     const el = e.target instanceof Element ? e.target.closest('.gv-clone') : null;
     const block = el && byEl.get(el);
     if (!block) return;
@@ -439,7 +545,7 @@ export default function gravity(): (() => void) | void {
   const offResume = onResume(() => {
     if (!mw) return;
     mw.Matter.Runner.run(mw.runner, mw.engine);
-    if (blocks.length) raf = requestAnimationFrame(frame);
+    if (blocks.length && !restoring) raf = requestAnimationFrame(frame);
   });
 
   return () => {
@@ -455,6 +561,9 @@ export default function gravity(): (() => void) | void {
     offResume();
     document.documentElement.classList.remove('gv-grabbing');
     for (const el of document.querySelectorAll('.gv-gone')) el.classList.remove('gv-gone');
+    clearTimeout(toastTimer);
+    porters?.remove();
+    toast?.remove();
     mw?.stop();
     layer?.remove();
     style.remove();
