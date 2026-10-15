@@ -740,10 +740,18 @@ off the plate onto the tray
 - After 10 minutes on the page a shallow band of water rises at the bottom and the dolls float in it (buoyancy plus
   drag below the waterline, light bobbing, wave drawn on the canvas).
 
-### Phase 36 - Logo hover frenzy  `[ ]`
-- Hovering the hero arms speeds up and exaggerates every loop in `animated-logo.ts` (faster timers, bigger amplitudes,
-  shake). After 10 s of continuous hover the logo explodes: parts fly apart (WAAPI or Matter), `boom()`, and it
-  reassembles after a while. Touch: long press counts as hover.
+### Phase 36 - Logo movement frenzy  `[x]`
+- The hero arms are still at rest. Pointer movement over them drives the animation: more movement, more animation
+  (more frequent, bigger, faster loops in `animated-logo.ts`, plus a shake). Moving fast enough makes the logo
+  explode: parts fly apart, `boom()`, and it reassembles after a while.
+- Notes: pointer travel over the SVG adds energy (`GAIN` per px, gaps over 100ms ignored) that decays with a 600ms
+  time constant, so steady movement at v px/ms holds about `v * 0.48`. Each frame every idle motion plays with a
+  chance proportional to energy over its `every` delay; amplitude (0.6x to 2.5x) and playback rate (1x to 2.5x) scale
+  with energy, and above 0.35 the SVG jitters via CSS `translate`/`rotate`. Energy 1 (a hard scribble, about 2 px/ms)
+  explodes it: each leaf `g[data-part]` flies away from the arms' centre with a random spin (WAAPI, 700ms), holds
+  1.5s, then flies back. The rAF loop only runs while there is energy. The explosion counts as the "Exploding arms"
+  easter egg. Touch: dragging over the logo counts as movement. Verified in headless Chromium (no animations at
+  rest, gentle wiggle ramps up, scribble explodes and reassembles, no horizontal scroll).
 
 ### Phase 37 - Layout width cleanup  `[x]`
 - Header nav, hero title (`Hero.astro` `max-width: 34rem`) and body text (`global.css` `46rem` prose, `.wrap`
@@ -754,6 +762,30 @@ off the plate onto the tray
   Header still fits one row at 900px; at 860px and below it stacks as before. The gallery lightbox caption keeps
   its 46rem cap (it sits in a modal). Verified home, history, freshers and quick-links at 375/860/900/1280px, no
   horizontal scroll.
+
+### Phase 38 - Corner pong  `[x]`
+- Pong starts from a hidden trigger instead of any edge.
+- Notes: the cursor must rest in a viewport corner (24px zone) for 500ms; the rally starts on the nearer of the two
+  edges. Leaving the corner, leaving the window or a bus pause cancels the timer.
+
+### Phase 39 - Navy theme  `[x]`
+- Navy with red accents instead of red with gold.
+- Notes: tokens are `--primary`/`--primary-dark`/`--primary-light` (navy `#1b2a4a`) and
+  `--accent`/`--accent-dark`/`--accent-light` (red `#c8102e`; light red for text on navy). Neutrals are cool greys.
+  Chaos UI hex colours follow the palette. The arms SVGs and in-game palettes are unchanged.
+
+### Phase 40 - Call the Porters  `[x]`
+- After the gravity collapse a button puts the page back.
+- Notes: "Call the Porters" sits on the page just under the nav bar, where the topmost fallen element below the
+  header was. Clicking it removes the bodies and tweens each clone home (last fallen first, 600ms, 15ms stagger),
+  then shows the originals and a toast in the same spot ("The Porters have tidied up. Please keep off the grass.").
+  The page can collapse again on the next arrival at the bottom.
+
+### Phase 41 - Easter egg counter  `[x]`
+- Footer "n/N Easter Eggs found"; clicking it lists every egg and whether it has been found.
+- Notes: `src/chaos/eggs.ts` stores found ids in localStorage (`sbr-eggs`) and fires `chaos:egg`. Eggs are gags with
+  an `egg` name in `registry.ts` plus every registered game (`eggList()`); a game counts when its overlay opens.
+  `src/chaos/egg-counter.ts` renders the button and a `<dialog>` list in `SiteFooter.astro`.
 
 ## Verification (whole project)
 - `npm run build` clean; `npm run preview` and walk every trigger in the egg table.

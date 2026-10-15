@@ -1,14 +1,15 @@
 :root {
-  --red: #a3162b;
-  --red-dark: #7a0f1f;
-  --gold: #d1b948;
-  --gold-dark: #806600;
-  --blue: #1f3d7a;
-  --ink: #1d1a17;
-  --muted: #5d564e;
-  --paper: #fbf8f2;
+  --primary: #1b2a4a;
+  --primary-dark: #0f1a30;
+  --primary-light: #3a5a8c;
+  --accent: #c8102e;
+  --accent-dark: #8f0b20;
+  --accent-light: #ff6b7d;
+  --ink: #161b26;
+  --muted: #545c6b;
+  --paper: #f6f7fa;
   --card: #ffffff;
-  --line: #e4dccd;
+  --line: #dde2ea;
   --serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
   --sans: 'Source Sans 3', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --radius: 10px;
@@ -42,7 +43,7 @@ h4 {
   font-family: var(--serif);
   font-weight: 700;
   line-height: 1.15;
-  color: var(--red-dark);
+  color: var(--primary-dark);
   margin: 1.4em 0 0.5em;
 }
 
@@ -60,11 +61,11 @@ h4 {
 }
 
 a {
-  color: var(--red);
+  color: var(--primary);
   text-underline-offset: 0.15em;
 }
 a:hover {
-  color: var(--red-dark);
+  color: var(--primary-dark);
 }
 
 [hidden] {
@@ -85,7 +86,7 @@ img {
   padding: 3.5rem 0;
 }
 .section:nth-of-type(even) {
-  background: #f4efe4;
+  background: #eef1f6;
 }
 .section > .wrap > h2:first-child {
   margin-top: 0;
@@ -96,7 +97,7 @@ img {
   width: 3rem;
   height: 3px;
   margin-top: 0.4rem;
-  background: var(--gold);
+  background: var(--accent);
 }
 
 .prose li + li {
@@ -113,25 +114,25 @@ img {
   align-items: center;
   gap: 0.4em;
   padding: 0.55em 1.1em;
-  border: 2px solid var(--red);
+  border: 2px solid var(--primary);
   border-radius: 999px;
-  background: var(--red);
+  background: var(--primary);
   color: #fff;
   font: 600 0.95rem var(--sans);
   text-decoration: none;
   cursor: pointer;
 }
 .btn:hover {
-  background: var(--red-dark);
-  border-color: var(--red-dark);
+  background: var(--primary-dark);
+  border-color: var(--primary-dark);
   color: #fff;
 }
 .btn.secondary {
   background: transparent;
-  color: var(--red);
+  color: var(--primary);
 }
 .btn.secondary:hover {
-  background: var(--red);
+  background: var(--primary);
   color: #fff;
 }
 .btn-row {
@@ -161,7 +162,7 @@ img {
   display: inline-block;
   padding: 0.1em 0.6em;
   border-radius: 999px;
-  background: var(--blue);
+  background: var(--primary-light);
   color: #fff;
   font-size: 0.75rem;
   font-weight: 600;

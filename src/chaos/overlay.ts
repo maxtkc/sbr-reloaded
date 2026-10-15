@@ -1,6 +1,7 @@
 // Full-viewport iframe overlay for /games/<slug>?embed=1. One at a time.
 import { url } from '../lib/url';
 import { pause, resume } from './bus';
+import { found } from './eggs';
 
 const CSS = `
 .chaos-overlay{position:fixed;inset:0;z-index:2147483000;background:#000;display:flex}
@@ -35,6 +36,7 @@ export function isOpen(): boolean {
 // closeLabel replaces the X with a text button.
 export function open(slug: string, closeLabel?: string): void {
   if (current) close();
+  found(slug);
   injectStyles();
   const el = document.createElement('div');
   el.className = 'chaos-overlay';

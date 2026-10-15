@@ -1,5 +1,6 @@
 // Samuel Butler joins the committee as the last card. His email link opens an in-page rickroll.
 import { pause, resume } from '../bus';
+import { found } from '../eggs';
 
 const EMAIL = 'sb1835@cam.ac.uk';
 const BIO = "Wrote Erewhon. Left St John's in 1858 and has not been to an event since.";
@@ -17,7 +18,8 @@ background:rgba(255,255,255,.95);color:#000;font:700 1.4rem/1 sans-serif;cursor:
 export default function butler(): (() => void) | void {
   const list = document.querySelector<HTMLElement>('#committee .members');
   const source =
-    list?.querySelector<HTMLElement>('.member:has(.placeholder)') ?? list?.querySelector<HTMLElement>('.member');
+    list?.querySelector<HTMLElement>('.member:has(.placeholder)') ??
+    list?.querySelector<HTMLElement>('.member');
   if (!list || !source) return;
 
   const style = document.createElement('style');
@@ -64,6 +66,7 @@ export default function butler(): (() => void) | void {
 
   function open() {
     if (modal) return;
+    found('butler');
     modal = document.createElement('div');
     modal.className = 'rr';
     modal.setAttribute('role', 'dialog');

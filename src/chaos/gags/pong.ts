@@ -1,6 +1,7 @@
-// Pong edges: touching a viewport edge with the cursor starts a rally against a committee face on the opposite
-// edge. A missed ball flies into a random visible element and cracks it.
+// Pong edges: resting the cursor in a viewport corner starts a rally along the nearer edge against a committee face
+// on the opposite edge. A missed ball flies into a random visible element and cracks it.
 import { isPaused, onPause, onResume } from '../bus';
+import { found } from '../eggs';
 import { beep, blip, boom } from '../shared/sfx';
 
 interface Data {
@@ -17,8 +18,10 @@ interface Member {
 
 type Edge = 'top' | 'bottom' | 'left' | 'right';
 
-// Distance from an edge that starts a rally, in px.
-const TRIGGER = 20;
+// Size of the corner zone that starts a rally, in px.
+const CORNER = 24;
+// Time the cursor must rest in a corner, in ms.
+const CAMP = 500;
 const COOLDOWN = 1000;
 const INSET = 4;
 const THICK = 10;
@@ -28,20 +31,21 @@ const MAX_CRACKS = 25;
 // Elements a missed ball can smash.
 const TARGETS = 'h1,h2,h3,p,li,img,figure,blockquote,button,.card';
 // Chaos UI that never gets smashed.
-const SKIP = '.sbot,.cap,.pong-crack,.pong-score,.pong-bubble,.chaos-overlay,.rr,.gv-layer,.gv-gone';
+const SKIP =
+  '.sbot,.cap,.pong-crack,.pong-score,.pong-bubble,.chaos-overlay,.rr,.gv-layer,.gv-gone,.gv-porters,.gv-toast,.eggs-toggle,.eggs-list';
 
 const CSS = `
 .pong-canvas{position:fixed;inset:0;z-index:2147481000;pointer-events:none;display:none}
 .pong-score{position:fixed;left:1rem;bottom:1rem;z-index:2147481000;pointer-events:none;
-font:700 .9rem/1 var(--sans,system-ui,sans-serif);color:#fff;background:var(--blue,#1f3d7a);
-border:2px solid var(--gold,#d1b948);border-radius:.3rem;padding:.4rem .6rem;display:none}
+font:700 .9rem/1 var(--sans,system-ui,sans-serif);color:#fff;background:var(--primary-light,#3a5a8c);
+border:2px solid var(--accent,#c8102e);border-radius:.3rem;padding:.4rem .6rem;display:none}
 .pong-bubble{position:fixed;z-index:2147481000;pointer-events:none;max-width:14rem;background:#fff;color:#1d1a17;
-font:400 .85rem/1.3 var(--sans,system-ui,sans-serif);border:2px solid var(--red,#a3162b);border-radius:.6rem;
+font:400 .85rem/1.3 var(--sans,system-ui,sans-serif);border:2px solid var(--primary,#1b2a4a);border-radius:.6rem;
 padding:.4rem .6rem;box-shadow:0 4px 12px rgba(0,0,0,.25)}
 .pong-crack{position:absolute;pointer-events:none;z-index:2147482500;overflow:hidden}
 .pong-crack svg{position:absolute;inset:0;width:100%;height:100%}
 .pong-crack span{position:absolute;transform:translate(-50%,-50%) rotate(-6deg);white-space:nowrap;
-font:700 .75rem/1 var(--sans,system-ui,sans-serif);color:#fff;background:var(--red,#a3162b);padding:.25rem .4rem;
+font:700 .75rem/1 var(--sans,system-ui,sans-serif);color:#fff;background:var(--accent,#c8102e);padding:.25rem .4rem;
 border-radius:.2rem;opacity:.9}
 `;
 
@@ -254,6 +258,7 @@ export default function pong(): (() => void) | void {
   }
 
   function startRally(edge: Edge) {
+    found('pong');
     const member = pick(roster!);
     const img = new Image();
     img.src = member.face;
@@ -383,9 +388,9 @@ export default function pong(): (() => void) | void {
     ctx.stroke();
     ctx.setLineDash([]);
 
-    paddle(r.edge, playerU(r.edge), INSET, '#1f3d7a');
+    paddle(r.edge, playerU(r.edge), INSET, '#3a5a8c');
     // AI paddle is gold on the top edge, where red clashes with the header.
-    const aiColor = r.edge === 'bottom' ? '#d1b948' : '#a3162b';
+    const aiColor = r.edge === 'bottom' ? '#c8102e' : '#1b2a4a';
     paddle(r.edge, r.ai, D - INSET - THICK, aiColor);
 
     // AI face just inside its paddle.
@@ -400,7 +405,7 @@ export default function pong(): (() => void) | void {
       ctx.drawImage(r.img, fx - FACE, fy - FACE, FACE * 2, FACE * 2);
     }
     ctx.restore();
-    ctx.strokeStyle = '#d1b948';
+    ctx.strokeStyle = '#c8102e';
     ctx.lineWidth = 3;
     ctx.beginPath();
     ctx.arc(fx, fy, FACE, 0, Math.PI * 2);
@@ -419,7 +424,7 @@ export default function pong(): (() => void) | void {
     }
     ctx.beginPath();
     ctx.arc(bx, by, rad, 0, Math.PI * 2);
-    ctx.fillStyle = '#d1b948';
+    ctx.fillStyle = '#c8102e';
     ctx.fill();
     ctx.strokeStyle = '#1d1a17';
     ctx.lineWidth = 2;
@@ -436,6 +441,8 @@ export default function pong(): (() => void) | void {
     raf = requestAnimationFrame(frame);
   }
 
+  let camp = 0;
+
   function onMove(e: MouseEvent) {
     mx = e.clientX;
     my = e.clientY;
@@ -447,8 +454,19 @@ export default function pong(): (() => void) | void {
       ['top', my],
       ['bottom', H - my],
     ];
-    const [edge, gap] = gaps.reduce((a, b) => (b[1] < a[1] ? b : a));
-    if (gap <= TRIGGER && gap >= 0) startRally(edge);
+    const near = gaps.filter(([, gap]) => gap >= 0 && gap <= CORNER);
+    if (near.length < 2) return cancelCamp();
+    if (camp) return;
+    const [edge] = near.reduce((a, b) => (b[1] < a[1] ? b : a));
+    camp = window.setTimeout(() => {
+      camp = 0;
+      if (!rally && !isPaused()) startRally(edge);
+    }, CAMP);
+  }
+
+  function cancelCamp() {
+    clearTimeout(camp);
+    camp = 0;
   }
 
   function onResize() {
@@ -457,8 +475,10 @@ export default function pong(): (() => void) | void {
   }
 
   document.addEventListener('mousemove', onMove, { passive: true });
+  document.addEventListener('mouseleave', cancelCamp);
   addEventListener('resize', onResize);
   const offPause = onPause(() => {
+    cancelCamp();
     cancelAnimationFrame(raf);
     canvas.style.display = 'none';
     if (bubble) bubble.style.display = 'none';
@@ -474,6 +494,8 @@ export default function pong(): (() => void) | void {
   return () => {
     endRally();
     document.removeEventListener('mousemove', onMove);
+    document.removeEventListener('mouseleave', cancelCamp);
+    cancelCamp();
     removeEventListener('resize', onResize);
     offPause();
     offResume();
