@@ -87,7 +87,8 @@ collections:
     identifier_field: name
     summary: '{{order}}. {{name}} - {{role}}'
     sortable_fields: [order, name]
-    media_folder: ../../assets/committee
+    # Absolute media_folder so the CMS finds the files; public_folder keeps the paths Astro's image() expects.
+    media_folder: /src/assets/committee
     public_folder: ../../assets/committee
     fields:
       - { name: name, label: Name, widget: string }
@@ -118,7 +119,7 @@ collections:
           widget: boolean,
           default: false,
           required: false,
-          hint: 'Only for members with a photo.',
+          hint: 'Needs a photo and face crops in src/assets/faces (made by scripts/faces/faces.py); members without crops are skipped.',
         }
       - { name: bio, label: Bio, widget: text, required: false }
 
@@ -203,7 +204,7 @@ collections:
     identifier_field: alt
     summary: '{{alt}}'
     sortable_fields: [order, date]
-    media_folder: ../../assets/gallery
+    media_folder: /src/assets/gallery
     public_folder: ../../assets/gallery
     fields:
       - { name: image, label: Image, widget: image }
@@ -248,20 +249,181 @@ collections:
       - { name: caption, label: Caption, widget: string, required: false }
       - { name: order, label: Order, widget: number, value_type: int, default: 0, required: false }
 
+  # Copy for the gags; each file is read by key, so entries are fixed.
   - name: jokes
-    label: Jokes
-    label_singular: Joke list
-    folder: src/content/jokes
-    extension: yaml
-    format: yaml
-    create: true
-    slug: '{{title}}'
-    identifier_field: title
-    fields:
-      - { name: title, label: Title, widget: string }
-      - {
-          name: lines,
-          label: Lines,
-          widget: list,
-          field: { name: line, label: Line, widget: text },
-        }
+    label: Gag text
+    label_singular: Gag text
+    description: Joke lines used by the site's gags (assistant, captcha, pong, ragdoll).
+    files:
+      - name: assistant
+        label: AI assistant (Solbee)
+        file: src/content/jokes/assistant.yaml
+        format: yaml
+        fields:
+          - { name: name, label: Name, widget: string }
+          - {
+              name: greeting,
+              label: Greetings,
+              widget: list,
+              min: 1,
+              field: { name: line, label: Line, widget: string },
+            }
+          - {
+              name: thinking,
+              label: Thinking messages,
+              widget: list,
+              min: 1,
+              field: { name: line, label: Line, widget: string },
+            }
+          - {
+              name: nudges,
+              label: Nudges,
+              widget: list,
+              min: 1,
+              field: { name: line, label: Line, widget: string },
+            }
+          - {
+              name: fallbacks,
+              label: Fallback replies,
+              widget: list,
+              min: 1,
+              field: { name: line, label: Line, widget: string },
+            }
+          - {
+              name: facts,
+              label: Facts,
+              widget: list,
+              min: 1,
+              field: { name: line, label: Line, widget: string },
+            }
+          - name: intents
+            label: Intents
+            widget: list
+            min: 1
+            summary: '{{fields.id}}'
+            fields:
+              - { name: id, label: ID, widget: string }
+              - {
+                  name: keywords,
+                  label: Keywords,
+                  widget: list,
+                  min: 1,
+                  field: { name: keyword, label: Keyword, widget: string },
+                }
+              - {
+                  name: examples,
+                  label: Example questions,
+                  widget: list,
+                  min: 1,
+                  field: { name: line, label: Line, widget: string },
+                }
+              - {
+                  name: replies,
+                  label: Replies,
+                  widget: list,
+                  min: 1,
+                  field: { name: line, label: Line, widget: string },
+                }
+      - name: captcha
+        label: Captcha
+        file: src/content/jokes/captcha.yaml
+        format: yaml
+        fields:
+          - { name: brand, label: Brand, widget: string }
+          - { name: checkbox, label: Checkbox label, widget: string }
+          - {
+              name: hints,
+              label: Hints,
+              widget: list,
+              min: 1,
+              field: { name: line, label: Line, widget: string },
+            }
+          - {
+              name: verifying,
+              label: Verifying messages,
+              widget: list,
+              min: 1,
+              field: { name: line, label: Line, widget: string },
+            }
+          - {
+              name: failures,
+              label: Failure messages,
+              widget: list,
+              min: 1,
+              field: { name: line, label: Line, widget: string },
+            }
+          - { name: giveUp, label: Give up button, widget: string }
+          - {
+              name: siren,
+              label: Siren headlines,
+              widget: list,
+              min: 1,
+              field: { name: line, label: Line, widget: string },
+            }
+          - {
+              name: sirenDetails,
+              label: Siren details,
+              widget: list,
+              min: 1,
+              field: { name: line, label: Line, widget: string },
+            }
+          - {
+              name: letThrough,
+              label: Let-through messages,
+              widget: list,
+              min: 1,
+              field: { name: line, label: Line, widget: string },
+            }
+      - name: pong
+        label: Pong
+        file: src/content/jokes/pong.yaml
+        format: yaml
+        fields:
+          - { name: you, label: Player label, widget: string }
+          - {
+              name: taunts,
+              label: Taunts,
+              widget: list,
+              min: 1,
+              field: { name: line, label: Line, widget: string },
+            }
+          - {
+              name: excuses,
+              label: Excuses,
+              widget: list,
+              min: 1,
+              field: { name: line, label: Line, widget: string },
+            }
+          - {
+              name: smashes,
+              label: Smash messages,
+              widget: list,
+              min: 1,
+              field: { name: line, label: Line, widget: string },
+            }
+      - name: ragdoll
+        label: Ragdoll
+        file: src/content/jokes/ragdoll.yaml
+        format: yaml
+        fields:
+          - {
+              name: arrivals,
+              label: Arrival lines,
+              widget: list,
+              min: 1,
+              field: { name: line, label: Line, widget: string },
+            }
+          - {
+              name: grabbed,
+              label: Grabbed lines,
+              widget: list,
+              min: 1,
+              field: { name: line, label: Line, widget: string },
+            }
+          - {
+              name: flung,
+              label: Flung lines,
+              widget: list,
+              min: 1,
+              field: { name: line, label: Line, widget: string },
+            }

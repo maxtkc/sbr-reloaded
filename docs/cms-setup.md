@@ -64,7 +64,7 @@ Commit and push to `main`, then wait for the "Deploy to GitHub Pages" action to 
 
 1. Open https://maxtkc.github.io/sbr-reloaded/admin/
 2. Click "Sign In with GitHub", then "Authorize" in the popup.
-3. The sidebar lists Events, Committee, Page text, Quick links, Gallery, Instagram posts, Jokes.
+3. The sidebar lists Events, Committee, Page text, Quick links, Gallery, Instagram posts, Gag text.
 
 Test: open an event, change one word, click Save. A commit `cms: update events "..."` appears on `main` and the
 site redeploys.
@@ -97,3 +97,9 @@ PRs opened by the workflow do not trigger other workflows (GitHub rule for `GITH
 
 Settings, Collaborators, "Add people", enter their GitHub username (personal-account repos give collaborators write
 access, no role to pick). They accept the email invite, then log in at `/admin` as in step 5. Only people with Write access can log in to the CMS or add the `approved` label.
+
+## 8. Committee members in games
+
+"Appears in games" also needs face crops at `src/assets/faces/<slug>.png` and `<slug>.cutout.png`. The CMS cannot
+make them; run `scripts/faces/faces.py` after adding the photo and commit the output. Members without crops are
+skipped.
