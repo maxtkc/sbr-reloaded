@@ -1,0 +1,139 @@
+{
+  "title": "Bumps: Redcoats",
+  "subtitle": "Lady Margaret on the Cam. Catch the boat ahead before the boat behind catches you.",
+  "controls": "Each oar has its own key, shuffled every race. Press a key to pull that oar. Pull both sides together or the boat turns.",
+  "start": "Press any oar key to sit ready",
+  "restart": "Space, Enter or click to race again",
+  "keys": "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+  "width": 26,
+  "finish": 880,
+  "course": [
+    [-120, 0],
+    [0, 0],
+    [40, 0],
+    [75, -10],
+    [110, -22],
+    [170, -24],
+    [215, -14],
+    [250, 6],
+    [285, 22],
+    [340, 26],
+    [400, 22],
+    [450, 12],
+    [478, -6],
+    [505, -24],
+    [550, -32],
+    [620, -32],
+    [700, -28],
+    [770, -20],
+    [830, -14],
+    [880, -14],
+    [1000, -14]
+  ],
+  "stations": [
+    {
+      "at": 0,
+      "name": "Baitsbite Lock",
+      "fact": "In the bumps, crews start in a line, one and a half lengths apart, and set off together on the gun."
+    },
+    {
+      "at": 75,
+      "name": "First Post Corner",
+      "fact": "A bump is any contact between your boat and the boat ahead. Both crews then pull in to the bank."
+    },
+    {
+      "at": 250,
+      "name": "Grassy Corner",
+      "fact": "The Lady Margaret Boat Club is the boat club of St John's College, founded in 1825."
+    },
+    {
+      "at": 330,
+      "name": "Plough Reach",
+      "fact": "LMBC rowers wear bright red jackets. The story goes that they were so blazing red they gave us the word blazer."
+    },
+    {
+      "at": 478,
+      "name": "Ditton Corner",
+      "fact": "Bank parties cycle the towpath blowing whistles: one for a length and a half, two for a length, three for half a length, and a long blast when you are about to bump."
+    },
+    {
+      "at": 560,
+      "name": "Long Reach",
+      "fact": "The Lent Bumps are in Lent term. The May Bumps are in June, because Cambridge."
+    },
+    {
+      "at": 770,
+      "name": "Railway Bridge",
+      "fact": "A crew that bumps wears willow in their hair, and the cox carries a sprig back on the boat."
+    },
+    {
+      "at": 880,
+      "name": "Top Finish",
+      "fact": "Early SBR members, in gowns after dinner, 'accidentally' sank passing punts and then retired to the Samuel Butler Room for coffee."
+    }
+  ],
+  "rivals": [
+    { "name": "Jesus", "hull": "#2a2a2a", "kit": "#1a1a1a", "blade": "#b8172b" },
+    { "name": "Caius", "hull": "#d8e4ee", "kit": "#7fb2e0", "blade": "#7fb2e0" },
+    { "name": "First and Third", "hull": "#e8e8e8", "kit": "#1d2a5c", "blade": "#1d2a5c" },
+    { "name": "Downing", "hull": "#d9d0e6", "kit": "#5b2a6e", "blade": "#5b2a6e" },
+    { "name": "Queens'", "hull": "#e0e6dc", "kit": "#1f6b3a", "blade": "#1f6b3a" },
+    { "name": "Emmanuel", "hull": "#dde4f0", "kit": "#2c4a8a", "blade": "#e48cb0" }
+  ],
+  "countdown": ["Four minute gun", "One minute gun", "Come forward to row...", "GO!"],
+  "cox": [
+    "Long and strong, Maggie!",
+    "Sit up, you are Johnians.",
+    "Same time, same oar, same boat, please.",
+    "Somebody is rowing with their eyes shut. Several somebodies.",
+    "Remember why you came to Cambridge. Not for this.",
+    "Breathe. Then pull.",
+    "Bow side, are you with us?",
+    "Stroke side, are you with us?",
+    "Think of the Buttery. Pull for the Buttery.",
+    "This is costing the boat club money."
+  ],
+  "coxClose": [
+    "Half a length! Give me ten!",
+    "I can smell their sun cream. Go!",
+    "Their cox is looking at us. Make them regret it!",
+    "They are crumbling. Do not crumble with them."
+  ],
+  "coxChased": [
+    "Do not look behind you. They are right behind you.",
+    "Bank party says they are gaining. I say pull.",
+    "Somebody has to get bumped today. Make it them."
+  ],
+  "crashes": [
+    "Into the reeds. The swans are judging you.",
+    "Beached. The towpath cyclists applaud ironically.",
+    "That bank was in the plan, apparently.",
+    "Pushing off with an oar. Very traditional.",
+    "The cox would like everyone to know it was not the steering."
+  ],
+  "rivalCrash": "{crew} have hit the bank at {place}!",
+  "bumpLines": [
+    "Willow all round. Somebody tell the Buttery.",
+    "A clean bump. Their cox is putting a brave face on it.",
+    "Contact! Lady Margaret goes up a place."
+  ],
+  "caughtLines": [
+    "{crew} bump you. Your cox raises a hand, very gracious, very sad.",
+    "Bumped. The boat club will be writing to you.",
+    "You go down a place. The bank party pretends not to know you."
+  ],
+  "rowOverLines": [
+    "Rowed over. Nobody caught anybody and everyone is tired.",
+    "You row over. Respectable, which is the worst thing to be in the bumps."
+  ],
+  "prizeTitle": "BUMP!",
+  "prizeHint": "Willow for the crew. Drag a sprig into someone's hair.",
+  "prizeLines": [
+    "{name} ({role}) wears the willow with pride.",
+    "{name} ({role}) now looks like a very successful hedge.",
+    "Willow in the hair of {name}. The {role} portfolio has never looked better.",
+    "{name} ({role}) will be finding leaves until Easter."
+  ],
+  "prizeNoRoster": "Your cox wears the willow with pride.",
+  "again": "Race again"
+}

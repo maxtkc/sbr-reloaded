@@ -65,6 +65,12 @@ export const games: Record<string, Game> = {
     touch: true,
     load: () => import('../games/breakout'),
   },
+  bumps: {
+    title: 'Bumps: Redcoats',
+    trigger: '',
+    touch: false,
+    load: () => import('../games/bumps'),
+  },
   crawl: {
     title: "Freshers' Guide: The Crawl",
     trigger: '',
