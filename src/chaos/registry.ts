@@ -65,6 +65,12 @@ export const games: Record<string, Game> = {
     touch: true,
     load: () => import('../games/breakout'),
   },
+  'bike-dino': {
+    title: 'Bike Dino: Mill Road',
+    trigger: '',
+    touch: true,
+    load: () => import('../games/bike-dino'),
+  },
   crawl: {
     title: "Freshers' Guide: The Crawl",
     trigger: '',
