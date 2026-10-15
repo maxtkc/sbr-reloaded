@@ -2,6 +2,7 @@
 import { gags, games } from './registry';
 import { open } from './overlay';
 import { url } from '../lib/url';
+import './egg-counter';
 
 // Finds the registered game a clicked element belongs to, if any.
 function gameFor(target: Element): string | undefined {

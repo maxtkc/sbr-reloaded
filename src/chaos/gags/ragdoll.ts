@@ -2,6 +2,7 @@
 // viewport bottom and can be grabbed and flung.
 import type MatterNS from 'matter-js';
 import { isPaused, onPause, onResume } from '../bus';
+import { found } from '../eggs';
 import { startMatter, type MatterWorld } from '../shared/matter';
 import { blip, boom } from '../shared/sfx';
 
@@ -36,15 +37,15 @@ const MAX_SPEED = 40;
 // Part speed that counts as a fling or a hard landing.
 const HARD = 14;
 
-const RED = '#a3162b';
-const BLUE = '#1f3d7a';
-const GOLD = '#d1b948';
+const NAVY = '#1b2a4a';
+const LIGHT = '#3a5a8c';
+const RED = '#c8102e';
 const INK = '#1d1a17';
 
 const CSS = `
 .rd-canvas{position:fixed;inset:0;z-index:2147480500;pointer-events:none;display:none}
 .rd-bubble{position:fixed;z-index:2147480600;pointer-events:none;max-width:14rem;background:#fff;color:#1d1a17;
-font:400 .85rem/1.3 var(--sans,system-ui,sans-serif);border:2px solid var(--red,#a3162b);border-radius:.6rem;
+font:400 .85rem/1.3 var(--sans,system-ui,sans-serif);border:2px solid var(--primary,#1b2a4a);border-radius:.6rem;
 padding:.4rem .6rem;box-shadow:0 4px 12px rgba(0,0,0,.25)}
 .rd-grab,.rd-grab *{cursor:grab!important}
 .rd-grabbing,.rd-grabbing *{cursor:grabbing!important;user-select:none!important}
@@ -216,16 +217,16 @@ export default function ragdoll(): (() => void) | void {
       join(thighR, { x: 0, y: 16 }, shinR, { x: 0, y: -15 }),
     ];
     const parts = [
-      { body: thighL, fill: BLUE },
-      { body: thighR, fill: BLUE },
+      { body: thighL, fill: LIGHT },
+      { body: thighR, fill: LIGHT },
       { body: shinL, fill: INK },
       { body: shinR, fill: INK },
-      { body: torso, fill: RED },
-      { body: upperL, fill: RED },
-      { body: upperR, fill: RED },
-      { body: lowerL, fill: RED },
-      { body: lowerR, fill: RED },
-      { body: head, fill: RED },
+      { body: torso, fill: NAVY },
+      { body: upperL, fill: NAVY },
+      { body: upperR, fill: NAVY },
+      { body: lowerL, fill: NAVY },
+      { body: lowerR, fill: NAVY },
+      { body: head, fill: NAVY },
     ];
     const composite = Composite.create();
     Composite.add(composite, [...parts.map((p) => p.body), ...constraints]);
@@ -241,6 +242,7 @@ export default function ragdoll(): (() => void) | void {
     Matter.Body.setAngularVelocity(doll.parts[4].body, (Math.random() - 0.5) * 0.1);
     Matter.Composite.add(engine.world, doll.composite);
     dolls.push(doll);
+    found('ragdoll');
     if (dolls.length > MAX_DOLLS) remove(dolls[0]);
     canvas.style.display = 'block';
     if (!raf && !isPaused()) raf = requestAnimationFrame(frame);
@@ -290,7 +292,7 @@ export default function ragdoll(): (() => void) | void {
         ctx.closePath();
         ctx.fillStyle = fill;
         ctx.fill();
-        ctx.strokeStyle = fill === RED ? GOLD : INK;
+        ctx.strokeStyle = fill === NAVY ? RED : INK;
         ctx.lineWidth = 1.5;
         ctx.stroke();
       }
@@ -300,14 +302,14 @@ export default function ragdoll(): (() => void) | void {
       ctx.rotate(d.head.angle);
       ctx.beginPath();
       ctx.arc(0, 0, HEAD, 0, Math.PI * 2);
-      ctx.fillStyle = RED;
+      ctx.fillStyle = NAVY;
       ctx.fill();
       if (d.img.complete && d.img.naturalWidth) {
         ctx.clip();
         ctx.drawImage(d.img, -HEAD, -HEAD, HEAD * 2, HEAD * 2);
       }
       ctx.restore();
-      ctx.strokeStyle = GOLD;
+      ctx.strokeStyle = RED;
       ctx.lineWidth = 3;
       ctx.beginPath();
       ctx.arc(x, y, HEAD, 0, Math.PI * 2);

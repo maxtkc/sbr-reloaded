@@ -1,5 +1,6 @@
 // Solbee: a floating chat widget that matches what you type to a joke intent and never helps.
 import { onPause, onResume } from '../../bus';
+import { found } from '../../eggs';
 import { blip } from '../../shared/sfx';
 import { embeddingMatcher, keywordMatcher, type Intent, type Matcher } from './match';
 
@@ -15,7 +16,7 @@ interface Data {
 }
 
 const CSS = `
-.sbot{--sbot-red:var(--red,#a3162b);--sbot-gold:var(--gold,#d1b948);--sbot-slow:1;
+.sbot{--sbot-red:var(--primary,#1b2a4a);--sbot-gold:var(--accent,#c8102e);--sbot-slow:1;
 position:fixed;right:1rem;bottom:1rem;z-index:2147482000;font:400 .95rem/1.4 var(--sans,system-ui,sans-serif);color:#1d1a17}
 .sbot-btn{position:relative;width:4rem;height:4rem;border-radius:50%;border:3px solid var(--sbot-gold);padding:0;
 background:var(--sbot-red);cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.3)}
@@ -251,6 +252,7 @@ export default function assistant(matcherType: 'keyword' | 'embedding'): (() => 
     if (!message) return;
     input.value = '';
     say(message, 'me');
+    found('assistant');
     reply(message);
   });
 

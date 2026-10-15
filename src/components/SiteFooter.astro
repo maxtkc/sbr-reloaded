@@ -44,18 +44,26 @@ import { url } from '../lib/url';
       <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>,{' '}
       <a href="https://opendatacommons.org/licenses/odbl/">ODbL</a>.
     </p>
+    <button type="button" class="eggs-toggle" data-eggs hidden></button>
+    <dialog class="eggs-list" aria-labelledby="eggs-title">
+      <h2 id="eggs-title">Easter eggs</h2>
+      <ul></ul>
+      <form method="dialog">
+        <button class="btn">Close</button>
+      </form>
+    </dialog>
   </div>
 </footer>
 
 <style>
   .site-footer {
-    background: var(--ink);
-    color: #e9e3d6;
+    background: var(--primary-dark);
+    color: #e3e8f1;
     padding: 2.5rem 0 1rem;
-    border-top: 4px solid var(--gold);
+    border-top: 4px solid var(--accent);
   }
   .site-footer a {
-    color: var(--gold);
+    color: var(--accent-light);
   }
   .cols {
     display: grid;
@@ -77,9 +85,73 @@ import { url } from '../lib/url';
   .credits {
     margin-top: 2rem;
     padding-top: 1rem;
-    border-top: 1px solid #3b362f;
+    border-top: 1px solid #2a3a5c;
     font-size: 0.85rem;
-    color: #b5ad9e;
+    color: #a7b2c6;
+  }
+  .eggs-toggle {
+    margin-top: 0.5rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--accent-light);
+    font: inherit;
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+    cursor: pointer;
+  }
+  .eggs-list {
+    width: min(26rem, 100% - 2rem);
+    padding: 1.25rem 1.5rem;
+    border: 0;
+    border-top: 4px solid var(--accent);
+    border-radius: var(--radius);
+    color: var(--ink);
+    font-size: 1rem;
+  }
+  .eggs-list::backdrop {
+    background: rgb(15 26 48 / 0.6);
+  }
+  .eggs-list h2 {
+    margin: 0 0 0.75rem;
+  }
+  .eggs-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem;
+  }
+  .eggs-list :global(li) {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.35rem 0;
+    border-bottom: 1px solid var(--line);
+    color: var(--muted);
+  }
+  .eggs-list :global(li)::before {
+    content: '';
+    flex: none;
+    width: 0.8rem;
+    height: 0.8rem;
+    border: 2px solid var(--line);
+    border-radius: 50%;
+  }
+  .eggs-list :global(li.got) {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .eggs-list :global(li.got)::before {
+    border-color: var(--accent);
+    background: var(--accent);
+  }
+  .eggs-list :global(.state) {
+    margin-left: auto;
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: var(--muted);
+  }
+  .eggs-list form {
+    text-align: right;
   }
   @media (max-width: 700px) {
     .cols {

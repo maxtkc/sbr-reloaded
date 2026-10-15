@@ -10,6 +10,8 @@ import ragdoll from './gags/ragdoll';
 
 export interface Gag {
   enabled: boolean;
+  // Name in the footer easter egg list; gags without one are not counted.
+  egg?: string;
   init: () => void | (() => void);
 }
 
@@ -36,15 +38,25 @@ export const config = {
 };
 
 export const gags: Record<string, Gag> = {
-  'animated-logo': { enabled: true, init: animatedLogo },
-  assistant: { enabled: true, init: () => assistant(config.assistantMatcher) },
-  butler: { enabled: true, init: butler },
+  'animated-logo': { enabled: true, egg: 'Exploding arms', init: animatedLogo },
+  assistant: { enabled: true, egg: 'Solbee', init: () => assistant(config.assistantMatcher) },
+  butler: { enabled: true, egg: "Samuel Butler's inbox", init: butler },
   'butler-photos': { enabled: true, init: butlerPhotos },
-  captcha: { enabled: true, init: captcha },
-  gravity: { enabled: true, init: gravity },
-  pong: { enabled: true, init: pong },
-  ragdoll: { enabled: true, init: ragdoll },
+  captcha: { enabled: true, egg: 'Robot check', init: captcha },
+  gravity: { enabled: true, egg: 'Gravity collapse', init: gravity },
+  pong: { enabled: true, egg: 'Corner pong', init: pong },
+  ragdoll: { enabled: true, egg: 'Committee ragdoll', init: ragdoll },
 };
+
+// Every egg in the footer list: named gags, then all games.
+export function eggList(): { id: string; name: string }[] {
+  return [
+    ...Object.entries(gags)
+      .filter(([, g]) => g.enabled && g.egg)
+      .map(([id, g]) => ({ id, name: g.egg! })),
+    ...Object.entries(games).map(([id, g]) => ({ id, name: g.title })),
+  ];
+}
 
 export const games: Record<string, Game> = {
   breakout: {
