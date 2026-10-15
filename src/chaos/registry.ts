@@ -103,6 +103,12 @@ export const games: Record<string, Game> = {
     touch: false,
     load: () => import('../games/minecraft'),
   },
+  pacman: {
+    title: 'Pacman: Fisher Building',
+    trigger: '',
+    touch: true,
+    load: () => import('../games/pacman'),
+  },
   pokemon: {
     title: 'Pocket Johnians',
     trigger: '',

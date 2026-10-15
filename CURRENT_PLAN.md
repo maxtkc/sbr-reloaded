@@ -668,9 +668,30 @@ UPDATE: This should not be formal plate but just dining hall, because that's
 where you get a main and you add your own sides, and try not to get it to spill
 off the plate onto the tray
 
-### Phase 26 - Pacman: Fisher Building  `[ ]`  trigger: Ents / sBrOILER ROOMS | touch: swipe
+### Phase 26 - Pacman: Fisher Building  `[x]`  trigger: Ents / sBrOILER ROOMS | touch: swipe
 - Maze is the Fisher Building; goal is the dancefloor. Bouncers chase while shouting speech bubbles ("Ticket?",
   "Pay on UPay!", "That's GBP1.50"). Collecting a handle of alcohol turns them into ghosts (frightened mode).
+- Notes: `src/games/pacman/{index.ts,data.json}`, registered as `pacman` ("Pacman: Fisher Building") with no extra
+  selector: the Ents card heading (`WhatWeDo.astro`) and the "sBrOILER ROOMS" phrase hook already launch it. Kaplay,
+  immediate-mode drawing like Crossy Road. The maze is a hand-drawn 21x23 ASCII grid in `data.json` (`#` wall, `.`
+  glowstick, `o` handle, `F` dancefloor, `-` velvet rope, `=` security door, `B` bouncer spawns, `P` start, `T`
+  tunnel), no dead ends; `labels` (Dancefloor, Bar, Security, Boiler room, Cloakroom, Entrance) are drawn on the
+  walls. Navy walls with red edges on a dark club floor, dancefloor tiles cycle colours. Goal: eating every
+  glowstick drops the rope ("You're on the list"), and stepping onto the dancefloor clears the level (+500 x level,
+  fanfare, fact) and starts the next with bouncers 8% faster (cap 1.4x). Movement is tile-based with a buffered
+  turn and instant reversal; the player is a random roster face masked to a circle with a chomping mouth. Four
+  bouncers (outlined in red, pink, cyan, orange) use classic scatter/chase phases and targeting (chase, 4 tiles
+  ahead, flank off the first, chase until close then retreat), leave the security room on timers and slow in the
+  tunnel. A handle makes active bouncers frightened (7s, shorter per level, flashing for the last 2s, random turns,
+  half speed); eating one scores 200/400/800/1600 and it returns as eyes to the security room. The nearest active
+  bouncer shouts a `shouts` line in a speech bubble every 2.5-4.5s; a frightened one says a `scared` line. 3 lives,
+  `caught` line on each catch, game over card with best in localStorage `pacman-best`. Facts (Ents, Instagram,
+  Port & Sherry, BA Table, the SBR room, founding) show in a red/gold banner below the maze on each handle and level
+  clear. Controls: arrows/WASD, swipe (drag past ~0.7 tiles, chained while held); any key, click or tap starts and
+  restarts. Reduced motion runs at 0.7x. Verified in headless Chromium: standalone at 1280px (play, bubbles,
+  frightened bouncers, eating one, rope drop and dancefloor win into level 2, being caught, game over, restart),
+  opened from "sBrOILER ROOMS" on `/` with Esc closing it, iPhone emulation (tap start, swipe turns, no horizontal
+  scroll), no page errors. A temporary debug hook used for the checks was removed.
 
 ### Phase 27 - Doodle Jump: porters  `[ ]`  trigger: Port & Sherry | touch: tilt/tap sides
 - Climb up the Chapel tower on platforms (gowns, hall benches, sherry glasses). Porters patrol and shout
