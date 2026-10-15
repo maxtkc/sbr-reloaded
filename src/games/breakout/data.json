@@ -1,0 +1,62 @@
+{
+  "subtitle": "Bridge of Sighs, 1831. Henry Hutchinson built it. You will not.",
+  "restart": "Click, tap or Space to rebuild and go again",
+  "intro": "Drag, move the mouse or use Left/Right to punt. Click, tap or Space to launch",
+  "labels": {
+    "river": "River Cam",
+    "left": "New Court",
+    "right": "Third Court"
+  },
+  "bridge": [
+    "..#...#...#...g...#...#...#..",
+    ".#.#.#.#.#.#.#.#.#.#.#.#.#.#.",
+    ".###########################.",
+    "#############################",
+    "####w####w####w####w####w####",
+    "###www##www##www##www##www###",
+    "###www##www##www##www##www###",
+    "#############################",
+    "#############ggg#############",
+    "##########.........##########",
+    "#######...............#######",
+    "#####...................#####",
+    "###.......................###",
+    "##.........................##"
+  ],
+  "factEvery": 6,
+  "facts": [
+    "The Bridge of Sighs was built in 1831 to a design by Henry Hutchinson.",
+    "It links Third Court to New Court across the Cam.",
+    "It is a Grade I listed building. Please stop hitting it.",
+    "It is named after the Bridge of Sighs in Venice, which it does not much resemble.",
+    "College punts run from the start of Easter Term to the end of October.",
+    "Book College punts from the Cripps Porters' Lodge: GBP8 an hour.",
+    "PuntSoc volunteers who help look after the punts punt for free.",
+    "Grad sports teams can apply for funding to replace balls, clubs and other kit.",
+    "SBR tournaments and casual sport run all year. Everyone is welcome.",
+    "The Samuel Butler Room was founded in 1960.",
+    "Samuel Butler studied at St John's from 1854 to 1858.",
+    "The SBR room is at I2, First Court.",
+    "BA Table: Tuesdays and Fridays in term.",
+    "Port & Sherry: Fridays after hall, GBP1.50."
+  ],
+  "splashes": [
+    "Into the Cam. The tourists applaud.",
+    "Lost the ball. Kept the pole, at least.",
+    "A Grade I listed splash.",
+    "The punt tout on Quayside saw that.",
+    "Please retrieve your ball from the river at your own risk.",
+    "Ducks: 1, Johnians: 0."
+  ],
+  "overs": [
+    "The Domestic Bursar would like a word about the bridge.",
+    "Punt confiscated. Report to the Cripps Porters' Lodge.",
+    "The bridge sighs with relief.",
+    "Listed Building Consent was not obtained."
+  ],
+  "clears": [
+    "Bridge demolished. New Court is now an island.",
+    "Third Court and New Court are no longer on speaking terms.",
+    "The College is rebuilding it. Faster this time."
+  ]
+}

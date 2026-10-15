@@ -45,6 +45,12 @@ export const gags: Record<string, Gag> = {
 };
 
 export const games: Record<string, Game> = {
+  breakout: {
+    title: 'Breakout: Bridge of Sighs',
+    trigger: '',
+    touch: true,
+    load: () => import('../games/breakout'),
+  },
   crawl: {
     title: "Freshers' Guide: The Crawl",
     trigger: '',
@@ -52,6 +58,12 @@ export const games: Record<string, Game> = {
     closeLabel: 'Boring mode',
     autoOpen: '/freshers',
     load: () => import('../games/crawl'),
+  },
+  'crossy-road': {
+    title: 'Crossy Road: GSR to SBR',
+    trigger: '',
+    touch: true,
+    load: () => import('../games/crossy-road'),
   },
   'flappy-eagle': {
     title: 'Flappy Eagle',
@@ -65,6 +77,12 @@ export const games: Record<string, Game> = {
     touch: false,
     load: () => import('../games/flight-sim'),
   },
+  gelato: {
+    title: "Jack's Gelato Stand",
+    trigger: '',
+    touch: true,
+    load: () => import('../games/gelato'),
+  },
   minecraft: {
     title: 'Johncraft',
     trigger: '',
@@ -76,5 +94,11 @@ export const games: Record<string, Game> = {
     trigger: '',
     touch: true,
     load: () => import('../games/pokemon'),
+  },
+  qwop: {
+    title: "QWOP to St John's",
+    trigger: '',
+    touch: false,
+    load: () => import('../games/qwop'),
   },
 };

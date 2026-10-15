@@ -1,0 +1,133 @@
+{
+  "subtitle": "GSR to the SBR. 3 minutes on foot. Nobody has ever made it.",
+  "intro": "Arrows/WASD, tap to hop forward or swipe to hop any way. Reach the SBR at I2, First Court",
+  "restart": "Click, tap or Space to try again from the GSR",
+  "cols": 11,
+  "course": [
+    {
+      "type": "building",
+      "name": "GSR, 1 All Saints Passage",
+      "tiles": "###.#######"
+    },
+    { "type": "pavement", "name": "All Saints Passage", "tiles": "#....#....#", "prop": "bollard" },
+    {
+      "type": "cycle",
+      "name": "All Saints Passage",
+      "traffic": { "kind": "bike", "dir": 1, "speed": 2.6, "gap": [3, 6] }
+    },
+    {
+      "type": "pavement",
+      "name": "All Saints Garden",
+      "tiles": "##..##...##",
+      "prop": "stall"
+    },
+    {
+      "type": "cycle",
+      "name": "Trinity Street",
+      "traffic": { "kind": "bike", "dir": -1, "speed": 3.2, "gap": [2.5, 5] }
+    },
+    {
+      "type": "road",
+      "name": "Trinity Street",
+      "traffic": { "kind": "scooter", "dir": 1, "speed": 3.8, "gap": [4, 8] }
+    },
+    { "type": "pavement", "name": "Outside Heffers", "tiles": "...#.....#.", "prop": "tourist" },
+    {
+      "type": "road",
+      "name": "St John's Street",
+      "traffic": { "kind": "bus", "dir": 1, "speed": 1.9, "gap": [5, 9] }
+    },
+    {
+      "type": "road",
+      "name": "St John's Street",
+      "traffic": { "kind": "scooter", "dir": -1, "speed": 4.4, "gap": [4, 9] }
+    },
+    {
+      "type": "cycle",
+      "name": "St John's Street",
+      "traffic": { "kind": "bike", "dir": 1, "speed": 3.6, "gap": [2, 5] }
+    },
+    {
+      "type": "road",
+      "name": "St John's Street",
+      "traffic": { "kind": "bus", "dir": -1, "speed": 2.3, "gap": [6, 10] }
+    },
+    { "type": "pavement", "name": "Round Church corner", "tiles": ".#.......#.", "prop": "bin" },
+    {
+      "type": "road",
+      "name": "Bridge Street",
+      "traffic": { "kind": "bus", "dir": 1, "speed": 2.6, "gap": [5, 8] }
+    },
+    {
+      "type": "road",
+      "name": "Bridge Street",
+      "traffic": { "kind": "scooter", "dir": -1, "speed": 5, "gap": [3, 7] }
+    },
+    {
+      "type": "cycle",
+      "name": "Bridge Street",
+      "traffic": { "kind": "bike", "dir": -1, "speed": 4, "gap": [1.5, 4] }
+    },
+    {
+      "type": "pavement",
+      "name": "Outside the Great Gate",
+      "tiles": "#.#..#..#.#",
+      "prop": "tourist"
+    },
+    { "type": "gate", "name": "Great Gate", "tiles": "####...####" },
+    { "type": "court", "name": "First Court", "tiles": "..........." },
+    { "type": "court", "name": "First Court", "tiles": "..ggggggg.." },
+    { "type": "court", "name": "First Court", "tiles": "..ggggggg.." },
+    { "type": "goal", "name": "I staircase, First Court", "tiles": "#D#########" }
+  ],
+  "eagleWarn": 6,
+  "eagleTime": 9,
+  "facts": [
+    "The GSR is on the second floor of 1 All Saints Passage, behind the Old Divinity School.",
+    "The GSR is for postgraduates only. Your Cam Card opens the door.",
+    "Cycle lanes in Cambridge are marked in red. Do not stand in them.",
+    "Cycling on the pavement is illegal in Cambridge. The cyclists have not read this.",
+    "Being caught without bike lights at night is a GBP50 fine.",
+    "The U bus is GBP1 with a University Card.",
+    "Buses 1 and 3 run from the station to the city centre.",
+    "Register your bike with the Porters to use the secure shed in Forecourt.",
+    "The SBR is in I staircase, First Court: through the Great Gate and turn left.",
+    "Parcels wait for you at the Great Gate Porters' Lodge.",
+    "The SBR room has a TV with a Wii, a pool table, a piano and board games.",
+    "The Samuel Butler Room was founded in 1960."
+  ],
+  "deaths": {
+    "bike": [
+      "Hit by a bike. It had no lights and no regrets.",
+      "A swarm of NatSci cyclists. They did not ring.",
+      "Flattened by a Dutch bike carrying a cello."
+    ],
+    "scooter": [
+      "A delivery scooter. Your noodles arrived; you did not.",
+      "Hit by a scooter doing 30 in a 20. The food was still warm.",
+      "Run over by your own Deliveroo order."
+    ],
+    "bus": [
+      "Double-decker. The top deck waved.",
+      "The U bus got you. At least it was GBP1.",
+      "The Citi 1 does not stop for postgraduates."
+    ],
+    "lawn": [
+      "A Porter saw you on the grass. Escorted out through the Great Gate.",
+      "Keep off the grass. Only Fellows may walk on the lawn.",
+      "The lawn is for Fellows. You are being written up."
+    ],
+    "eagle": [
+      "The St John's eagle got bored of waiting and carried you off.",
+      "Dawdled too long. The eagle from the crest has taken you to Ely.",
+      "Snatched by the eagle. It has a crown chained round its neck and a grudge."
+    ]
+  },
+  "eagleWarnText": "The eagle is circling. Keep moving.",
+  "wins": [
+    "Made it to the SBR! The Wii is broken. Back to the GSR for your charger.",
+    "SBR reached. Port & Sherry is not until Friday. Off you go again.",
+    "You made it. Someone took the last biscuit. Try again, faster.",
+    "SBR! Then you remembered you left your laptop in the GSR."
+  ]
+}

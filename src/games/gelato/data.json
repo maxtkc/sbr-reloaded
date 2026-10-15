@@ -1,0 +1,204 @@
+{
+  "subtitle": "Seven days on Bene't Street. The queue never ends. Neither do the overheads.",
+  "intro": "Set a price, buy tubs, pick up to 3 flavours, then open the stand. Tap or Space during the day to speed up",
+  "economy": {
+    "startCash": 200,
+    "tubCost": 30,
+    "scoopsPerTub": 30,
+    "pitchFee": 60,
+    "days": 7,
+    "melt": 0.5,
+    "baseCustomers": 140,
+    "capacity": 170,
+    "startPrice": 4.5,
+    "minPrice": 1,
+    "maxPrice": 12
+  },
+  "weekdays": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+  "weather": [
+    {
+      "id": "sunny",
+      "name": "Sunny",
+      "demand": 1.4,
+      "pay": 1.1,
+      "sky": "#8ec9f0",
+      "rain": 0,
+      "sun": true
+    },
+    {
+      "id": "heatwave",
+      "name": "Heatwave (24C, national emergency)",
+      "demand": 2,
+      "pay": 1.25,
+      "sky": "#f2c27a",
+      "rain": 0,
+      "sun": true
+    },
+    {
+      "id": "cloudy",
+      "name": "Cloudy",
+      "demand": 1,
+      "pay": 1,
+      "sky": "#b7c0c8",
+      "rain": 0,
+      "sun": false
+    },
+    {
+      "id": "summer",
+      "name": "Cambridge summer (13C, grey)",
+      "demand": 0.8,
+      "pay": 0.95,
+      "sky": "#a4abb2",
+      "rain": 0,
+      "sun": false
+    },
+    {
+      "id": "drizzle",
+      "name": "Drizzle",
+      "demand": 0.6,
+      "pay": 0.9,
+      "sky": "#8e979f",
+      "rain": 0.4,
+      "sun": false
+    },
+    {
+      "id": "downpour",
+      "name": "Biblical downpour",
+      "demand": 0.3,
+      "pay": 0.8,
+      "sky": "#5f6870",
+      "rain": 1,
+      "sun": false
+    }
+  ],
+  "forecastAccuracy": 0.6,
+  "events": [
+    {
+      "name": "A normal day",
+      "blurb": "Nothing is happening. Suspicious.",
+      "demand": 1,
+      "tourists": 0.3,
+      "coach": false
+    },
+    {
+      "name": "Tourist coachloads",
+      "blurb": "Three coaches from Heathrow have parked on Trumpington Street. They want gelato and a photo of King's.",
+      "demand": 1.6,
+      "tourists": 0.85,
+      "coach": true
+    },
+    {
+      "name": "Exam term",
+      "blurb": "Students are sad. Sad students buy gelato, but only cheap gelato.",
+      "demand": 1.2,
+      "tourists": 0.15,
+      "coach": false
+    },
+    {
+      "name": "May Week (in June)",
+      "blurb": "Everyone is hungover and rich in spirit only.",
+      "demand": 1.4,
+      "tourists": 0.25,
+      "coach": false
+    },
+    {
+      "name": "Open day",
+      "blurb": "Parents are paying. Price accordingly.",
+      "demand": 1.3,
+      "tourists": 0.7,
+      "coach": false
+    },
+    {
+      "name": "Bin day",
+      "blurb": "Bene't Street smells of bins. Nobody can say why this matters, but it does.",
+      "demand": 0.75,
+      "tourists": 0.3,
+      "coach": false
+    },
+    {
+      "name": "Punt tout convention",
+      "blurb": "Two hundred punt touts on their break. They will haggle.",
+      "demand": 1.1,
+      "tourists": 0.1,
+      "coach": false
+    }
+  ],
+  "flavours": [
+    { "name": "Brown Bread & Marmite", "appeal": 0.9 },
+    { "name": "Supervision Tears (salted)", "appeal": 1.0 },
+    { "name": "Port & Sherry Ripple", "appeal": 1.25 },
+    { "name": "Cam Water Sorbet", "appeal": 0.3 },
+    { "name": "Vanilla (rejected by the committee)", "appeal": 1.35 },
+    { "name": "Earl Grey & Existential Dread", "appeal": 1.05 },
+    { "name": "Formal Hall Jus", "appeal": 0.45 },
+    { "name": "Pimm's & Punt Pole", "appeal": 1.15 },
+    { "name": "Chapel Incense", "appeal": 0.55 },
+    { "name": "Goose Egg Custard", "appeal": 0.7 },
+    { "name": "Tripos Fudge", "appeal": 1.2 },
+    { "name": "Burnt Butter & Bursar", "appeal": 0.95 },
+    { "name": "Rhubarb & Rustication", "appeal": 0.85 },
+    { "name": "Lapsang Souchong (bonfire)", "appeal": 0.6 },
+    { "name": "Matriculation Photo Mint", "appeal": 0.8 },
+    { "name": "Pistachio (suspiciously normal)", "appeal": 1.3 },
+    { "name": "Stilton & Pear", "appeal": 0.65 },
+    { "name": "Blood Orange & Bumps", "appeal": 1.1 },
+    { "name": "BA Table Bread Sauce", "appeal": 0.5 },
+    { "name": "Wasabi & Welfare", "appeal": 0.75 },
+    { "name": "Sourdough Crust", "appeal": 0.9 },
+    { "name": "Garden Pea & Mint", "appeal": 0.55 },
+    { "name": "Thesis Deadline Espresso", "appeal": 1.15 },
+    { "name": "Fisher Building Damp", "appeal": 0.35 }
+  ],
+  "bubbles": {
+    "price": [
+      "How much?!",
+      "I could get a BA Table for that",
+      "That's a week of Port & Sherry",
+      "My stipend says no",
+      "I'll just lick the window"
+    ],
+    "queue": [
+      "Is this the queue for King's?",
+      "I'll come back after my PhD",
+      "Not today, Bene't Street",
+      "Longer than the Buttery queue"
+    ],
+    "join": [
+      "Only 30 in the queue? Short for Jack's",
+      "Worth it",
+      "I've queued for less",
+      "Can I sample all of them?"
+    ],
+    "served": ["Lovely", "Life-changing", "Unusual", "It's melting", "Mmm"],
+    "soldOut": ["Sold out?!", "I queued for this", "Typical"],
+    "closing": ["Closed? I was next!", "I'll come back tomorrow. And the next day"],
+    "roster": [
+      "SBR committee, do I get a discount?",
+      "Can I expense this to the SBR?",
+      "I'm here for the minutes",
+      "This counts as an Ent"
+    ]
+  },
+  "reports": [
+    "A tourist photographed the queue and left without buying.",
+    "A supervisor asked for an extension on their cone.",
+    "The Eagle across the road would like its customers back.",
+    "Someone asked if the queue counts as a college society.",
+    "Corpus Christi complained about the noise. The Corpus Clock ate a minute in protest.",
+    "A goose attempted to pay in bread.",
+    "The Bursar walked past and made a note."
+  ],
+  "facts": [
+    "The real SBR is the graduate common room in I2, First Court. No queue, and a pool table.",
+    "Port & Sherry is served in the SBR after hall on Fridays, GBP1.50 a glass.",
+    "BA Table is every Tuesday and Friday in term: one of the three hall tables is reserved for graduates.",
+    "The Graduate Study Room (GSR) is at 1 All Saints Passage.",
+    "The SBR was founded in 1960. The room was named after Samuel Butler in 1958, a century after his graduation.",
+    "The SBR room has a TV with a Wii, board games, a piano and a small kitchen. Bring your own gelato."
+  ],
+  "butteryUrl": "https://universityofcambridgecloud.sharepoint.com/sites/JOHNS_CateringHospitality-team#opening-times",
+  "end": {
+    "week": "Week over. The stand is yours forever, or until the lease review.",
+    "bankrupt": "The Bursar has repossessed your stand. It will be a punt tout booth by Tuesday."
+  }
+}
