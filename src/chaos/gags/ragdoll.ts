@@ -25,10 +25,14 @@ interface Doll {
   // Parts in draw order (head last).
   parts: { body: MatterNS.Body; fill: string }[];
   landed: boolean;
+  // Visible, unpaused seconds since the drop.
+  age: number;
 }
 
 // Seconds on the page between drops.
 const INTERVAL = 180;
+// Seconds on the page before a doll despawns.
+const LIFETIME = 60;
 const MAX_DOLLS = 5;
 const HEAD = 22;
 const WALL = 200;
@@ -233,7 +237,7 @@ export default function ragdoll(): (() => void) | void {
     const member = pick(roster!);
     const img = new Image();
     img.src = member.face;
-    return { member, img, composite, head, parts, landed: false };
+    return { member, img, composite, head, parts, landed: false, age: 0 };
   }
 
   async function drop() {
@@ -253,6 +257,10 @@ export default function ragdoll(): (() => void) | void {
     if (bubble?.doll === d) hideBubble();
     mw!.Matter.Composite.remove(mw!.engine.world, d.composite);
     dolls.splice(dolls.indexOf(d), 1);
+    if (!dolls.length) {
+      ctx.clearRect(0, 0, W, H);
+      canvas.style.display = 'none';
+    }
   }
 
   function hideBubble() {
@@ -417,6 +425,7 @@ export default function ragdoll(): (() => void) | void {
   const tick = window.setInterval(() => {
     if (isPaused() || document.hidden) return;
     seconds++;
+    for (const d of [...dolls]) if (++d.age >= LIFETIME && drag?.doll !== d) remove(d);
     if (seconds % INTERVAL === 0) drop().catch((err) => console.error('ragdoll drop failed', err));
   }, 1000);
 
