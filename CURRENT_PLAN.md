@@ -655,11 +655,39 @@ playable for 30s without errors, closes cleanly, standalone URL works, touch beh
   station" on `/freshers` (X closes), iPhone emulation shows the desktop-only notice, no page errors. A temporary
   teleport hook used to check later streets, landmark banners, the Great Gate and the win card was removed.
 
-### Phase 24 - Crew bumps (redcoats)  `[ ]`  trigger: history punt mishaps / Sports | touch: desktop-only
+### Phase 24 - Crew bumps (redcoats)  `[x]`  trigger: history punt mishaps / Sports | touch: desktop-only
 - Side-scrolling Cam reach (Grassy Corner, Ditton, Plough Reach labels). LMBC boat, red blades. At game start, assign a
   random key to each of the 8 oars (fixed for that game, new set next game). Pressing an oar's key strokes it; uneven
   strokes yaw the boat; hitting the bank is allowed (crash, recover). Catch the boat ahead -> "BUMP!" -> prize screen:
   a willow sprig to put in your hair (drag onto a roster face).
+- Notes: `src/games/bumps/{index.ts,data.json}`, registered as `bumps` ("Bumps: Redcoats", `touch: false`) with no
+  extra selector: the existing phrase hook on "sinking passing punts" (history page) launches it. The Sports card
+  stays with Breakout and no site text mentions rowing, so there is no second trigger. Plain 2D canvas, no
+  Kaplay/Matter. Top-down, the river runs left to right: `course` centreline points in `data.json` (metres,
+  linear then box-smoothed per metre, with arc length for gaps), 26 m wide, towpath and bank party cyclists on the
+  north bank, willows and station boards (Baitsbite Lock, First Post Corner, Grassy Corner, Plough Reach, Ditton
+  Corner, Long Reach, Railway Bridge, Top Finish) on the south bank, spectators crowding the corners, a railway
+  bridge deck drawn over the boats, a dashed finish line at 880 m. Boat: 17.5 m eight, even seats stroke side
+  (port), odd bow side, random roster face as the cox. Each race draws 8 distinct keys from `keys` (letters and
+  digits, matched on `e.key`), shown as caps beside each blade and in a seat map HUD (stroke side on top). A press
+  or a held key starts a 0.9 s stroke (0.4 s drive); drive thrust is scaled by 0.6 + 0.8 x the share of oars in
+  the drive together, and port minus starboard thrust yaws the boat. The cox steers weakly for the middle 12 m
+  ahead, more at speed. Bow or stern past a bank is a crash: speed reverses slightly, controls lock 1.4 s while
+  the boat eases back to the middle and the river's heading, plus a crash line. Computer crews (random from
+  `rivals` with their own hull, kit and blade colours) follow the centreline with a wandering speed (ahead 4.8,
+  behind 4.2 m/s, +0.25/+0.2 per bump this session) and 30% chance to hit the bank at the three corners. Start:
+  32 m open water to each, a countdown of guns, then GO. Bank party whistles 1/2/3 times at 1.5/1/0.5 lengths.
+  Bump = my bow within 3.2 m of the ahead hull or passing its centre: BUMP! flash, fanfare, then a DOM prize panel
+  where willow sprigs (inline SVG) are dragged with pointer events onto roster faces ("Your cox" without a roster),
+  with a line naming them and their role, and Race again. The chaser touching my hull is Bumped, reaching the
+  finish is Rowed over; both cards show a line, a fact and the time. Best = fastest bump, localStorage
+  `bumps-best` (try/catch). Facts at each station: bumps format, LMBC founded 1825, red blazers, whistles, Lent and
+  May Bumps, willow, and the SBR history punt-sinking story. Reduced motion runs at 0.7x. Verified in headless
+  Chromium: standalone at 1280px (ready card with keys, countdown, rowing with all 8 keys held to about 7 m/s and a
+  bump in 15 s, one side only yawing into a bank crash and recovering, being caught when not rowing, prize panel
+  drags onto two faces, Race again with new keys, row over at the finish, railway bridge), opened from "sinking
+  passing punts" on `/history` with Esc and X closing it, iPhone emulation shows the desktop-only notice, no page
+  errors. A temporary debug hook used for the checks was removed.
 
 ### Phase 25 - Operation: formal plate  `[ ]`  trigger: Swaps / Formal Halls | touch: drag
 - Drag hall food items (roast potato, Yorkshire pudding, peas, jus...) onto a plate with Matter collisions. Every
