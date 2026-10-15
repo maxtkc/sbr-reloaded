@@ -695,14 +695,18 @@ off the plate onto the tray
   transform per element on each load: flip, hue-rotate, swirl/skew, invert, upside down, googly eyes overlay, slow
   spin, pixelate. Registered as a gag in `registry.ts` so it rolls back with the rest.
 - Notes: `src/chaos/gags/butler-photos.ts` (gag `butler-photos`, after `butler` so the cloned card is included)
-  matches `img[alt*="Samuel Butler"]` (committee stand-ins, the Butler card, the gallery thumb). Effects are inline
-  `filter`/`rotate`/`scale`/`animation` so they beat scoped styles and compose with the gallery hover transform;
-  the stand-in sepia is kept in front of the new filter. Swirl is an SVG turbulence displacement filter. Pixelate
-  redraws the image to a 20px canvas once it loads (lazy images included). Googly eyes wrap the img in a span, eye
-  spots are measured on the portrait and mapped through the centre crop, pupils follow the pointer. The lightbox
-  img gets a filter-only effect while it shows Butler and is cleared on the next photo. Spin is 20s (60s under
-  reduced motion) and pauses with the bus. Verified all eight effects in headless Chromium at 1280/375px, lightbox,
-  no console errors on home or history, and plain portraits with the gag disabled.
+  matches `img[alt*="Samuel Butler"]` (committee stand-ins, the Butler card, the gallery thumb). Every effect loops
+  in and out (plain, ease in, hold, ease out) with a random 7-11s cycle and phase per element; spin stays a
+  continuous 20s turn. Flip, upside down, hue and invert are inline keyframe `animation`s on the individual
+  `scale`/`rotate` properties and `filter`, so they beat scoped styles and compose with the gallery hover
+  transform; the stand-in sepia is kept in front via `--bt-base`. Swirl is a per-image SVG turbulence displacement
+  filter whose strength is driven by SMIL. Pixelate prerenders 48/28/16/10px canvas copies once the image loads
+  (lazy images included) and a timer steps through them and back to the original. Googly eyes wrap the img in a
+  span and pop in and out; eye spots are measured on the portrait and mapped through the centre crop, pupils
+  follow the pointer. The lightbox img gets a CSS-only effect while it shows Butler, cleared on the next photo.
+  Cycles are 3x slower under reduced motion, and all loops (CSS, SMIL, timers) pause with the bus. Verified in
+  headless Chromium (timed frames show each effect on and off, lightbox, no console errors on home or history,
+  plain portraits with the gag disabled).
 
 ### Phase 32 - Committee: Samuel Butler himself  `[x]`
 - Add a committee entry "Samuel Butler", role "Antisocial", with the Butler portrait. Its email link opens an in-page

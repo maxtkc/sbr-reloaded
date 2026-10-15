@@ -1,4 +1,4 @@
-// Every Samuel Butler portrait gets one random transform per element on each load.
+// Every Samuel Butler portrait gets one random transform per element on each load, looping in and out.
 import { onPause, onResume } from '../bus';
 
 const SELECTOR = 'img[alt*="Samuel Butler"]';
@@ -13,8 +13,15 @@ const EFFECTS = [
   'pixelate',
 ] as const;
 type Effect = (typeof EFFECTS)[number];
-// Effects that only touch filter/rotate/scale, used for the gallery lightbox image.
-const LIGHT_EFFECTS: Effect[] = ['flip', 'hue', 'swirl', 'invert', 'upside-down', 'spin'];
+// CSS-only effects, used for the gallery lightbox image.
+const LIGHT_EFFECTS: Effect[] = ['flip', 'hue', 'invert', 'upside-down', 'spin'];
+const KEYFRAMES: Partial<Record<Effect, string>> = {
+  flip: 'bt-flip',
+  hue: 'bt-hue',
+  invert: 'bt-invert',
+  'upside-down': 'bt-upside',
+  spin: 'bt-spin',
+};
 
 // Eye centres as fractions of the full 900x1182 portrait, and its aspect ratio.
 const EYES = [
@@ -22,20 +29,24 @@ const EYES = [
   [0.56, 0.385],
 ];
 const PORTRAIT_ASPECT = 900 / 1182;
-const PIXELS = 20;
+const PIXEL_WIDTHS = [48, 28, 16, 10];
 
+// Loop shape: plain, ease in, hold, ease out, plain.
 const CSS = `
 @keyframes bt-spin{to{rotate:360deg}}
+@keyframes bt-flip{0%,15%,90%,100%{scale:1 1}40%,65%{scale:-1 1}}
+@keyframes bt-upside{0%,15%,90%,100%{rotate:0deg}40%,65%{rotate:180deg}}
+@keyframes bt-hue{0%,15%{filter:var(--bt-base) hue-rotate(0deg)}90%,100%{filter:var(--bt-base) hue-rotate(360deg)}}
+@keyframes bt-invert{0%,15%,90%,100%{filter:var(--bt-base) invert(0)}40%,65%{filter:var(--bt-base) invert(1)}}
+@keyframes bt-pop{0%,15%,90%,100%{scale:0}32%{scale:1.25}40%,65%{scale:1}}
 .bt-wrap{position:relative;display:inline-block;line-height:0}
-.bt-eye{position:absolute;width:13%;aspect-ratio:1;translate:-50% -50%;border-radius:50%;background:#fff;
+.bt-eye{position:absolute;width:13%;aspect-ratio:1;translate:-50% -50%;scale:0;border-radius:50%;background:#fff;
 border:1px solid #000;box-shadow:0 1px 3px rgba(0,0,0,.5);pointer-events:none}
 .bt-pupil{position:absolute;left:50%;top:50%;width:45%;height:45%;margin:-22.5% 0 0 -22.5%;border-radius:50%;
 background:#000}
 `;
 
-const SWIRL_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true">
-<filter id="bt-swirl"><feTurbulence type="turbulence" baseFrequency="0.015 0.03" numOctaves="2" seed="7"/>
-<feDisplacementMap in="SourceGraphic" scale="40" xChannelSelector="R" yChannelSelector="G"/></filter></svg>`;
+const SVG_NS = 'http://www.w3.org/2000/svg';
 
 const pick = <T>(list: readonly T[]): T => list[Math.floor(Math.random() * list.length)];
 
@@ -43,86 +54,155 @@ export default function butlerPhotos(): () => void {
   const style = document.createElement('style');
   style.textContent = CSS;
   document.head.append(style);
-  const svgHost = document.createElement('div');
-  svgHost.innerHTML = SWIRL_SVG;
-  const svg = svgHost.firstElementChild!;
+  const svg = document.createElementNS(SVG_NS, 'svg');
+  svg.setAttribute('width', '0');
+  svg.setAttribute('height', '0');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.style.position = 'absolute';
   document.body.append(svg);
 
-  const spinDuration = matchMedia('(prefers-reduced-motion: reduce)').matches ? '60s' : '20s';
+  const slow = matchMedia('(prefers-reduced-motion: reduce)').matches ? 3 : 1;
   const undo: (() => void)[] = [];
   const eyes: { eye: HTMLElement; pupil: HTMLElement }[] = [];
+  const animated = new Set<HTMLElement>();
+  const timers = new Set<{ start: () => void; stop: () => void }>();
   const restore = new Map<HTMLImageElement, () => void>();
+  let paused = false;
+  let swirls = 0;
 
-  // Applies a filter/rotate/scale effect inline, so it beats scoped component styles. Returns its undo.
-  function applyLight(img: HTMLImageElement, effect: Effect): () => void {
-    const prev = {
-      filter: img.style.filter,
-      rotate: img.style.rotate,
-      scale: img.style.scale,
-      anim: img.style.animation,
+  // Random cycle length and phase, so portraits are out of sync.
+  function timing() {
+    const dur = (7 + Math.random() * 4) * slow;
+    return { dur, delay: -Math.random() * dur };
+  }
+
+  // Runs a keyframe loop inline on el. Returns its undo.
+  function loop(el: HTMLElement, name: string, dur: number, delay: number): () => void {
+    const prev = el.style.animation;
+    const ease = name === 'bt-spin' ? 'linear' : 'ease-in-out';
+    el.style.animation = `${name} ${dur}s ${ease} ${delay}s infinite`;
+    if (paused) el.style.animationPlayState = 'paused';
+    animated.add(el);
+    return () => {
+      el.style.animation = prev;
+      animated.delete(el);
     };
+  }
+
+  // Applies a CSS keyframe effect, keeping the element's own filter (the stand-in sepia) in front.
+  function applyLight(img: HTMLImageElement, effect: Effect): () => void {
     const base = getComputedStyle(img).filter;
-    const withBase = (f: string) => (base && base !== 'none' ? `${base} ${f}` : f);
-    if (effect === 'flip') img.style.scale = '-1 1';
-    if (effect === 'upside-down') img.style.rotate = '180deg';
-    if (effect === 'hue')
-      img.style.filter = withBase(`hue-rotate(${60 + Math.round(Math.random() * 240)}deg)`);
-    if (effect === 'invert') img.style.filter = withBase('invert(1)');
-    if (effect === 'swirl') img.style.filter = withBase('url(#bt-swirl)');
-    if (effect === 'spin') img.style.animation = `bt-spin ${spinDuration} linear infinite`;
+    img.style.setProperty('--bt-base', base && base !== 'none' ? base : 'opacity(1)');
+    const { dur, delay } = timing();
+    // Spin keeps its old slow pace.
+    const stop = loop(img, KEYFRAMES[effect]!, effect === 'spin' ? 20 * slow : dur, delay);
     img.dataset.bt = effect;
     return () => {
-      img.style.filter = prev.filter;
-      img.style.rotate = prev.rotate;
-      img.style.scale = prev.scale;
-      img.style.animation = prev.anim;
+      stop();
+      img.style.removeProperty('--bt-base');
       delete img.dataset.bt;
     };
   }
 
-  // Swaps the image for a tiny canvas copy drawn with hard pixel edges.
+  // Gives the image its own displacement filter whose strength rises and falls.
+  function swirl(img: HTMLImageElement): () => void {
+    const id = `bt-swirl-${swirls++}`;
+    const { dur, delay } = timing();
+    const filter = document.createElementNS(SVG_NS, 'filter');
+    filter.id = id;
+    filter.innerHTML = `<feTurbulence type="turbulence" baseFrequency="0.015 0.03" numOctaves="2" seed="7"/>
+<feDisplacementMap in="SourceGraphic" scale="0" xChannelSelector="R" yChannelSelector="G">
+<animate attributeName="scale" values="0;0;40;40;0;0" keyTimes="0;.15;.4;.65;.9;1" calcMode="spline"
+keySplines="0 0 1 1;.42 0 .58 1;0 0 1 1;.42 0 .58 1;0 0 1 1" dur="${dur}s" begin="${delay}s" repeatCount="indefinite"/>
+</feDisplacementMap>`;
+    svg.append(filter);
+    const prev = img.style.filter;
+    const base = getComputedStyle(img).filter;
+    img.style.filter = `${base && base !== 'none' ? `${base} ` : ''}url(#${id})`;
+    img.dataset.bt = 'swirl';
+    return () => {
+      img.style.filter = prev;
+      filter.remove();
+      delete img.dataset.bt;
+    };
+  }
+
+  // Steps the image down to a few pixels and back up, using prerendered canvas copies.
   function pixelate(img: HTMLImageElement): () => void {
-    const prev = {
-      src: img.src,
-      srcset: img.srcset,
-      sizes: img.sizes,
-      rendering: img.style.imageRendering,
+    const orig = { src: img.src, srcset: img.srcset, sizes: img.sizes };
+    const prevRendering = img.style.imageRendering;
+    let frames: (string | null)[] = [];
+    let holds: number[] = [];
+    let i = 0;
+    let timer = 0;
+    const show = (url: string | null) => {
+      if (url) {
+        img.removeAttribute('srcset');
+        img.removeAttribute('sizes');
+        img.src = url;
+      } else {
+        if (orig.srcset) img.srcset = orig.srcset;
+        if (orig.sizes) img.sizes = orig.sizes;
+        img.src = orig.src;
+      }
     };
-    let done = false;
-    const run = () => {
-      if (done || !img.naturalWidth) return;
-      done = true;
-      const canvas = document.createElement('canvas');
-      canvas.width = PIXELS;
-      canvas.height = Math.max(1, Math.round((PIXELS * img.naturalHeight) / img.naturalWidth));
-      canvas.getContext('2d')!.drawImage(img, 0, 0, canvas.width, canvas.height);
-      img.removeAttribute('srcset');
-      img.removeAttribute('sizes');
-      img.src = canvas.toDataURL();
+    const step = () => {
+      i = (i + 1) % frames.length;
+      show(frames[i]);
+      timer = window.setTimeout(step, holds[i]);
+    };
+    const ctl = {
+      start: () => {
+        if (frames.length && !timer) timer = window.setTimeout(step, holds[i]);
+      },
+      stop: () => {
+        clearTimeout(timer);
+        timer = 0;
+      },
+    };
+    const prepare = () => {
+      if (frames.length || !img.naturalWidth) return;
+      const urls = PIXEL_WIDTHS.map((w) => {
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = Math.max(1, Math.round((w * img.naturalHeight) / img.naturalWidth));
+        canvas.getContext('2d')!.drawImage(img, 0, 0, canvas.width, canvas.height);
+        return canvas.toDataURL();
+      });
+      // original, coarser steps, hold at the coarsest, finer steps.
+      frames = [null, ...urls, ...urls.slice(0, -1).reverse()];
+      const { dur } = timing();
+      const between = (dur * 450) / (frames.length - 2);
+      holds = frames.map((f, n) =>
+        f === null ? dur * 300 : n === urls.length ? dur * 250 : between,
+      );
+      i = Math.floor(Math.random() * frames.length);
+      show(frames[i]);
       img.style.imageRendering = 'pixelated';
+      if (!paused) ctl.start();
     };
-    if (img.complete) run();
-    else img.addEventListener('load', run, { once: true });
+    if (img.complete) prepare();
+    else img.addEventListener('load', prepare, { once: true });
+    timers.add(ctl);
     img.dataset.bt = 'pixelate';
     return () => {
-      img.removeEventListener('load', run);
-      if (done) {
-        if (prev.srcset) img.srcset = prev.srcset;
-        if (prev.sizes) img.sizes = prev.sizes;
-        img.src = prev.src;
-      }
-      img.style.imageRendering = prev.rendering;
+      ctl.stop();
+      timers.delete(ctl);
+      img.removeEventListener('load', prepare);
+      if (frames.length) show(null);
+      img.style.imageRendering = prevRendering;
       delete img.dataset.bt;
     };
   }
 
-  // Wraps the image and puts two googly eyes over the portrait's eyes.
+  // Wraps the image and pops two googly eyes in and out over the portrait's eyes.
   function googly(img: HTMLImageElement): () => void {
     const wrap = document.createElement('span');
     wrap.className = 'bt-wrap';
     if (getComputedStyle(img).display === 'block') wrap.style.display = 'block';
     img.replaceWith(wrap);
     wrap.append(img);
+    const { dur, delay } = timing();
     const made = EYES.map(() => {
       const eye = document.createElement('span');
       eye.className = 'bt-eye';
@@ -131,6 +211,7 @@ export default function butlerPhotos(): () => void {
       eye.append(pupil);
       wrap.append(eye);
       eyes.push({ eye, pupil });
+      loop(eye, 'bt-pop', dur, delay);
       return eye;
     });
     // Maps eye positions through the centre crop to the rendered box's aspect.
@@ -159,6 +240,7 @@ export default function butlerPhotos(): () => void {
     img.dataset.bt = 'googly';
     return () => {
       img.removeEventListener('load', place);
+      made.forEach((eye) => animated.delete(eye));
       wrap.replaceWith(img);
       delete img.dataset.bt;
     };
@@ -168,6 +250,7 @@ export default function butlerPhotos(): () => void {
     const effect = pick(EFFECTS);
     if (effect === 'pixelate') undo.push(pixelate(img));
     else if (effect === 'googly') undo.push(googly(img));
+    else if (effect === 'swirl') undo.push(swirl(img));
     else undo.push(applyLight(img, effect));
   }
 
@@ -179,10 +262,11 @@ export default function butlerPhotos(): () => void {
     frame = 0;
     for (const { eye, pupil } of eyes) {
       const r = eye.getBoundingClientRect();
+      if (!r.width) continue;
       const dx = px - (r.left + r.width / 2);
       const dy = py - (r.top + r.height / 2);
       const d = Math.hypot(dx, dy) || 1;
-      const reach = (r.width * 0.27 * Math.min(d, 200)) / 200;
+      const reach = (eye.offsetWidth * 0.27 * Math.min(d, 200)) / 200;
       pupil.style.translate = `${(dx / d) * reach}px ${(dy / d) * reach}px`;
     }
   }
@@ -204,14 +288,16 @@ export default function butlerPhotos(): () => void {
   });
   observer.observe(document.body, { subtree: true, attributes: true, attributeFilter: ['alt'] });
 
-  // Spinning portraits stop while a game is open.
-  const setPlay = (state: string) => {
-    for (const img of document.querySelectorAll<HTMLImageElement>('img[data-bt="spin"]')) {
-      img.style.animationPlayState = state;
-    }
-  };
-  const offPause = onPause(() => setPlay('paused'));
-  const offResume = onResume(() => setPlay(''));
+  // Every loop stops while a game is open.
+  function setPaused(value: boolean) {
+    paused = value;
+    for (const el of animated) el.style.animationPlayState = value ? 'paused' : '';
+    if (value) svg.pauseAnimations();
+    else svg.unpauseAnimations();
+    for (const t of timers) (value ? t.stop : t.start)();
+  }
+  const offPause = onPause(() => setPaused(true));
+  const offResume = onResume(() => setPaused(false));
 
   return () => {
     observer.disconnect();
