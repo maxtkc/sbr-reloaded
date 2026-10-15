@@ -676,9 +676,32 @@ off the plate onto the tray
 - Climb up the Chapel tower on platforms (gowns, hall benches, sherry glasses). Porters patrol and shout
   "Get off the grass!", "Port & Sherry is Fridays only!".
 
-### Phase 28 - Bike dino: Mill Road  `[ ]`  trigger: Environment / cycling | touch: tap jump
+### Phase 28 - Bike dino: Mill Road  `[x]`  trigger: Environment / cycling | touch: tap jump
 - Chrome dino runner on a bike. Obstacles: potholes, bus stops, Lime scooters, roadworks. Distance in real Mill Road
   landmarks.
+- Notes: `src/games/bike-dino/{index.ts,data.json}`, registered as `bike-dino` ("Bike Dino: Mill Road") with no extra
+  selector: the Environment committee card and the "Cycling in Cambridge" phrase hook on `/freshers` already carry
+  `data-game="bike-dino"`. Kaplay, immediate-mode drawing like Breakout. The world is drawn in units scaled by
+  `min(H/100, W/140)` with the lane at 0.78H, so phones see as far ahead as desktop. Side view: sky with clouds, a
+  half-speed row of terraced shopfronts (awnings, signs from `shops`), pavement, red cycle lane, road. Rider: Dutch
+  bike with basket and spinning spokes, gown, LMBC red scarf, random roster face (plain head without a roster), legs
+  on the pedals. Jump: Space/Up/W/click/tap; holding lowers gravity on the way up for 0.25s, releasing cuts the
+  rise, so a tap hops small things and a hold clears the tall ones. Down/S ducks on the ground and fast-falls in
+  the air. Obstacles (`KINDS` in `index.ts`): potholes (only hit on the ground), Lime scooters, 1-3 cones, roadworks
+  (from 250 m, barrier with a warning or Cyclists Dismount sign, needs a hold), bus stop queues in the lane (from
+  400 m, shelter behind, needs a hold), pigeons at head height (from 600 m, duck; never on touch devices since they
+  cannot duck). Speed ramps from 60 to 135 units/s; gaps scale with speed. Distance is route metres (`scale` 0.27 m
+  per unit), Parkside to Brooks Road (`end` 1,750 m), with signposts and a fact banner at each landmark (Arjuna
+  Wholefoods, Mill Road Cemetery, Gwydir Street, Cycle King, Mill Road Bridge, Bike Shed / Cam Cycles, Romsey;
+  positions approximate), a cycling fact from the guide every 300 m otherwise, and a chime every 500 m. Passing
+  Brooks Road starts another lap, faster. Night for 400 m of every 1,200 m: dark sky, stars, lit windows, headlight
+  beam and a "Lights on" banner about the GBP50 fine. Crash: `boom`, the bike noses over, the rider flies over the
+  bars and lands flat; card with distance, a crash line for that obstacle, a fact, best in localStorage
+  `bike-dino-best` (try/catch); any input restarts after 0.7s. Reduced motion runs at 0.7x. Verified in headless
+  Chromium: standalone at 1280px (start, duck, held jump, crash card, restart, and with a temporary autopilot and
+  teleport hook: 30s+ of play, landmark banners, night, bus stops, pigeons, the lap rollover), opened from the
+  Environment card on `/` (Esc closes) and from "Cycling in Cambridge" on `/freshers` (X closes), iPhone emulation
+  (tap jumps, no horizontal scroll), no page errors. The debug hooks were removed.
 
 ### Phase 29 - Impossible 8-ball  `[ ]`  trigger: pool table (SBR room) | touch: drag to aim
 - Matter.js pool table (the SBR's real table). When a ball nears a pocket, a random roster face pops up in the pocket
