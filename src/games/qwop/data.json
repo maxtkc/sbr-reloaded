@@ -1,0 +1,103 @@
+{
+  "title": "QWOP to St John's",
+  "subtitle": "Cambridge station to the Great Gate. The Freshers' Guide says it is a 40 minute walk.",
+  "controls": "Q and W swing the thighs. O and P bend the knees.",
+  "start": "Press Q, W, O or P to set off",
+  "restart": "Space, Enter or click to try again",
+  "scale": 20,
+  "route": [
+    { "street": "Station Road", "from": 0, "colors": ["#9aa7b0", "#b7c0c6", "#7f8c96"] },
+    { "street": "Hills Road", "from": 450, "colors": ["#a85a3c", "#b9714f", "#8f4b32"] },
+    { "street": "Regent Street", "from": 1150, "colors": ["#e6d6b8", "#d9c3a0", "#c9b089"] },
+    { "street": "St Andrew's Street", "from": 1650, "colors": ["#d8c9a6", "#cdbb93", "#b9a77f"] },
+    { "street": "Sidney Street", "from": 2200, "colors": ["#c97b5a", "#e3d3b4", "#9db0a8"] },
+    { "street": "Bridge Street", "from": 2500, "colors": ["#e8dcc2", "#b98b5e", "#d6c3a0"] },
+    { "street": "St John's Street", "from": 2600, "colors": ["#b5653f", "#d9c79c", "#a65a37"] }
+  ],
+  "end": 2700,
+  "landmarks": [
+    {
+      "at": 0,
+      "name": "Cambridge station",
+      "fact": "Trains from London King's Cross and Liverpool Street run about twice an hour each."
+    },
+    {
+      "at": 180,
+      "name": "Bus stop",
+      "fact": "Buses 1, 3 and the Park & Ride go from the station to the city centre."
+    },
+    {
+      "at": 450,
+      "name": "War memorial",
+      "fact": "A taxi from the station to College is about GBP 10. Just saying."
+    },
+    {
+      "at": 750,
+      "name": "Botanic Garden",
+      "fact": "Graduate hostels are spread around Cambridge: older terraces, and bigger newer houses further out."
+    },
+    {
+      "at": 1150,
+      "name": "Our Lady and the English Martyrs",
+      "fact": "Hostel kitchens are shared and come with no cooking equipment. Bring a pan."
+    },
+    {
+      "at": 1600,
+      "name": "Parker's Piece",
+      "fact": "Coaches from the airports stop at Parkside, by Parker's Piece. It is a 15 minute walk to College from here."
+    },
+    {
+      "at": 1850,
+      "name": "Emmanuel College",
+      "fact": "Most rooms have a sink, a bed, a desk, a wardrobe and shelves. Bathrooms are shared."
+    },
+    {
+      "at": 2150,
+      "name": "Christ's College",
+      "fact": "The U bus is GBP 1 with a University Card and stops 7 minutes from the Northampton Street Porters' Lodge."
+    },
+    {
+      "at": 2350,
+      "name": "Sidney Sussex",
+      "fact": "From Stansted, the train to Cambridge takes about 35 minutes and costs about GBP 11."
+    },
+    {
+      "at": 2500,
+      "name": "Round Church",
+      "fact": "Nearly there. The SBR is in First Court: through the Great Gate, staircase I."
+    },
+    {
+      "at": 2700,
+      "name": "Great Gate",
+      "fact": "Welcome to St John's. The SBR room is at I2, First Court."
+    }
+  ],
+  "facts": [
+    "The walk from the station to College through the city centre is around 40 minutes.",
+    "A taxi from the station to College is about GBP 10.",
+    "Buses 1, 3 and the Park & Ride stop in the city centre.",
+    "The U bus is GBP 1 with a University Card.",
+    "King's Cross trains make fewer stops than Liverpool Street ones, and cost a bit more.",
+    "Fast trains from King's Cross are often labelled Ely or King's Lynn. Check the calling points.",
+    "Graduate students typically live in College hostels around Cambridge.",
+    "Many hostel rooms have wireless internet on the College network.",
+    "Most hostels have common rooms, often with a microwave and kettle left by past residents.",
+    "The Samuel Butler Room was founded in 1960.",
+    "The SBR room is at I2, First Court."
+  ],
+  "falls": [
+    "Down on {street}. A cyclist rings their bell at you.",
+    "You fell over on {street}. A tourist takes a photo.",
+    "Face first into {street}. The Freshers' Guide did say 40 minutes.",
+    "Collapsed on {street}. A punt tout offers you a tour.",
+    "You are lying on {street}. Someone hands you a flyer for a comedy night.",
+    "Fallen on {street}. The U bus goes past. It was GBP 1.",
+    "Horizontal on {street}. A taxi slows down hopefully.",
+    "{street} wins this round. Your hostel is still miles away."
+  ],
+  "wins": [
+    "You made it to the Great Gate. The Porters would like to see your University Card.",
+    "St John's at last. The kettle in the SBR is on.",
+    "You walked it. Nobody will believe you."
+  ]
+}
