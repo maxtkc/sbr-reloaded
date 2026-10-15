@@ -549,22 +549,111 @@ playable for 30s without errors, closes cleanly, standalone URL works, touch beh
   on `/` with Esc closing it, iPhone emulation shows the desktop-only notice, no page errors. A temporary debug hook
   used for the checks was removed.
 
-### Phase 20 - Breakout: Bridge of Sighs  `[ ]`  trigger: Sports officer / punt mention | touch: drag
+### Phase 20 - Breakout: Bridge of Sighs  `[x]`  trigger: Sports officer / punt mention | touch: drag
 - Bricks form the Bridge of Sighs outline (1831, Henry Hutchinson) over the Cam. Paddle is a punt with a pole-wielding
   student. Facts pop on brick break.
+- Notes: `src/games/breakout/{index.ts,data.json}`, registered as `breakout` ("Breakout: Bridge of Sighs") with no
+  extra selector: the Sports card in `Committee.astro` already carries `data-game="breakout"`, and a new phrase hook
+  wraps "College punts" in the Freshers' Guide Punting paragraph on `/freshers` ("sinking passing punts" in the history
+  stays with `bumps`). Kaplay, immediate-mode drawing like Flappy Eagle. The bridge is the `bridge` ASCII grid in
+  `data.json` (29x14: pinnacles, crenellations, parapet, a row of five gothic windows, a gold arms panel, the arch
+  underside down to both banks): `#` stone (1 hit), `w` glass (2 hits, cracks), `g` gold (always shows a fact).
+  Bricks fill the width and at most the top 46% of the height. Facts (bridge, punting from `guide.md`, SBR basics)
+  show in a red/gold banner on gold bricks and every `factEvery` (6) breaks. The punt sits on the Cam with a gowned
+  student in an LMBC red scarf at the stern (random roster face as the head, plain head without a roster) whose
+  pole leans against the punt's motion; bounce angle from the hit position (up to 60 degrees). Gold ball,
+  sub-stepped at half a radius so it cannot tunnel. 3 balls; into the Cam = splash, `boom` and a splash line;
+  game over line, score and best (localStorage `breakout-best`, try/catch), restart after 0.7s. Clearing the
+  bridge rebuilds it with the ball 12% faster per level. Controls: mouse move or touch drag sets the punt x,
+  Left/Right/A/D, Space/Up/W/Enter or click/tap launches. Reduced motion runs at 0.7x. Verified in headless
+  Chromium: standalone at 1280px (launch, 30s of play with an autopilot, fact banner, losing all balls, game over),
+  opened from the Sports card on `/` and from "College punts" on `/freshers`, Esc closes the overlay, iPhone
+  emulation (tap launch, drag moves the punt, no horizontal scroll), no page errors. A temporary debug hook used
+  for the checks was removed.
 
-### Phase 21 - Crossy Road  `[ ]`  trigger: GSR / All Saints Passage | touch: tap/swipe
+### Phase 21 - Crossy Road  `[x]`  trigger: GSR / All Saints Passage | touch: tap/swipe
 - Lanes named after real streets between the GSR and First Court (All Saints Passage, St John's St, Bridge St).
   Traffic: bikes (fast, swarming), delivery scooters, double-decker buses. Goal: reach the SBR.
+- Notes: `src/games/crossy-road/{index.ts,data.json}`, registered as `crossy-road` ("Crossy Road: GSR to SBR") with
+  no extra selector (the GSR heading `data-game` and the "All Saints Passage" phrase hook already launch it). Kaplay,
+  immediate-mode drawing like Breakout. Top-down 11-column grid, tile `min(W/11, H/9)`, centred with the area outside
+  the columns dimmed; the camera follows the player up a fixed 21-row `course` in `data.json` (bottom to top): the GSR
+  door at 1 All Saints Passage, pavements with bollards, All Saints Garden market stalls, tourists and bins as
+  blocking props (`tiles` strings, `#` blocks), red cycle lanes and roads on All Saints Passage, Trinity Street,
+  St John's Street and Bridge Street, the Great Gate (brick wall with a 3-tile opening and turrets), First Court
+  (path, then lawn `g` with paths at both edges) and the I staircase door `D` at the far left ("turn left"). Traffic
+  per lane: `kind` (bikes in swarms of 1-4, delivery scooters with coloured boxes, double-deckers numbered 1, 3 and
+  U), direction, speed in tiles/s and gap range; lanes are pre-simulated 30s so the streets start full. Hop 0.12s
+  with one queued move, collision on the lane the player is nearest during the hop. Deaths: bike/scooter/bus
+  (flattened), lawn (a Porter appears), and the crest eagle: after 6s without forward progress a shadow circles
+  with a warning banner, at 9s the gold eagle swoops and carries you off. Reaching `D` is a trip: fanfare, win line,
+  +10 x trip, then back to the GSR with traffic 15% faster per trip. Score is rows gained plus trip bonuses, best in
+  localStorage `crossy-road-best` (try/catch). Facts (GSR, cycling rules, buses, SBR location, Porters' Lodge) show
+  in a red/gold banner on each new pavement/gate row and on arrival. Controls: arrows/WASD, Space/Enter/click/tap
+  hop forward, swipe hops in its direction, any input restarts after death (0.7s). Reduced motion runs at 0.7x.
+  Verified in headless Chromium: standalone at 1280px (traffic deaths, a full trip to the SBR and the next trip, the
+  lawn Porter, the eagle warning and swoop, restart), opened from the GSR heading on `/` with Esc closing it, iPhone
+  emulation (tap hops, swipe right, no horizontal scroll), no page errors. A temporary invincibility hook used for
+  the checks was removed.
 
-### Phase 22 - Jack's Gelato stand  `[ ]`  trigger: Buttery/Cafe quick link | touch: yes
+### Phase 22 - Jack's Gelato stand  `[x]`  trigger: Buttery/Cafe quick link | touch: yes
 - Lemonade-stand loop: each day set price per scoop + number of tubs + flavour picks (weird rotating flavours).
   Random Cambridge weather, tourist coachloads, queue down Bene't St. Daily report. Real info: SBR is in First Court,
   Buttery hours link.
+- Notes: `src/games/gelato/{index.ts,data.json}`, registered as `gelato` ("Jack's Gelato Stand") with no extra
+  selector: `QuickLink.astro` already sets `data-game="gelato"` on quick links whose label matches /buttery/i (the
+  Buttery/Bar/Cafe Hours and Menu links). DOM panels over one plain 2D canvas, no Kaplay (the game is mostly menus,
+  and DOM buttons give touch for free). 7 days, start GBP 200. Plan panel: weekday, forecast (right 60% of the
+  time), the day's event, cash, price per scoop (-/+ GBP 0.25, 1 to 12), tubs (GBP 30 for 30 scoops, capped by
+  cash), 6 random flavours from 24 in `data.json` with hidden appeal (pick 1-3). Day: 18s for 11:00-23:00, tap,
+  click, Space or Enter toggles x4. Arrivals = 140 x weather demand x event demand x jitter, peaking mid-afternoon;
+  tourist share by event. Each customer rates the offered flavours (appeal x random) and wants the best; willingness
+  (students 2.5-6, tourists 4-9) x weather pay x that rating. They walk off at the price, at the queue (patience
+  8-30, tourists +10), or when sold out, else join the queue; the counter serves at most 170 a day while stock
+  lasts. Sold out disperses the queue with a SOLD OUT sign; closing time sends the rest home. Canvas: weather sky
+  (sun, drifting clouds, rain), Corpus wall with "Bene't Street" left, The Eagle right, Jack's in the middle as a
+  cutaway (door on the left, counter with tubs and Jack on the right, price board on the back wall, striped awning).
+  Two pavement lanes: everyone walks along the front lane from either side; buyers step back into the queue, which
+  runs from the counter out the door to the left; decliners stop in front of the shop, complain, and walk on; served
+  customers step out and carry on their way. A "Heathrow day trips" coach on coachload days; people are simple shapes with umbrellas in
+  rain, bucket hats for tourists, ~12% roster faces with their own lines, cones after serving; speech bubbles are
+  skipped when they would overlap another. Report: takings, tubs, GBP 60 pitch fee, profit, cash, walk-off counts,
+  bestseller and "Nobody wanted", a joke line, a real fact (SBR in I2 First Court, Port & Sherry, BA Table, GSR,
+  founding, the room) and a Buttery hours link (the real quick link URL, new tab). Leftover stock halves overnight.
+  End after day 7, when cash goes negative, or when there is no stock and no money for a tub ("Repossessed"); best
+  week in localStorage `gelato-best` (try/catch). Reduced motion runs the day at 0.7x. Verified in headless
+  Chromium: standalone at 1280px (full week with normal, fast-forward, sold-out and overpriced days, bankruptcy,
+  restart), opened from both Buttery quick links on `/` with Esc closing the overlay, iPhone emulation (flavour and
+  button taps, tap to speed up, report, no horizontal scroll), no page errors.
 
-### Phase 23 - QWOP to St John's  `[ ]`  trigger: Accommodation / station | touch: desktop-only
+### Phase 23 - QWOP to St John's  `[x]`  trigger: Accommodation / station | touch: desktop-only
 - Matter.js ragdoll runner, Q/W/O/P control thighs/calves. Cartoon Johnian: LMBC red blazer, scarf. Distance markers
   along the real route Station Rd -> Hills Rd -> Regent St -> St Andrew's St -> Sidney St -> Bridge St -> St John's.
+- Notes: `src/games/qwop/{index.ts,body.ts,data.json}`, registered as `qwop` ("QWOP to St John's", `touch: false`)
+  with no extra selector: the Accommodation heading already carries `data-game="qwop"`, and a new phrase hook wraps
+  "walk from the station" in the Freshers' Guide travel paragraph on `/freshers` ("train station" there is a link, so
+  it cannot be hooked). `body.ts` is the Matter.js ragdoll in centimetres (ground top at y 0): torso, head, thighs,
+  calves, feet, upper and lower arms, pinned with zero-length constraints in one negative collision group, built
+  in a slight A-frame so it stands with nothing pressed. Joint motors trade angular velocity between the two bodies
+  of a joint (keeps angular momentum, stable at the strengths needed; torque PD exploded or sagged), aiming for a
+  relative speed of 0.5x the angle error, plus a firm push back past each joint's limits. Q = left thigh forward and
+  right back, W the reverse; O = left knee bent and right straight, P the reverse; ankles hold the feet square to
+  the calves, arms swing with the opposite leg. Feet are heavy (density 0.01): light feet were tipped over by the
+  contact solver. Head or torso touching the pavement is a fall (limp ragdoll, `boom`, a `falls` line with the
+  street, a fact, best in localStorage `qwop-best`); Space, Enter, R or click restarts. Tuned in a Node sim: a
+  Q+O / - / W+P / - rhythm at 0.1 s per step walks ~4 m in 30 s without falling, random mashing falls in 2 to 10 s.
+  `index.ts`: plain 2D canvas, physics stepped by hand at 60 Hz (runner stopped, x0.7 under reduced motion). The
+  route (`route`, `end` 2,700 m, `landmarks` with real facts from the guide's getting-here section and
+  `accommodation.md`) is compressed by `scale` 20: each metre walked is 20 m of route, and the HUD, pavement markers,
+  street signs and landmark posts use route metres. Street-coloured building facades in 9 m slots, pavement with slab
+  joints, road with dashes, a brick Great Gate past the end. Runner: LMBC red blazer with gold buttons and collar,
+  navy trousers, red and white scarf as a verlet chain from the neck, random roster face as the head (plain head
+  without a roster). HUD: route distance, street, timer, best, Q/W/O/P key caps lit while held; a red/gold banner
+  shows each landmark's fact; footsteps thud. Reaching 2,700 m shows a win card with the time against the guide's
+  40 minutes. Verified in headless Chromium: standalone at 1280px (standing, walking with the rhythm, mashing to a
+  fall, fall card, restart), opened from the Accommodation heading on `/` (Esc closes) and from "walk from the
+  station" on `/freshers` (X closes), iPhone emulation shows the desktop-only notice, no page errors. A temporary
+  teleport hook used to check later streets, landmark banners, the Great Gate and the win card was removed.
 
 ### Phase 24 - Crew bumps (redcoats)  `[ ]`  trigger: history punt mishaps / Sports | touch: desktop-only
 - Side-scrolling Cam reach (Grassy Corner, Ditton, Plough Reach labels). LMBC boat, red blades. At game start, assign a
@@ -575,6 +664,9 @@ playable for 30s without errors, closes cleanly, standalone URL works, touch beh
 ### Phase 25 - Operation: formal plate  `[ ]`  trigger: Swaps / Formal Halls | touch: drag
 - Drag hall food items (roast potato, Yorkshire pudding, peas, jus...) onto a plate with Matter collisions. Every
   collision adds a surcharge to a running UPay bill. Real info: BA Table Tue/Fri, swap partners as menu names.
+UPDATE: This should not be formal plate but just dining hall, because that's
+where you get a main and you add your own sides, and try not to get it to spill
+off the plate onto the tray
 
 ### Phase 26 - Pacman: Fisher Building  `[ ]`  trigger: Ents / sBrOILER ROOMS | touch: swipe
 - Maze is the Fisher Building; goal is the dancefloor. Bouncers chase while shouting speech bubbles ("Ticket?",

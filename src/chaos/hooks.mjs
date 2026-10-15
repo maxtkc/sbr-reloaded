@@ -9,5 +9,7 @@ export const phraseHooks = [
   { pattern: /All Saints Passage/, game: 'crossy-road' },
   { pattern: /CB2 1TP/, game: 'flight-sim' },
   { pattern: /sinking passing punts/, game: 'bumps' },
+  { pattern: /College punts/, game: 'breakout' },
+  { pattern: /walk from the station/, game: 'qwop' },
   { pattern: /Cycling in Cambridge/, game: 'bike-dino' },
 ];
