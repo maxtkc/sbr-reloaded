@@ -1,0 +1,113 @@
+{
+  "title": "Bike Dino: Mill Road",
+  "subtitle": "Parkside to Brooks Road. Potholes included",
+  "intro": "Space or Up to jump (hold for higher), Down to duck",
+  "introTouch": "Tap to jump, hold for higher",
+  "restart": "Space, click or tap to ride again",
+  "lightsOn": "Sunset. Lights on: white at the front, red at the back. That is GBP50 you did not pay.",
+  "lap": "Lap {n}: Mill Road again, faster.",
+  "scale": 0.27,
+  "end": 1750,
+  "landmarks": [
+    {
+      "m": 80,
+      "name": "Arjuna Wholefoods",
+      "fact": "Arjuna Wholefoods on Mill Road is good, if often pricey, for vegan and special diets."
+    },
+    {
+      "m": 250,
+      "name": "Mill Road Cemetery",
+      "fact": "Mill Road Cemetery: quieter than the road, and far fewer potholes."
+    },
+    {
+      "m": 450,
+      "name": "Gwydir Street",
+      "fact": "Mill Road has very well-stocked Chinese, Korean, South Asian and Middle-Eastern supermarkets."
+    },
+    {
+      "m": 700,
+      "name": "Cycle King",
+      "fact": "Cycle King, 195-197 Mill Rd: brand new bikes of reasonable quality for around GBP130."
+    },
+    {
+      "m": 950,
+      "name": "Mill Road Bridge",
+      "fact": "Mill Road Bridge takes you over the railway into Romsey."
+    },
+    {
+      "m": 1150,
+      "name": "Bike Shed / Cam Cycles",
+      "fact": "The Bike Shed and Cam Cycles on Mill Road sell parts and bikes."
+    },
+    {
+      "m": 1450,
+      "name": "Romsey",
+      "fact": "Cheaper new bikes of good quality are found away from the centre, e.g. Mill Road."
+    },
+    {
+      "m": 1750,
+      "name": "Brooks Road",
+      "fact": "End of Mill Road. College is 2.5 km back the other way. Sidney Street is one-way."
+    }
+  ],
+  "factEvery": 300,
+  "facts": [
+    "After sunset your bike must have lights: white at the front, red at the back. No lights is a GBP50 fine.",
+    "Red lanes are cycle lanes. Cycling on the pavement is illegal and discourteous.",
+    "Register your bike with the Porters to use the secure bike shed in Forecourt.",
+    "Lock the frame to something solid. U-locks are a particularly good choice.",
+    "Bike theft is one of Cambridge's biggest industries, especially at the start of the year.",
+    "Sidney Street is one-way. Cycle the wrong way and you may be fined.",
+    "A bell is extremely useful in Cambridge. Use it politely.",
+    "Obey Cyclists Dismount signs. They usually mean a bridge or a crowd ahead.",
+    "A good used bike costs GBP100 or more, a new one GBP200 to 300.",
+    "College contents insurance now covers pedal cycles and accessories.",
+    "Swap quick-release wheels for nuts and bolts. In Cambridge they are an invitation to theft.",
+    "Helmets are not compulsory, but a decent one from Decathlon is a good investment.",
+    "The SBR Environment Officer works with College on green policies and upcycling events.",
+    "The SBR room at I2, First Court was at one time a bicycle room.",
+    "The Samuel Butler Room was founded in 1960."
+  ],
+  "crashes": {
+    "pothole": [
+      "Swallowed by a Mill Road pothole. It has its own postcode.",
+      "Pothole. The council has been informed. Repeatedly."
+    ],
+    "scooter": [
+      "Tripped over an abandoned Lime scooter. It was parked responsibly, apparently.",
+      "Lime scooter 1, you 0."
+    ],
+    "cones": [
+      "Cone collected. Please return it to the roadworks.",
+      "You hit a traffic cone. It has a better helmet than you."
+    ],
+    "roadworks": [
+      "Roadworks. They have been there since before you matriculated.",
+      "Cyclists Dismount. You dismounted."
+    ],
+    "busstop": [
+      "Rode into the bus stop queue. The Citi 2 is still not here.",
+      "The queue for the bus has absorbed you. You live here now."
+    ],
+    "pigeons": [
+      "Pigeon strike. They had right of way.",
+      "Ambushed by Mill Road pigeons. They were after your sandwich."
+    ]
+  },
+  "shops": [
+    "GROCER",
+    "CAFE",
+    "BIKE REPAIR",
+    "SUPERMARKET",
+    "CHARITY SHOP",
+    "BARBER",
+    "LAUNDERETTE",
+    "VINTAGE",
+    "BAKERY",
+    "HARDWARE",
+    "TAKEAWAY",
+    "BOOKS",
+    "SPICES",
+    "PUB"
+  ]
+}
