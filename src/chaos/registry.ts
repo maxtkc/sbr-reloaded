@@ -2,6 +2,7 @@
 import animatedLogo from './gags/animated-logo';
 import assistant from './gags/assistant';
 import butler from './gags/butler';
+import butlerPhotos from './gags/butler-photos';
 import captcha from './gags/captcha';
 import gravity from './gags/gravity';
 import pong from './gags/pong';
@@ -38,6 +39,7 @@ export const gags: Record<string, Gag> = {
   'animated-logo': { enabled: true, init: animatedLogo },
   assistant: { enabled: true, init: () => assistant(config.assistantMatcher) },
   butler: { enabled: true, init: butler },
+  'butler-photos': { enabled: true, init: butlerPhotos },
   captcha: { enabled: true, init: captcha },
   gravity: { enabled: true, init: gravity },
   pong: { enabled: true, init: pong },

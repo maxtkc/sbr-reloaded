@@ -690,10 +690,19 @@ off the plate onto the tray
 
 ## Follow-up phases
 
-### Phase 31 - Samuel Butler photo transforms  `[ ]`
+### Phase 31 - Samuel Butler photo transforms  `[x]`
 - Every Samuel Butler portrait (the stand-in photo on the committee and anywhere else it shows) gets a random
   transform per element on each load: flip, hue-rotate, swirl/skew, invert, upside down, googly eyes overlay, slow
   spin, pixelate. Registered as a gag in `registry.ts` so it rolls back with the rest.
+- Notes: `src/chaos/gags/butler-photos.ts` (gag `butler-photos`, after `butler` so the cloned card is included)
+  matches `img[alt*="Samuel Butler"]` (committee stand-ins, the Butler card, the gallery thumb). Effects are inline
+  `filter`/`rotate`/`scale`/`animation` so they beat scoped styles and compose with the gallery hover transform;
+  the stand-in sepia is kept in front of the new filter. Swirl is an SVG turbulence displacement filter. Pixelate
+  redraws the image to a 20px canvas once it loads (lazy images included). Googly eyes wrap the img in a span, eye
+  spots are measured on the portrait and mapped through the centre crop, pupils follow the pointer. The lightbox
+  img gets a filter-only effect while it shows Butler and is cleared on the next photo. Spin is 20s (60s under
+  reduced motion) and pauses with the bus. Verified all eight effects in headless Chromium at 1280/375px, lightbox,
+  no console errors on home or history, and plain portraits with the gag disabled.
 
 ### Phase 32 - Committee: Samuel Butler himself  `[x]`
 - Add a committee entry "Samuel Butler", role "Antisocial", with the Butler portrait. Its email link opens an in-page
