@@ -721,9 +721,31 @@ off the plate onto the tray.
   opened from "sBrOILER ROOMS" on `/` with Esc closing it, iPhone emulation (tap start, swipe turns, no horizontal
   scroll), no page errors. A temporary debug hook used for the checks was removed.
 
-### Phase 27 - Doodle Jump: porters  `[ ]`  trigger: Port & Sherry | touch: tilt/tap sides
+### Phase 27 - Doodle Jump: porters  `[x]`  trigger: Port & Sherry | touch: tilt/tap sides
 - Climb up the Chapel tower on platforms (gowns, hall benches, sherry glasses). Porters patrol and shout
   "Get off the grass!", "Port & Sherry is Fridays only!".
+- Notes: `src/games/doodle-jump/{index.ts,data.json}`, registered as `doodle-jump` ("Doodle Jump: Port & Sherry")
+  with no extra selector: the existing phrase hook in `hooks.mjs` wraps "Port & Sherry" / "port and sherry" (Formal
+  Halls, the SBR room, the Port & Sherry events). Kaplay, immediate-mode drawing in one `onDraw`. The play column is
+  10 units wide (`min(W, 0.6H)`, centred, sides dimmed) and wraps left/right; 1 unit is 0.5 m (`metresPerUnit`).
+  Jump apex is 6 units and generated gaps stay under 4.8, widening with height. Platforms: hall benches (narrower
+  higher up), gowns on coat hangers that drift sideways, sherry glasses that break after one bounce. Benches can
+  carry a port decanter (1.75x super bounce) or a mortarboard (2.2s flight, worn on the head with a whirling
+  tassel). Porters (bowler hat, dark suit) walk back and forth on benches from 6 m, chance rising with height;
+  above 60 m a Head Porter swings across on a rope. Each shouts lines from `shouts` / `headShouts` in a speech
+  bubble every few seconds while on screen, and the first sighting plays a short siren (at most every 3s). Landing
+  on a Porter's hat stomps him (bounce, counter); any other contact is caught (spin, siren). Falling below the
+  screen is the other death. Scenery: Chapel Court lawn with a "Keep off the grass" sign at the start, the tower's
+  stone courses, lancet windows and buttresses, battlements and four pinnacles at the real 49 m top, then a sky
+  that darkens to stars. Facts every 20 m in a red/gold banner; `milestones` (49, 100, 200, 400 m) in gold with a
+  fanfare. Death card with a line per cause, height and best (localStorage `doodle-jump-best`, try/catch); Space,
+  Enter, click or tap restarts after 0.7s. Controls: arrows/A-D, hold the left or right half of the screen, or
+  tilt (`deviceorientation` gamma, which overrides the rest once it reports; iOS permission is requested on the
+  first tap). The ready screen bounces on the floor only and the camera waits for the first input. Reduced
+  motion runs at 0.7x. Verified in headless Chromium: standalone at 1280px with a temporary autopilot (removed)
+  for 30s (every platform kind and item, stomps, both deaths, facts, milestones, restart), the tower top and sky
+  via teleport, opened from "Port & Sherry" on `/` (Esc and X close it), iPhone emulation (holding the right
+  side and simulated tilt both steer, no horizontal scroll), no page errors.
 
 ### Phase 28 - Bike dino: Mill Road  `[ ]`  trigger: Environment / cycling | touch: tap jump
 - Chrome dino runner on a bike. Obstacles: potholes, bus stops, Lime scooters, roadworks. Distance in real Mill Road

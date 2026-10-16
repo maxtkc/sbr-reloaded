@@ -87,6 +87,12 @@ export const games: Record<string, Game> = {
     touch: true,
     load: () => import('../games/crossy-road'),
   },
+  'doodle-jump': {
+    title: 'Doodle Jump: Port & Sherry',
+    trigger: '',
+    touch: true,
+    load: () => import('../games/doodle-jump'),
+  },
   'flappy-eagle': {
     title: 'Flappy Eagle',
     trigger: '.arms-anim [data-part^="eagle-"]',
