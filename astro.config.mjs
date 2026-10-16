@@ -6,10 +6,10 @@ import rehypeGameHooks from './src/lib/rehype-game-hooks.mjs';
 import { phraseHooks } from './src/chaos/hooks.mjs';
 import solbeeIndex from './src/lib/solbee-index.mjs';
 
-const base = '/sbr-reloaded';
+const base = '/';
 
 export default defineConfig({
-  site: 'https://maxtkc.github.io',
+  site: 'https://sjcsbr.com',
   base,
   trailingSlash: 'ignore',
   integrations: [solbeeIndex()],
