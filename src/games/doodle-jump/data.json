@@ -1,0 +1,73 @@
+{
+  "subtitle": "Port & Sherry is at the top of the Chapel tower. Probably.",
+  "intro": "Left/right or A/D to steer. On a phone tilt, or hold the left or right side",
+  "restart": "Click, tap or Space to climb again",
+  "towerTop": 49,
+  "metresPerUnit": 0.5,
+  "factEvery": 20,
+  "platforms": {
+    "bench": [6, 3],
+    "gown": [1, 3],
+    "glass": [1, 4]
+  },
+  "names": {
+    "bench": "Hall bench",
+    "gown": "Gown",
+    "glass": "Sherry glass"
+  },
+  "items": { "port": 0.08, "mortarboard": 0.025 },
+  "porterFrom": 6,
+  "porterChance": [0.14, 0.32],
+  "headPorterFrom": 60,
+  "shouts": [
+    "Get off the grass!",
+    "Port & Sherry is Fridays only!",
+    "Is that your bike?",
+    "Gowns are for hall, sir.",
+    "Have you got your University Card?",
+    "Only Fellows walk on the lawn!",
+    "Oi! That's a listed building!",
+    "Sign in at the Lodge!",
+    "That glass is college property!",
+    "BA Table is Tuesdays and Fridays!",
+    "No climbing on the Chapel!",
+    "I'm writing you up.",
+    "GBP1.50 a glass, no tabs!",
+    "Your parcel is at the Great Gate."
+  ],
+  "headShouts": ["I am the Head Porter.", "You're gated until Lent.", "Nobody climbs my Chapel."],
+  "facts": [
+    "Port & Sherry is in the SBR after hall on Fridays, GBP1.50 a glass.",
+    "The SBR also serves port and sherry before and after BA Table.",
+    "BA Table is on Tuesdays and Fridays in term.",
+    "The SBR is in I2, First Court: through the Great Gate and turn left.",
+    "The Chapel was designed by George Gilbert Scott and finished in 1869.",
+    "The Chapel tower is about 49 m (163 ft) tall.",
+    "Choral Evensong is at 6.30 pm, Tuesday to Sunday.",
+    "The Porters' Lodge is at the Great Gate. They know where you are.",
+    "The Samuel Butler Room was founded in 1960.",
+    "Samuel Butler was at St John's from 1854 to 1858.",
+    "The SBR has a TV with a Wii, a pool table, a piano and board games.",
+    "Formal Hall can be booked through UPay."
+  ],
+  "milestones": [
+    { "m": 49, "text": "Top of the Chapel tower! The port is not here either." },
+    { "m": 100, "text": "Higher than Ely Cathedral. Still no sherry." },
+    { "m": 200, "text": "Cloud level. A Porter is already up here." },
+    { "m": 400, "text": "Space. The Porters' Lodge has a branch office." }
+  ],
+  "deaths": {
+    "fell": [
+      "Fell back into Chapel Court. The sherry is gone.",
+      "Missed the bench. Landed in the Buttery queue.",
+      "Down you go. A Porter asks if you are a member of College.",
+      "Gravity wins. It is a Fellow."
+    ],
+    "porter": [
+      "Caught by a Porter. Escorted off the premises.",
+      "A Porter took your name. And your sherry.",
+      "Collared. The Dean will hear about this.",
+      "Porter got you. Port & Sherry is cancelled for you this term."
+    ]
+  }
+}
