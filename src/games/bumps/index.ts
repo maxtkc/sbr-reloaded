@@ -694,13 +694,15 @@ export default function start(root: HTMLElement): () => void {
     }
     // Station boards on the south bank.
     for (const st of data.stations) {
-      const px = sx(st.at);
+      let px = sx(st.at);
       if (px < -200 || px > W + 200) continue;
       const top = sy(cy(st.at) + HALF + 1.6);
       const size = Math.max(11, Math.round(k * 0.85));
       ctx.font = `600 ${size}px Georgia, serif`;
       const w = ctx.measureText(st.name).width + size;
       const h = size * 1.7;
+      // Railway Bridge's board sits beside the deck, which is drawn over it.
+      if (st.name === 'Railway Bridge') px += 5.5 * k + w / 2;
       ctx.fillStyle = CREAM;
       ctx.strokeStyle = RED;
       ctx.lineWidth = 2;
