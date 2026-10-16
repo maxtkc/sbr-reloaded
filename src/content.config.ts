@@ -16,6 +16,7 @@ export const eventCategories = [
   'formal',
   'freshers',
   'sans-frontieres',
+  'welfare',
 ] as const;
 
 // Landing page and subpage text blocks.
@@ -59,18 +60,27 @@ const quicklinks = defineCollection({
 
 const events = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/events' }),
-  schema: z.object({
-    title: z.string(),
-    start: localDateTime,
-    end: localDateTime,
-    allDay: z.boolean().default(false),
-    rrule: z.string().optional(),
-    location: z.string(),
-    category: z.enum(eventCategories),
-    ticketUrl: z.url().optional(),
-    // Placeholder date, shown as "to be confirmed".
-    tbc: z.boolean().default(false),
-  }),
+  schema: ({ image }) =>
+    z
+      .object({
+        title: z.string(),
+        start: localDateTime,
+        end: localDateTime,
+        allDay: z.boolean().default(false),
+        rrule: z.string().optional(),
+        location: z.string(),
+        category: z.enum(eventCategories),
+        ticketUrl: z.url().optional(),
+        // Placeholder date, shown as "to be confirmed".
+        tbc: z.boolean().default(false),
+        // Flier or photo.
+        image: image().optional(),
+        imageAlt: z.string().optional(),
+      })
+      // The CMS datetime picker always stores a time; all-day events only use the date.
+      .transform((e) =>
+        e.allDay ? { ...e, start: e.start.slice(0, 10), end: e.end.slice(0, 10) } : e,
+      ),
 });
 
 const gallery = defineCollection({

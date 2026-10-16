@@ -41,15 +41,15 @@ const MAX_SPEED = 40;
 // Part speed that counts as a fling or a hard landing.
 const HARD = 14;
 
-const NAVY = '#1b2a4a';
-const LIGHT = '#3a5a8c';
-const RED = '#c8102e';
+const NAVY = '#152b4e';
+const LIGHT = '#82b3bb';
+const RED = '#e3261c';
 const INK = '#1d1a17';
 
 const CSS = `
 .rd-canvas{position:fixed;inset:0;z-index:2147480500;pointer-events:none;display:none}
 .rd-bubble{position:fixed;z-index:2147480600;pointer-events:none;max-width:14rem;background:#fff;color:#1d1a17;
-font:400 .85rem/1.3 var(--sans,system-ui,sans-serif);border:2px solid var(--primary,#1b2a4a);border-radius:.6rem;
+font:400 .85rem/1.3 var(--sans,system-ui,sans-serif);border:2px solid var(--primary,#152b4e);border-radius:.6rem;
 padding:.4rem .6rem;box-shadow:0 4px 12px rgba(0,0,0,.25)}
 .rd-grab,.rd-grab *{cursor:grab!important}
 .rd-grabbing,.rd-grabbing *{cursor:grabbing!important;user-select:none!important}

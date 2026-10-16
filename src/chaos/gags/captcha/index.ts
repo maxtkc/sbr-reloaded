@@ -56,7 +56,7 @@ border-radius:.2rem;background:#f9f9f9}
 animation:cap-rot calc(.8s * var(--cap-slow)) linear infinite}
 .cap-check label{flex:1;cursor:pointer}
 .cap-brand{text-align:center;font-size:.65rem;color:#5d564e;line-height:1.2}
-.cap-brand b{display:block;font-size:.75rem;color:var(--primary-light,#3a5a8c)}
+.cap-brand b{display:block;font-size:.75rem;color:var(--primary,#152b4e)}
 .cap-head{background:#4a90e2;color:#fff;padding:.9rem 1rem}
 .cap-head strong{display:block;font-size:1.2rem}
 .cap-head small{display:block;font-size:.8rem;opacity:.9}

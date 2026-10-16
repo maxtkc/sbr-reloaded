@@ -61,10 +61,10 @@ const CSS = `
 .gv-porters,.gv-toast{position:absolute;left:50%;transform:translateX(-50%);z-index:9;
 font:600 .95rem/1.2 var(--sans,system-ui,sans-serif);border-radius:999px;white-space:nowrap;
 box-shadow:0 4px 14px rgba(0,0,0,.3)}
-.gv-porters{padding:.6rem 1.2rem;border:2px solid var(--accent-light,#ff6b7d);background:var(--accent,#c8102e);
+.gv-porters{padding:.6rem 1.2rem;border:2px solid var(--accent-light,#ff8a80);background:var(--accent,#e3261c);
 color:#fff;cursor:pointer}
-.gv-porters:hover{background:var(--accent-dark,#8f0b20)}
-.gv-toast{padding:.6rem 1.2rem;background:var(--primary,#1b2a4a);color:#fff;transition:opacity .4s}
+.gv-porters:hover{background:var(--accent-dark,#a8190f)}
+.gv-toast{padding:.6rem 1.2rem;background:var(--primary,#152b4e);color:#fff;transition:opacity .4s}
 `;
 
 const transparent = (c: string) => c === 'transparent' || /^rgba\(.*,\s*0\)$/.test(c);

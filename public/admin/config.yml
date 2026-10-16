@@ -12,12 +12,12 @@ backend:
     uploadMedia: 'cms: upload "{{path}}"'
     deleteMedia: 'cms: delete "{{path}}"'
 
-site_url: https://maxtkc.github.io/sbr-reloaded/
-display_url: https://maxtkc.github.io/sbr-reloaded/
+site_url: https://sjcsbr.com/
+display_url: https://sjcsbr.com/
 
 # Images inserted into markdown bodies. Served from public/, so the base path is included.
 media_folder: public/uploads
-public_folder: /sbr-reloaded/uploads
+public_folder: /uploads
 
 # Empty optional fields would fail the zod schemas (e.g. category: ''), so drop them.
 output:
@@ -40,18 +40,22 @@ collections:
     identifier_field: title
     summary: '{{title}} ({{start}})'
     sortable_fields: [start, title, category]
+    media_folder: /src/assets/events
+    public_folder: ../../assets/events
     fields:
       - { name: title, label: Title, widget: string }
       - name: start
         label: Start
-        widget: string
-        hint: 'Local UK time. YYYY-MM-DDTHH:MM (e.g. 2026-11-03T19:30), or YYYY-MM-DD for all-day events.'
-        pattern: ['^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2})?$', 'Use YYYY-MM-DD or YYYY-MM-DDTHH:MM']
+        widget: datetime
+        type: datetime-local
+        format: 'YYYY-MM-DDTHH:mm'
+        hint: 'Local UK time. For all-day events the time is ignored.'
       - name: end
         label: End
-        widget: string
-        hint: 'Same format as Start. For all-day events, the last day of the event.'
-        pattern: ['^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2})?$', 'Use YYYY-MM-DD or YYYY-MM-DDTHH:MM']
+        widget: datetime
+        type: datetime-local
+        format: 'YYYY-MM-DDTHH:mm'
+        hint: 'For all-day events, the last day of the event (time is ignored).'
       - { name: allDay, label: All day, widget: boolean, default: false, required: false }
       - name: rrule
         label: Repeat rule
@@ -68,12 +72,19 @@ collections:
           - { label: Formal Halls, value: formal }
           - { label: "Freshers' Fortnight", value: freshers }
           - { label: Sans Frontieres, value: sans-frontieres }
+          - { label: Welfare, value: welfare }
       - name: ticketUrl
         label: Ticket link
         widget: string
         required: false
         pattern: ['^https?://', 'Must be a full URL starting with https://']
       - { name: tbc, label: Date to be confirmed, widget: boolean, default: false, required: false }
+      - { name: image, label: Flier or photo, widget: image, required: false }
+      - name: imageAlt
+        label: Image description
+        widget: string
+        required: false
+        hint: 'Short description for screen readers. Defaults to "<title> flier".'
       - { name: body, label: Description, widget: markdown }
 
   - name: committee
@@ -148,7 +159,7 @@ collections:
         label: Event category
         widget: select
         required: false
-        options: [academic, ents, formal, freshers, sans-frontieres]
+        options: [academic, ents, formal, freshers, sans-frontieres, welfare]
       - { name: author, label: Author, widget: string, required: false }
       - { name: body, label: Text, widget: markdown }
 
