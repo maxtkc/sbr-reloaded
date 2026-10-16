@@ -37,15 +37,15 @@ const SKIP =
 const CSS = `
 .pong-canvas{position:fixed;inset:0;z-index:2147481000;pointer-events:none;display:none}
 .pong-score{position:fixed;left:1rem;bottom:1rem;z-index:2147481000;pointer-events:none;
-font:700 .9rem/1 var(--sans,system-ui,sans-serif);color:#fff;background:var(--primary-light,#3a5a8c);
-border:2px solid var(--accent,#c8102e);border-radius:.3rem;padding:.4rem .6rem;display:none}
+font:700 .9rem/1 var(--sans,system-ui,sans-serif);color:var(--primary,#152b4e);background:var(--primary-light,#82b3bb);
+border:2px solid var(--accent,#e3261c);border-radius:.3rem;padding:.4rem .6rem;display:none}
 .pong-bubble{position:fixed;z-index:2147481000;pointer-events:none;max-width:14rem;background:#fff;color:#1d1a17;
-font:400 .85rem/1.3 var(--sans,system-ui,sans-serif);border:2px solid var(--primary,#1b2a4a);border-radius:.6rem;
+font:400 .85rem/1.3 var(--sans,system-ui,sans-serif);border:2px solid var(--primary,#152b4e);border-radius:.6rem;
 padding:.4rem .6rem;box-shadow:0 4px 12px rgba(0,0,0,.25)}
 .pong-crack{position:absolute;pointer-events:none;z-index:2147482500;overflow:hidden}
 .pong-crack svg{position:absolute;inset:0;width:100%;height:100%}
 .pong-crack span{position:absolute;transform:translate(-50%,-50%) rotate(-6deg);white-space:nowrap;
-font:700 .75rem/1 var(--sans,system-ui,sans-serif);color:#fff;background:var(--accent,#c8102e);padding:.25rem .4rem;
+font:700 .75rem/1 var(--sans,system-ui,sans-serif);color:#fff;background:var(--accent,#e3261c);padding:.25rem .4rem;
 border-radius:.2rem;opacity:.9}
 `;
 
@@ -388,9 +388,9 @@ export default function pong(): (() => void) | void {
     ctx.stroke();
     ctx.setLineDash([]);
 
-    paddle(r.edge, playerU(r.edge), INSET, '#3a5a8c');
+    paddle(r.edge, playerU(r.edge), INSET, '#82b3bb');
     // AI paddle is gold on the top edge, where red clashes with the header.
-    const aiColor = r.edge === 'bottom' ? '#c8102e' : '#1b2a4a';
+    const aiColor = r.edge === 'bottom' ? '#e3261c' : '#152b4e';
     paddle(r.edge, r.ai, D - INSET - THICK, aiColor);
 
     // AI face just inside its paddle.
@@ -405,7 +405,7 @@ export default function pong(): (() => void) | void {
       ctx.drawImage(r.img, fx - FACE, fy - FACE, FACE * 2, FACE * 2);
     }
     ctx.restore();
-    ctx.strokeStyle = '#c8102e';
+    ctx.strokeStyle = '#e3261c';
     ctx.lineWidth = 3;
     ctx.beginPath();
     ctx.arc(fx, fy, FACE, 0, Math.PI * 2);
@@ -424,7 +424,7 @@ export default function pong(): (() => void) | void {
     }
     ctx.beginPath();
     ctx.arc(bx, by, rad, 0, Math.PI * 2);
-    ctx.fillStyle = '#c8102e';
+    ctx.fillStyle = '#e3261c';
     ctx.fill();
     ctx.strokeStyle = '#1d1a17';
     ctx.lineWidth = 2;

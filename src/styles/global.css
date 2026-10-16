@@ -1,10 +1,10 @@
 :root {
-  --primary: #1b2a4a;
-  --primary-dark: #0f1a30;
-  --primary-light: #3a5a8c;
-  --accent: #c8102e;
-  --accent-dark: #8f0b20;
-  --accent-light: #ff6b7d;
+  --primary: #152b4e;
+  --primary-dark: #0c1a31;
+  --primary-light: #82b3bb;
+  --accent: #e3261c;
+  --accent-dark: #a8190f;
+  --accent-light: #ff8a80;
   --ink: #161b26;
   --muted: #545c6b;
   --paper: #f6f7fa;
@@ -163,7 +163,7 @@ img {
   padding: 0.1em 0.6em;
   border-radius: 999px;
   background: var(--primary-light);
-  color: #fff;
+  color: var(--primary);
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.03em;
@@ -178,4 +178,24 @@ img {
   html {
     scroll-behavior: auto;
   }
+}
+
+.filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 1.25rem;
+}
+.chip {
+  padding: 0.3em 0.9em;
+  border: 1px solid var(--primary-light);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--primary);
+  font: 600 0.85rem var(--sans);
+  cursor: pointer;
+}
+.chip[aria-pressed='true'] {
+  background: var(--primary-light);
+  color: var(--primary);
 }

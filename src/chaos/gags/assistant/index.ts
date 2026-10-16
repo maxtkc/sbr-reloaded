@@ -36,7 +36,7 @@ interface Data {
 }
 
 const CSS = `
-.sbot{--sbot-red:var(--primary,#1b2a4a);--sbot-gold:var(--accent,#c8102e);--sbot-slow:1;
+.sbot{--sbot-red:var(--primary,#152b4e);--sbot-gold:var(--accent,#e3261c);--sbot-slow:1;
 position:fixed;right:1rem;bottom:1rem;z-index:2147482000;font:400 .95rem/1.4 var(--sans,system-ui,sans-serif);color:#1d1a17}
 .sbot-btn{position:relative;width:4rem;height:4rem;border-radius:50%;border:3px solid var(--sbot-gold);padding:0;
 background:var(--sbot-red);cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.3)}
@@ -74,7 +74,7 @@ background:#fff;border-radius:1rem;padding:.15rem .65rem;cursor:pointer;text-dec
 .sbot-also{margin-top:.45rem;font-size:.8rem}
 .sbot-also button{background:none;border:0;padding:0;font:inherit;color:var(--sbot-red);text-decoration:underline;cursor:pointer}
 .sbot-flash{scroll-margin:6rem;animation:sbot-flash calc(2.4s * var(--sbot-slow,1)) ease-out}
-@keyframes sbot-flash{0%,45%{outline:3px solid var(--accent,#c8102e);outline-offset:6px}100%{outline:3px solid transparent;outline-offset:6px}}
+@keyframes sbot-flash{0%,45%{outline:3px solid var(--accent,#e3261c);outline-offset:6px}100%{outline:3px solid transparent;outline-offset:6px}}
 .sbot-form{display:flex;border-top:1px solid #e4dccd}
 .sbot-form input{flex:1;min-width:0;border:0;padding:.7rem;font:inherit}
 .sbot-form button{border:0;background:var(--sbot-red);color:#fff;font:600 .9rem var(--sans,sans-serif);padding:0 1rem;cursor:pointer}

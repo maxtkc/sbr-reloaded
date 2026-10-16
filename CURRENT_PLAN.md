@@ -109,7 +109,7 @@ src/games/<slug>/        index.ts (export default start(root: HTMLElement): () =
   a one-off, not run in CI.
 - Collections and zod schemas: `sections` (landing text blocks), `committee` (name, role, bio, email, photo?, order,
   inGames), `quicklinks` (group, label, url), `events` (title, start, end, allDay, rrule?, location, description,
-  category: academic|ents|formal|freshers|sans-frontieres, ticketUrl?), `gallery`, `instagram` (url, caption?), `jokes`.
+  category: academic|ents|formal|freshers|sans-frontieres|welfare, ticketUrl?), `gallery`, `instagram` (url, caption?), `jokes`.
 - Freshers' Guide: download PDF via `https://drive.google.com/uc?export=download&id=1vPmbdIw2yIEAaw-goCRs07Y6I4Q2S2XQ`,
   `pdftotext -layout`, hand-clean into `src/data/guide.md` with `##` per section.
 - Powles history article -> `src/content/sections/history.md`.
@@ -188,8 +188,9 @@ src/games/<slug>/        index.ts (export default start(root: HTMLElement): () =
 - Write `docs/cms-setup.md`: OAuth App + Worker deploy steps.
 - Checklist: `/admin` loads and lists collections (login once the Worker exists); a test issue with `approved` creates a PR.
 - Notes: Sveltia CMS pinned to 0.222.1 (unpkg). `config.yml` validated against the package's JSON schema
-  (`schema/sveltia-cms.json`). `base_url` is `https://sveltia-cms-auth.maxtkc.workers.dev`. Dates are plain string
-  fields with the same regex as zod (the datetime widget cannot store both `YYYY-MM-DD` and `YYYY-MM-DDTHH:MM`).
+  (`schema/sveltia-cms.json`). `base_url` is `https://sveltia-cms-auth.maxtkc.workers.dev`. Event start/end use the
+  datetime widget (native picker) with format `YYYY-MM-DDTHH:mm`; all-day events store `T00:00` and the zod schema
+  cuts them to `YYYY-MM-DD` when `allDay` is true.
   `output.omit_empty_optional_fields` keeps empty optional fields (e.g. `category: ''`) out of files so zod passes.
   Committee/gallery images use collection-level relative media folders (`../../assets/<x>`) so `image()` resolves;
   markdown body images go to `public/uploads`. `sections` is edit-only (no create/delete). `jokes` is a generic
