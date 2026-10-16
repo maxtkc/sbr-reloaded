@@ -29,7 +29,7 @@ npx wrangler deploy
 1. Open https://github.com/settings/applications/new (personal account settings, Developer settings, OAuth Apps).
 2. Fill in:
    - Application name: `SBR CMS`
-   - Homepage URL: `https://maxtkc.github.io/sbr-reloaded/`
+   - Homepage URL: `https://sjcsbr.com/`
    - Authorization callback URL: `<Worker URL>/callback`, e.g. `https://sveltia-cms-auth.maxtkc.workers.dev/callback`
    - Leave "Enable Device Flow" unticked.
 3. Click "Register application".
@@ -43,11 +43,11 @@ From the `sveltia-cms-auth` directory:
 ```sh
 npx wrangler secret put GITHUB_CLIENT_ID       # paste the Client ID
 npx wrangler secret put GITHUB_CLIENT_SECRET   # paste the client secret
-npx wrangler secret put ALLOWED_DOMAINS        # type: maxtkc.github.io
+npx wrangler secret put ALLOWED_DOMAINS        # type: sjcsbr.com,maxtkc.github.io
 ```
 
-Each command updates the live Worker; no redeploy needed. If a custom domain is added later, rerun the last command
-with a comma-separated list, e.g. `maxtkc.github.io,sbr.example.org`.
+Each command updates the live Worker; no redeploy needed. To add another domain later, rerun the last command
+with a comma-separated list, e.g. `sjcsbr.com,maxtkc.github.io`.
 
 ## 4. Point the CMS at the Worker
 
@@ -62,14 +62,14 @@ Commit and push to `main`, then wait for the "Deploy to GitHub Pages" action to 
 
 ## 5. Log in
 
-1. Open https://maxtkc.github.io/sbr-reloaded/admin/
+1. Open https://sjcsbr.com/admin/
 2. Click "Sign In with GitHub", then "Authorize" in the popup.
 3. The sidebar lists Events, Committee, Page text, Quick links, Gallery, Instagram posts, Gag text.
 
 Test: open an event, change one word, click Save. A commit `cms: update events "..."` appears on `main` and the
 site redeploys.
 
-Local alternative (no Worker needed): run `npm run dev`, open http://localhost:4321/sbr-reloaded/admin/ in Chrome or
+Local alternative (no Worker needed): run `npm run dev`, open http://localhost:4321/admin/ in Chrome or
 Edge, click "Work with Local Repository" and pick this repo folder. Edits are written to disk; commit them yourself.
 
 ## 6. Repo settings for event submissions
