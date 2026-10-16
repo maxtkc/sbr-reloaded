@@ -1,9 +1,10 @@
 ---
-// Solbee data for the assistant gag: validated joke file and avatar URL, as JSON for client code.
+// Solbee data for the assistant gag: validated joke file, avatar, manager photo and email, and the search index URL.
 import { getEntry } from 'astro:content';
 import { getImage } from 'astro:assets';
 import { z } from 'astro/zod';
 import avatar from '../assets/faces/soleh-anderlini.cutout.png';
+import { url } from '../lib/url';
 
 const lines = z.array(z.string()).min(1);
 const schema = z.object({
@@ -13,6 +14,21 @@ const schema = z.object({
   nudges: lines,
   fallbacks: lines,
   facts: lines,
+  manager: z.object({
+    link: z.string(),
+    back: z.string(),
+    title: z.string(),
+    subtitle: z.string(),
+    escalate: lines,
+    hold: lines,
+    intro: lines,
+    prefixes: lines,
+    also: z.string(),
+    show: z.string(),
+    open: z.string(),
+    misses: lines,
+    offline: z.string(),
+  }),
   intents: z
     .array(
       z.object({
@@ -28,9 +44,25 @@ const schema = z.object({
 const entry = await getEntry('jokes', 'assistant');
 const data = entry ? schema.parse(entry.data) : null;
 const img = data ? await getImage({ src: avatar, width: 128, format: 'webp' }) : null;
+const soleh = await getEntry('committee', 'soleh-anderlini');
+const photo = soleh?.data.photo
+  ? await getImage({ src: soleh.data.photo, width: 128, format: 'webp' })
+  : null;
+const manager = data && {
+  ...data.manager,
+  photo: photo?.src ?? img?.src,
+  email: soleh?.data.email ?? '',
+};
 // Escape < so text cannot close the script tag.
 const json =
-  data && img ? JSON.stringify({ ...data, avatar: img.src }).replace(/</g, '\\u003c') : null;
+  data && img
+    ? JSON.stringify({
+        ...data,
+        avatar: img.src,
+        manager,
+        index: url('/solbee-index.json'),
+      }).replace(/</g, '\\u003c')
+    : null;
 ---
 
 {json && <script type="application/json" id="assistant-data" set:html={json} />}

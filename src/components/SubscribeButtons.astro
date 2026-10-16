@@ -7,16 +7,16 @@ const links = subscribeLinks(icsUrl);
 ---
 
 <div class="btn-row">
-  <a class="btn" href={links.webcal}>
+  <a class="btn" href={links.webcal} data-captcha>
     Subscribe to the calendar
   </a>
-  <a class="btn secondary" href={links.google} target="_blank" rel="noopener">
+  <a class="btn secondary" href={links.google} target="_blank" data-captcha rel="noopener">
     Subscribe in Google Calendar
   </a>
-  <a class="btn secondary" href={links.outlook} target="_blank" rel="noopener">
+  <a class="btn secondary" href={links.outlook} target="_blank" data-captcha rel="noopener">
     Subscribe in Outlook
   </a>
-  <a class="btn secondary" href={url('/calendar.ics')} download="sbr.ics">
+  <a class="btn secondary" href={url('/calendar.ics')} download="sbr.ics" data-captcha>
     Download .ics
   </a>
   <a

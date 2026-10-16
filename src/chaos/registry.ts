@@ -27,6 +27,8 @@ export interface Game {
   touch: boolean;
   // Text for the close button instead of an X.
   closeLabel?: string;
+  // Text for a button that follows the clicked link instead of playing.
+  bypassLabel?: string;
   // Site path (e.g. '/freshers') where the game opens on page load.
   autoOpen?: string;
   load: () => Promise<GameModule>;
@@ -101,6 +103,7 @@ export const games: Record<string, Game> = {
     title: "Jack's Gelato Stand",
     trigger: '',
     touch: true,
+    bypassLabel: 'Just the link',
     load: () => import('../games/gelato'),
   },
   minecraft: {

@@ -22,15 +22,17 @@ document.addEventListener(
     if (!slug) return;
     e.preventDefault();
     e.stopImmediatePropagation();
-    open(slug, games[slug].closeLabel);
+    const { closeLabel, bypassLabel } = games[slug];
+    const href = e.target.closest('a[href]')?.getAttribute('href');
+    open(slug, closeLabel, bypassLabel && href ? { label: bypassLabel, href } : undefined);
   },
   true,
 );
 
-// Opens a game straight away on its autoOpen page.
+// Opens a game straight away on its autoOpen page, unless the URL points at a section.
 const here = location.pathname.replace(/\/$/, '');
 for (const [slug, game] of Object.entries(games)) {
-  if (game.autoOpen && url(game.autoOpen).replace(/\/$/, '') === here) {
+  if (!location.hash && game.autoOpen && url(game.autoOpen).replace(/\/$/, '') === here) {
     open(slug, game.closeLabel);
     break;
   }

@@ -1,4 +1,6 @@
 // Intent matchers for Solbee: keyword hits (instant) or MiniLM sentence embeddings (lazy-loaded model).
+import { DTYPE, MODEL } from '../../../lib/solbee-model.mjs';
+
 export interface Intent {
   id: string;
   keywords: string[];
@@ -34,17 +36,16 @@ export function keywordMatcher(intents: Intent[]): Matcher {
   };
 }
 
-const MODEL = 'Xenova/all-MiniLM-L6-v2';
 // Minimum cosine similarity to count as a match.
 const THRESHOLD = 0.35;
 
-type Embed = (texts: string[]) => Promise<Float32Array[]>;
+export type Embed = (texts: string[]) => Promise<Float32Array[]>;
 
 // Loads the feature-extraction pipeline once. Model files are cached by the library in the browser Cache API.
 let embedder: Promise<Embed> | undefined;
-function loadEmbedder(): Promise<Embed> {
+export function loadEmbedder(): Promise<Embed> {
   embedder ??= import('@huggingface/transformers').then(async ({ pipeline }) => {
-    const extract = await pipeline('feature-extraction', MODEL);
+    const extract = await pipeline('feature-extraction', MODEL, { dtype: DTYPE });
     return async (texts) => {
       const out = await extract(texts, { pooling: 'mean', normalize: true });
       const [n, dim] = out.dims;

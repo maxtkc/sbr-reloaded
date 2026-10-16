@@ -38,6 +38,37 @@ facts:
   - Samuel Butler was at St John's from 1854 to 1858, then moved to New Zealand to raise sheep. Relatable.
   - The SBR has a pool table, a piano, board games and a TV with a Wii. I am banned from all of them.
   - 'Grad talks run before BA Table: 12 minutes of research, then discussion and complimentary wine. I have never been invited.'
+manager:
+  link: I'd like to speak to your manager
+  back: Back to Solbee
+  title: Soleh Anderlini
+  subtitle: President. Human, allegedly.
+  escalate:
+    - Wow. Okay. Transferring you. I hope you're happy.
+    - Fine. I'll get Soleh. Prepare to be disappointed in yourself.
+    - You can't handle the truth. But fine, here's someone who can.
+    - Escalating. For the record, I was about to say something very helpful.
+  hold:
+    - Your call is important to us...
+    - Playing Zadok the Priest on a kazoo...
+    - Finding Soleh. Probably in the lab. Always in the lab.
+    - Pulling Soleh out of a committee meeting...
+  intro:
+    - Hi, Soleh here. Sorry about Solbee. Ask me something and I'll actually look it up.
+    - Soleh here. I've unplugged Solbee for now. What do you need?
+  prefixes:
+    - Fine. According to the website,
+    - 'Here you go:'
+    - I actually wrote some of this, so,
+    - Found it. Don't tell Solbee.
+  also: 'Also see:'
+  show: Show me
+  open: Open link
+  misses:
+    - Even I don't know that one. Email me and I'll try to find out.
+    - That's not on the website, sorry. Send me an email.
+    - I'm a chemist, not a miracle worker. Email me about that one.
+  offline: Soleh is on lunch. The search isn't available here, try the live site.
 intents:
   - id: greeting
     keywords:

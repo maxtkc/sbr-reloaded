@@ -55,10 +55,10 @@ const STAGGER = 15;
 const TOAST = 'The Porters have tidied up. Please keep off the grass.';
 
 const CSS = `
-.gv-layer{position:absolute;left:0;top:0;overflow:hidden;pointer-events:none;z-index:2147479000}
+.gv-layer{position:absolute;left:0;top:0;overflow:hidden;pointer-events:none}
 .gv-gone,.gv-gone *{visibility:hidden!important}
 .gv-grabbing,.gv-grabbing *{cursor:grabbing!important;user-select:none!important}
-.gv-porters,.gv-toast{position:absolute;left:50%;transform:translateX(-50%);z-index:2147480000;
+.gv-porters,.gv-toast{position:absolute;left:50%;transform:translateX(-50%);z-index:9;
 font:600 .95rem/1.2 var(--sans,system-ui,sans-serif);border-radius:999px;white-space:nowrap;
 box-shadow:0 4px 14px rgba(0,0,0,.3)}
 .gv-porters{padding:.6rem 1.2rem;border:2px solid var(--accent-light,#ff6b7d);background:var(--accent,#c8102e);
@@ -160,6 +160,8 @@ export default function gravity(): (() => void) | void {
   let wasAtBottom = true;
   let collapsing = false;
   let restoring = false;
+  // Set once the porters have tidied up; the page stays put until reload.
+  let spent = false;
   let porters: HTMLButtonElement | null = null;
   // Page y of the topmost fallen element below the header, clamped to the header bottom.
   let topY = 0;
@@ -304,7 +306,7 @@ export default function gravity(): (() => void) | void {
       touchAction: 'pan-y',
       userSelect: 'none',
       cursor: 'grab',
-      zIndex: 'auto',
+      zIndex: '9',
       willChange: 'transform',
     });
     if (box.nowrap) st.whiteSpace = 'nowrap';
@@ -342,6 +344,8 @@ export default function gravity(): (() => void) | void {
       topY = Math.max(headerBottom, below.length ? Math.min(...below) : 0);
       for (const m of made) {
         m.el.classList.add('gv-gone');
+        // Header blocks fall in front of the sticky header, the rest pass under it.
+        if (header?.contains(m.el)) m.clone.style.zIndex = '11';
         layer.append(m.clone);
         const body = Matter.Bodies.rectangle(
           m.x,
@@ -443,6 +447,7 @@ export default function gravity(): (() => void) | void {
     blip();
     showToast(TOAST);
     restoring = false;
+    spent = true;
   }
 
   function place(b: Block) {
@@ -461,7 +466,7 @@ export default function gravity(): (() => void) | void {
     const bottom = atBottom();
     const arrived = bottom && !wasAtBottom;
     wasAtBottom = bottom;
-    if (!arrived || restoring || performance.now() < settled) return;
+    if (!arrived || restoring || spent || performance.now() < settled) return;
     if (isPaused() || document.querySelector('.cap')) return;
     collapse().catch((err) => console.error('gravity collapse failed', err));
   }
