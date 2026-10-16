@@ -6,10 +6,8 @@ order: 1
 
 Associate committee memberships are designed to promote involvement in the SBR for those of you who want to make maximum impact on the postgraduate committee without the 12-month commitment required to be a committee member. The important things to know about associate committee memberships are:
 
-- **ZERO commitment!** Associate memberships are not time-limited, so you can join for as little or as long as you want. We hope this will be particularly exciting for Masters students, who we know can’t serve on committee for a full year.
-
-- **ZERO responsibility!** There are no expectations for minimum involvement to be an associate committee member. Associates will instead be added to working groups for things they are interested in, and will be invited to volunteer for whatever tasks need doing, and to contribute ideas for growing grad life in John’s. Do as much or as little as you like, when you have the time!
-
+- **Low commitment!** Associate memberships are not time-limited, so you can join for as little or as long as you want. We hope this will be particularly exciting for Masters students, who we know can’t serve on committee for a full year.
+- **Optional responsibility!** There are no expectations for minimum involvement to be an associate committee member. Associates will instead be added to working groups for things they are interested in, and will be invited to volunteer for whatever tasks need doing, and to contribute ideas for growing grad life in John’s. Do as much or as little as you like, when you have the time!
 - **MAXIMUM impact!** Grad life at John’s is made what it is by our vibrant and exciting community getting involved at any level. We want as many people to get involved with the committee as we can, to not only help run our programme of events and socials, but to foster our communities and friendships in college. Meet new people, do something really meaningful for the college community, take ownership of your SBR, and get a snazzy title to add to your CV.
 
-[Apply here](https://docs.google.com/forms/d/e/1FAIpQLSfF_lit3zuRaCK6WRsp3ttqlCfI7hu0xn4TAlOv8pGDuQv-dA/viewform) for the current academic year.
+Join this [group chat](https://chat.whatsapp.com/DZb9r91Lav7H8OD9FPs0Md?mode=gi_t) to stay in the loop for the current academic year.
