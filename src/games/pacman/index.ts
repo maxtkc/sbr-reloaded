@@ -115,8 +115,8 @@ function run(k: KAPLAYCtx): void {
   if (dancer) k.loadSprite('dancer', dancer.face);
 
   const slow = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0.7 : 1;
-  const RED = k.rgb(200, 16, 46);
-  const NAVY = k.rgb(27, 42, 74);
+  const RED = k.rgb(227, 38, 28);
+  const NAVY = k.rgb(21, 43, 78);
   const GOLD = k.rgb(209, 185, 72);
   const WHITE = k.rgb(255, 255, 255);
   const FLOOR = k.rgb(14, 14, 22);

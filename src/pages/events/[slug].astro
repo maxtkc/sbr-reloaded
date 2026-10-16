@@ -1,6 +1,7 @@
 ---
 import type { GetStaticPaths } from 'astro';
 import { getCollection, render, type CollectionEntry } from 'astro:content';
+import { Image, getImage } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SubscribeButtons from '../../components/SubscribeButtons.astro';
 import { occurrences, formatWhen, categoryLabels } from '../../lib/events';
@@ -17,24 +18,36 @@ interface Props {
   event: CollectionEntry<'events'>;
 }
 const { event } = Astro.props;
-const { title, location, category, ticketUrl, tbc, rrule, allDay } = event.data;
+const { title, location, category, ticketUrl, tbc, rrule, allDay, image, imageAlt } = event.data;
 const { Content } = await render(event);
 const dates = occurrences(event);
 const pageUrl = new URL(url(`/events/${event.id}`), Astro.site).href;
 const google = googleEventLink(event, pageUrl);
 const outlook = outlookEventLink(event, pageUrl);
+const full = image && (await getImage({ src: image, width: Math.min(1600, image.width) })).src;
 ---
 
 <BaseLayout title={title} description={plainText(event.body).slice(0, 160)}>
   <main class="section">
     <article class="wrap">
       <p class="back">
-        <a href={url('/#events')}>&lt;- All events</a>
+        <a href={url('/events')}>&lt;- All events</a>
       </p>
       <p class="kicker">
         <span class="tag">{categoryLabels[category]}</span>
       </p>
       <h1>{title}</h1>
+      {image && (
+        <a class="flier" href={full} target="_blank" rel="noopener">
+          <Image
+            src={image}
+            alt={imageAlt ?? `${title} flier`}
+            width={400}
+            densities={[1, 2]}
+            loading="eager"
+          />
+        </a>
+      )}
       <dl class="facts">
         <dt>When</dt>
         <dd>
@@ -95,11 +108,10 @@ const outlook = outlookEventLink(event, pageUrl);
 </BaseLayout>
 
 <script>
+  import { londonNow } from '../../lib/london-now';
+
   // Greys out dates that have already ended.
-  const now = new Date()
-    .toLocaleString('sv-SE', { timeZone: 'Europe/London', hour12: false })
-    .replace(' ', 'T')
-    .slice(0, 16);
+  const now = londonNow();
   for (const li of document.querySelectorAll<HTMLLIElement>('.dates li[data-end]')) {
     li.classList.toggle('past', (li.dataset.end ?? '') < now);
   }
@@ -112,8 +124,31 @@ const outlook = outlookEventLink(event, pageUrl);
   .kicker {
     margin: 0;
   }
+  h2 {
+    clear: both;
+  }
   h1 {
     margin: 0.3rem 0 1rem;
+  }
+  .flier {
+    float: right;
+    width: min(18rem, 40%);
+    margin: 0 0 1rem 1.5rem;
+  }
+  .flier img {
+    display: block;
+    width: 100%;
+    border-radius: var(--radius);
+    box-shadow: 0 4px 16px rgb(0 0 0 / 0.15);
+  }
+  @media (max-width: 36rem) {
+    .flier {
+      float: none;
+      display: block;
+      width: auto;
+      max-width: 22rem;
+      margin: 0 0 1.25rem;
+    }
   }
   .facts {
     display: grid;

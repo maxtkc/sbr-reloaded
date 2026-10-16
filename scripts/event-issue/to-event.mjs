@@ -10,6 +10,7 @@ const categories = {
   'Formal Halls': 'formal',
   "Freshers' Fortnight": 'freshers',
   'Sans Frontieres': 'sans-frontieres',
+  Welfare: 'welfare',
 };
 
 // Splits "### Label\n\nvalue" blocks into { label: value }.
@@ -23,6 +24,36 @@ export function parseForm(body) {
     fields[label] = value === '_No response_' ? '' : value;
   }
   return fields;
+}
+
+// First image URL in a markdown or HTML image, limited to GitHub-hosted uploads.
+export function findImageUrl(text) {
+  const m = text.match(/!\[[^\]]*\]\((\S+?)\)|<img[^>]*\ssrc="([^"]+)"/);
+  const src = m && (m[1] || m[2]);
+  if (!src) return '';
+  const { protocol, hostname, pathname } = new URL(src);
+  const ok =
+    protocol === 'https:' &&
+    ((hostname === 'github.com' && pathname.startsWith('/user-attachments/')) ||
+      hostname.endsWith('.githubusercontent.com'));
+  return ok ? src : fail(`Image must be uploaded to the issue, got "${src}"`);
+}
+
+const imageTypes = {
+  'image/png': 'png',
+  'image/jpeg': 'jpg',
+  'image/webp': 'webp',
+  'image/gif': 'gif',
+};
+
+// Downloads an issue attachment, returning its bytes and file extension.
+async function download(src) {
+  const headers = process.env.GH_TOKEN ? { Authorization: `Bearer ${process.env.GH_TOKEN}` } : {};
+  const res = await fetch(src, { headers, redirect: 'follow' });
+  if (!res.ok) fail(`Could not download image (${res.status})`);
+  const type = (res.headers.get('content-type') || '').split(';')[0];
+  const ext = imageTypes[type] || fail(`Image must be PNG, JPEG, WebP or GIF, got "${type}"`);
+  return { ext, bytes: Buffer.from(await res.arrayBuffer()) };
 }
 
 function fail(msg) {
@@ -52,7 +83,8 @@ function slugify(s) {
     .replace(/-$/, '');
 }
 
-export function toEvent(body) {
+// `image` is the frontmatter path of an already saved flier, if any.
+export function toEvent(body, image) {
   const f = parseForm(body);
   const title = f['Event name'] || fail('Missing event name');
   const date = f['Date'];
@@ -63,6 +95,7 @@ export function toEvent(body) {
   const category = categories[f['Category']] || fail(`Unknown category: ${f['Category']}`);
   const description = f['Description'] || fail('Missing description');
   const ticketUrl = f['Ticket link'];
+  const imageUrl = findImageUrl(f['Flier or photo'] || '');
 
   const dateRe = /^\d{4}-\d{2}-\d{2}$/;
   const timeRe = /^([01]\d|2[0-3]):[0-5]\d$/;
@@ -76,8 +109,9 @@ export function toEvent(body) {
   const allDay = !startTime;
   let start, end;
   if (allDay) {
-    start = date;
-    end = endDate || date;
+    // Midnight times keep the value loadable by the CMS datetime picker; the schema drops them.
+    start = `${date}T00:00`;
+    end = `${endDate || date}T00:00`;
   } else if (endTime) {
     start = `${date}T${startTime}`;
     end = `${endTime < startTime ? nextDay(date) : date}T${endTime}`;
@@ -89,17 +123,30 @@ export function toEvent(body) {
   const slug = `${slugify(title) || 'event'}-${date}`;
   const data = { title, start, end, allDay, location, category };
   if (ticketUrl) data.ticketUrl = ticketUrl;
-  return { slug, content: toFrontmatter(data, description) };
+  if (image) Object.assign(data, { image, imageAlt: `${title} flier` });
+  return { slug, imageUrl, content: toFrontmatter(data, description) };
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
   const eventPath = process.argv[2] || process.env.GITHUB_EVENT_PATH;
   const { issue } = JSON.parse(readFileSync(eventPath, 'utf8'));
-  const { slug, content } = toEvent(issue.body || '');
+  const body = issue.body || '';
+  const { slug, imageUrl } = toEvent(body);
   const path = `src/content/events/${slug}.md`;
   if (existsSync(path)) fail(`${path} already exists`);
+  let imagePath = '';
+  if (imageUrl) {
+    const { ext, bytes } = await download(imageUrl);
+    imagePath = `src/assets/events/${slug}.${ext}`;
+    writeFileSync(imagePath, bytes);
+    console.log(`Wrote ${imagePath}`);
+  }
+  const { content } = toEvent(
+    body,
+    imagePath && `../../assets/events/${slug}.${imagePath.split('.').pop()}`,
+  );
   writeFileSync(path, content);
   console.log(`Wrote ${path}`);
   if (process.env.GITHUB_OUTPUT)
-    appendFileSync(process.env.GITHUB_OUTPUT, `slug=${slug}\npath=${path}\n`);
+    appendFileSync(process.env.GITHUB_OUTPUT, `slug=${slug}\npath=${path}\nimage=${imagePath}\n`);
 }

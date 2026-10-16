@@ -1,0 +1,98 @@
+---
+import { Image } from 'astro:assets';
+import { formatWhen, categoryLabels, type Occurrence } from '../lib/events';
+import { url } from '../lib/url';
+
+interface Props {
+  occurrence: Occurrence;
+  hidden?: boolean;
+}
+const { occurrence: o, hidden = false } = Astro.props;
+const { title, allDay, category, location, ticketUrl, tbc, image, imageAlt } = o.event.data;
+---
+
+<li
+  class:list={['card', 'event', { 'has-image': image }]}
+  data-start={o.start}
+  data-end={allDay ? `${o.end}T23:59` : o.end}
+  data-category={category}
+  hidden={hidden}
+>
+  <div class="body">
+    <div class="when">
+      {formatWhen(o)}
+      {tbc && <span class="tbc">date tbc</span>}
+    </div>
+    <h3>
+      <a href={url(`/events/${o.event.id}`)}>{title}</a>
+    </h3>
+    <p class="meta">
+      <span class="tag">{categoryLabels[category]}</span> {location}
+    </p>
+    {ticketUrl && <a href={ticketUrl}>Tickets</a>}
+  </div>
+  {image && (
+    <a class="thumb" href={url(`/events/${o.event.id}`)} tabindex="-1" aria-hidden="true">
+      <Image
+        src={image}
+        alt={imageAlt ?? `${title} flier`}
+        width={160}
+        densities={[1, 2]}
+        loading="lazy"
+      />
+    </a>
+  )}
+</li>
+
+<style>
+  .event {
+    display: grid;
+    gap: 1rem;
+    border-left: 5px solid var(--primary);
+  }
+  .event.has-image {
+    grid-template-columns: 1fr auto;
+    align-items: start;
+  }
+  .body {
+    display: grid;
+    gap: 0.2rem;
+    min-width: 0;
+  }
+  .event h3 {
+    margin: 0;
+    font-size: 1.35rem;
+  }
+  .when {
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .tbc {
+    margin-left: 0.5rem;
+    font-weight: 400;
+    font-style: italic;
+  }
+  .event h3 a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .event h3 a:hover {
+    text-decoration: underline;
+  }
+  .meta {
+    margin: 0;
+  }
+  .thumb img {
+    display: block;
+    width: 6.5rem;
+    max-height: 8rem;
+    object-fit: cover;
+    border-radius: calc(var(--radius) / 2);
+  }
+  @media (max-width: 30rem) {
+    .thumb img {
+      width: 4.5rem;
+      max-height: 6rem;
+    }
+  }
+</style>

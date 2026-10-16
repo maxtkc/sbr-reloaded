@@ -124,7 +124,7 @@ function run(k: KAPLAYCtx, root: HTMLElement): () => void {
 
   const slow = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0.7 : 1;
   const RED = k.rgb(122, 15, 31);
-  const SCARF = k.rgb(200, 16, 46);
+  const SCARF = k.rgb(227, 38, 28);
   const GOLD = k.rgb(209, 185, 72);
   const WHITE = k.rgb(255, 255, 255);
   const BLACK = k.rgb(20, 20, 26);

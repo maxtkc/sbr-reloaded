@@ -28,21 +28,21 @@ const BIKE = svg(
   `<circle cx="27" cy="66" r="16" fill="none" stroke="#1d1a17" stroke-width="4"/>
   <circle cx="73" cy="66" r="16" fill="none" stroke="#1d1a17" stroke-width="4"/>
   <path d="M27 66 42 40 66 40 73 66M42 40 50 66 66 40M50 66 27 66M42 40 38 32M32 32h12M66 40 63 28h8" fill="none"
-    stroke="#1b2a4a" stroke-width="4" stroke-linejoin="round"/>`,
+    stroke="#152b4e" stroke-width="4" stroke-linejoin="round"/>`,
   '#dfe8f2',
 );
 
 const PUNT = svg(
   `<rect y="66" width="100" height="34" fill="#3d6b8a"/>
   <polygon fill="#7a4a22" points="8,58 92,58 86,70 14,70"/>
-  <line x1="62" y1="8" x2="48" y2="92" stroke="#8f0b20" stroke-width="3"/>
-  <circle cx="58" cy="34" r="6" fill="#e7c3a0"/><rect x="52" y="40" width="12" height="18" fill="#3a5a8c"/>
-  <rect x="54" y="25" width="8" height="4" fill="#c8102e"/>`,
+  <line x1="62" y1="8" x2="48" y2="92" stroke="#a8190f" stroke-width="3"/>
+  <circle cx="58" cy="34" r="6" fill="#e7c3a0"/><rect x="52" y="40" width="12" height="18" fill="#82b3bb"/>
+  <rect x="54" y="25" width="8" height="4" fill="#e3261c"/>`,
   '#cfe6f2',
 );
 
 const BUS = svg(
-  `<rect x="10" y="18" width="80" height="62" rx="6" fill="#c8102e"/>
+  `<rect x="10" y="18" width="80" height="62" rx="6" fill="#e3261c"/>
   <rect x="16" y="26" width="15" height="12" fill="#e9f2f8"/><rect x="35" y="26" width="15" height="12" fill="#e9f2f8"/>
   <rect x="54" y="26" width="15" height="12" fill="#e9f2f8"/><rect x="73" y="26" width="11" height="12" fill="#e9f2f8"/>
   <rect x="16" y="50" width="15" height="12" fill="#e9f2f8"/><rect x="35" y="50" width="15" height="12" fill="#e9f2f8"/>
@@ -60,10 +60,10 @@ const SHEEP = svg(
 );
 
 const EAGLE = svg(
-  `<polygon fill="#c8102e" points="50,40 8,18 18,48 40,56"/><polygon fill="#c8102e" points="50,40 92,18 82,48 60,56"/>
-  <ellipse cx="50" cy="56" rx="12" ry="20" fill="#c8102e"/><circle cx="50" cy="32" r="9" fill="#c8102e"/>
-  <polygon fill="#8f0b20" points="56,30 66,34 56,36"/><circle cx="52" cy="29" r="1.6" fill="#1d1a17"/>`,
-  '#1b2a4a',
+  `<polygon fill="#e3261c" points="50,40 8,18 18,48 40,56"/><polygon fill="#e3261c" points="50,40 92,18 82,48 60,56"/>
+  <ellipse cx="50" cy="56" rx="12" ry="20" fill="#e3261c"/><circle cx="50" cy="32" r="9" fill="#e3261c"/>
+  <polygon fill="#a8190f" points="56,30 66,34 56,36"/><circle cx="52" cy="29" r="1.6" fill="#1d1a17"/>`,
+  '#152b4e',
 );
 
 const PINT = svg(

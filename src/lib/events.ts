@@ -1,5 +1,6 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import rrulePkg from 'rrule';
+import { londonNow } from './london-now';
 
 const { RRule } = rrulePkg;
 
@@ -43,13 +44,7 @@ export async function allOccurrences(): Promise<Occurrence[]> {
   return events.flatMap(occurrences).sort((a, b) => a.start.localeCompare(b.start));
 }
 
-// Current Europe/London wall-clock time as "YYYY-MM-DDTHH:MM".
-export function londonNow(now = new Date()): string {
-  return now
-    .toLocaleString('sv-SE', { timeZone: 'Europe/London', hour12: false })
-    .replace(' ', 'T')
-    .slice(0, 16);
-}
+export { londonNow };
 
 // Occurrences that have not ended yet. Compares local strings, all-day ends cover the whole day.
 export function notEnded(list: Occurrence[], now = londonNow()): Occurrence[] {
@@ -80,4 +75,5 @@ export const categoryLabels: Record<EventEntry['data']['category'], string> = {
   formal: 'Formal Halls',
   freshers: "Freshers' Fortnight",
   'sans-frontieres': 'Sans Frontières',
+  welfare: 'Welfare',
 };

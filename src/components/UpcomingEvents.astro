@@ -1,7 +1,8 @@
 ---
 import SectionText from './SectionText.astro';
 import SubscribeButtons from './SubscribeButtons.astro';
-import { allOccurrences, notEnded, formatWhen, categoryLabels } from '../lib/events';
+import EventCard from './EventCard.astro';
+import { allOccurrences, notEnded, categoryLabels } from '../lib/events';
 import { url } from '../lib/url';
 
 const SHOW = 5;
@@ -38,44 +39,30 @@ const categories = Object.entries(categoryLabels).filter(([c]) => counts[c]);
     ) : (
       <ol class="events" data-show={SHOW}>
         {list.map((o, i) => (
-          <li
-            class="card event"
-            data-end={o.event.data.allDay ? `${o.end}T23:59` : o.end}
-            data-category={o.event.data.category}
-            hidden={i >= SHOW}
-          >
-            <div class="when">
-              {formatWhen(o)}
-              {o.event.data.tbc && <span class="tbc">date tbc</span>}
-            </div>
-            <h3>
-              <a href={url(`/events/${o.event.id}`)}>{o.event.data.title}</a>
-            </h3>
-            <p class="meta">
-              <span class="tag">{categoryLabels[o.event.data.category]}</span>{' '}
-              {o.event.data.location}
-            </p>
-            {o.event.data.ticketUrl && <a href={o.event.data.ticketUrl}>Tickets</a>}
-          </li>
+          <EventCard occurrence={o} hidden={i >= SHOW} />
         ))}
       </ol>
     )}
     <p class="empty" hidden>
       No upcoming events in this category.
     </p>
+    <p class="all">
+      <a class="btn secondary" href={url('/events')}>
+        See all events and calendar
+      </a>
+    </p>
     <SubscribeButtons />
   </div>
 </section>
 
 <script>
+  import { londonNow } from '../lib/london-now';
+
   // Shows the next few live occurrences for the selected category, hiding ones that ended after the build.
   const list = document.querySelector<HTMLOListElement>('ol.events');
   const empty = document.querySelector<HTMLElement>('#events .empty');
   const chips = document.querySelectorAll<HTMLButtonElement>('#events .chip');
-  const now = new Date()
-    .toLocaleString('sv-SE', { timeZone: 'Europe/London', hour12: false })
-    .replace(' ', 'T')
-    .slice(0, 16);
+  const now = londonNow();
 
   function apply(filter: string) {
     if (!list) return;
@@ -103,51 +90,7 @@ const categories = Object.entries(categoryLabels).filter(([c]) => counts[c]);
     display: grid;
     gap: 0.8rem;
   }
-  .event {
-    display: grid;
-    gap: 0.2rem;
-    border-left: 5px solid var(--primary);
-  }
-  .event h3 {
+  .all {
     margin: 0;
-    font-size: 1.35rem;
-  }
-  .when {
-    font-weight: 600;
-    color: var(--muted);
-  }
-  .tbc {
-    margin-left: 0.5rem;
-    font-weight: 400;
-    font-style: italic;
-  }
-  .event h3 a {
-    color: inherit;
-    text-decoration: none;
-  }
-  .event h3 a:hover {
-    text-decoration: underline;
-  }
-  .meta {
-    margin: 0;
-  }
-  .filter {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    margin-top: 1.25rem;
-  }
-  .chip {
-    padding: 0.3em 0.9em;
-    border: 1px solid var(--primary-light);
-    border-radius: 999px;
-    background: transparent;
-    color: var(--primary-light);
-    font: 600 0.85rem var(--sans);
-    cursor: pointer;
-  }
-  .chip[aria-pressed='true'] {
-    background: var(--primary-light);
-    color: #fff;
   }
 </style>

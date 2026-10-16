@@ -1,0 +1,526 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionText from '../../components/SectionText.astro';
+import SubscribeButtons from '../../components/SubscribeButtons.astro';
+import EventCard from '../../components/EventCard.astro';
+import { allOccurrences, categoryLabels } from '../../lib/events';
+import { url } from '../../lib/url';
+
+const list = await allOccurrences();
+const used = new Set(list.map((o) => o.event.data.category));
+const categories = Object.entries(categoryLabels).filter(([c]) => used.has(c as never));
+const calendarData = list.map((o) => ({
+  slug: o.event.id,
+  title: o.event.data.title,
+  start: o.start,
+  end: o.end,
+  allDay: o.event.data.allDay,
+  category: o.event.data.category,
+}));
+---
+
+<BaseLayout title="Events">
+  <main class="section" id="all-events">
+    <div class="wrap">
+      <h1>Events</h1>
+      <SectionText id="events-intro" />
+
+      <div class="controls">
+        <div class="filter view" role="group" aria-label="View">
+          <button type="button" class="chip" data-view="list" aria-pressed="true">
+            List
+          </button>
+          <button type="button" class="chip" data-view="calendar" aria-pressed="false">
+            Calendar
+          </button>
+        </div>
+        {categories.length > 1 && (
+          <div class="filter cats" role="group" aria-label="Filter events by category">
+            <button type="button" class="chip" data-cat="" aria-pressed="true">
+              All
+            </button>
+            {categories.map(([c, label]) => (
+              <button type="button" class="chip" data-cat={c} aria-pressed="false">
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div class="panel list-panel">
+        <div class="filter when" role="group" aria-label="Upcoming or past">
+          <button type="button" class="chip" data-past="0" aria-pressed="true">
+            Upcoming
+          </button>
+          <button type="button" class="chip" data-past="1" aria-pressed="false">
+            Past
+          </button>
+        </div>
+        <ol class="events">
+          {list.map((o) => (
+            <EventCard occurrence={o} />
+          ))}
+        </ol>
+        <p class="empty" hidden>
+          No events to show.
+        </p>
+        <nav class="pager" aria-label="Pages" hidden></nav>
+      </div>
+
+      <div class="panel calendar-panel" hidden>
+        <div class="cal-head">
+          <h2 class="cal-title" aria-live="polite"></h2>
+          <div class="cal-nav">
+            <button type="button" class="btn secondary" data-step="-1" aria-label="Previous month">
+              &lt;
+            </button>
+            <button type="button" class="btn secondary" data-step="0">
+              Today
+            </button>
+            <button type="button" class="btn secondary" data-step="1" aria-label="Next month">
+              &gt;
+            </button>
+          </div>
+        </div>
+        <div class="cal-grid" data-base={url('/events/')}></div>
+        <p class="cal-empty" hidden>
+          No events this month.
+        </p>
+        <script
+          type="application/json"
+          id="calendar-data"
+          set:html={JSON.stringify(calendarData)}
+        />
+      </div>
+
+      <h2 class="subscribe">Every SBR event</h2>
+      <p>Subscribe once and new events appear in your calendar automatically.</p>
+      <SubscribeButtons />
+    </div>
+  </main>
+</BaseLayout>
+
+<script>
+  import { londonNow } from '../../lib/london-now';
+
+  interface CalEvent {
+    slug: string;
+    title: string;
+    start: string;
+    end: string;
+    allDay: boolean;
+    category: string;
+  }
+
+  const PAGE_SIZE = 10;
+  const root = document.querySelector<HTMLElement>('#all-events')!;
+  const listPanel = root.querySelector<HTMLElement>('.list-panel')!;
+  const calPanel = root.querySelector<HTMLElement>('.calendar-panel')!;
+  const ol = root.querySelector<HTMLOListElement>('ol.events')!;
+  const items = [...ol.querySelectorAll<HTMLLIElement>('li[data-end]')];
+  const empty = root.querySelector<HTMLElement>('.list-panel .empty')!;
+  const pager = root.querySelector<HTMLElement>('.pager')!;
+  const grid = root.querySelector<HTMLElement>('.cal-grid')!;
+  const calTitle = root.querySelector<HTMLElement>('.cal-title')!;
+  const calEmpty = root.querySelector<HTMLElement>('.cal-empty')!;
+  const events: CalEvent[] = JSON.parse(
+    document.getElementById('calendar-data')?.textContent ?? '[]',
+  );
+  const now = londonNow();
+  const today = now.slice(0, 10);
+  const thisMonth = now.slice(0, 7);
+
+  // State, mirrored in the query string.
+  const params = new URLSearchParams(location.search);
+  const state = {
+    view: params.get('view') === 'calendar' ? 'calendar' : 'list',
+    cat: params.get('cat') ?? '',
+    past: params.get('past') === '1',
+    page: Math.max(1, Number(params.get('page')) || 1),
+    month: /^\d{4}-\d{2}$/.test(params.get('month') ?? '') ? params.get('month')! : thisMonth,
+  };
+
+  function syncUrl() {
+    const p = new URLSearchParams();
+    if (state.view !== 'list') p.set('view', state.view);
+    if (state.cat) p.set('cat', state.cat);
+    if (state.view === 'list') {
+      if (state.past) p.set('past', '1');
+      if (state.page > 1) p.set('page', String(state.page));
+    } else if (state.month !== thisMonth) {
+      p.set('month', state.month);
+    }
+    const qs = p.toString();
+    history.replaceState(null, '', qs ? `?${qs}` : location.pathname);
+  }
+
+  function press(selector: string, attr: string, value: string) {
+    root.querySelectorAll<HTMLButtonElement>(selector).forEach((b) => {
+      b.setAttribute('aria-pressed', String(b.getAttribute(attr) === value));
+    });
+  }
+
+  // Page numbers to show: first, last, and the current page with its neighbours.
+  function pageNumbers(current: number, total: number): (number | null)[] {
+    const out: (number | null)[] = [];
+    for (let i = 1; i <= total; i++) {
+      if (i === 1 || i === total || Math.abs(i - current) <= 1) out.push(i);
+      else if (out[out.length - 1] !== null) out.push(null);
+    }
+    return out;
+  }
+
+  function pagerButton(label: string, page: number, disabled: boolean, current = false) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'chip';
+    b.textContent = label;
+    b.disabled = disabled;
+    if (current) b.setAttribute('aria-current', 'page');
+    b.addEventListener('click', () => {
+      state.page = page;
+      render();
+      listPanel.scrollIntoView({ block: 'start' });
+    });
+    return b;
+  }
+
+  function renderList() {
+    const matches = items.filter((li) => {
+      const ended = (li.dataset.end ?? '') < now;
+      return ended === state.past && (!state.cat || li.dataset.category === state.cat);
+    });
+    // Past events read newest first.
+    if (state.past) matches.reverse();
+    const pages = Math.max(1, Math.ceil(matches.length / PAGE_SIZE));
+    state.page = Math.min(state.page, pages);
+    const shown = new Set(matches.slice((state.page - 1) * PAGE_SIZE, state.page * PAGE_SIZE));
+    items.forEach((li) => (li.hidden = !shown.has(li)));
+    ol.classList.toggle('reverse', state.past);
+    empty.hidden = matches.length > 0;
+
+    pager.replaceChildren();
+    pager.hidden = pages < 2;
+    if (pages < 2) return;
+    pager.append(pagerButton('Prev', state.page - 1, state.page === 1));
+    for (const n of pageNumbers(state.page, pages)) {
+      if (n === null) {
+        const gap = document.createElement('span');
+        gap.textContent = '...';
+        pager.append(gap);
+      } else {
+        pager.append(pagerButton(String(n), n, false, n === state.page));
+      }
+    }
+    pager.append(pagerButton('Next', state.page + 1, state.page === pages));
+  }
+
+  const pad = (n: number) => String(n).padStart(2, '0');
+  const dayName = (d: Date) =>
+    d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', timeZone: 'UTC' });
+
+  // Calendar days an event covers: every day of an all-day range, the start day for timed events.
+  function covers(e: CalEvent, day: string) {
+    const first = e.start.slice(0, 10);
+    const last = e.allDay ? e.end.slice(0, 10) : first;
+    return first <= day && day <= last;
+  }
+
+  function renderCalendar() {
+    const [y, m] = state.month.split('-').map(Number);
+    const first = new Date(Date.UTC(y, m - 1, 1));
+    calTitle.textContent = first.toLocaleDateString('en-GB', {
+      month: 'long',
+      year: 'numeric',
+      timeZone: 'UTC',
+    });
+    const base = grid.dataset.base ?? '/events/';
+    const visible = events.filter((e) => !state.cat || e.category === state.cat);
+    const lead = (first.getUTCDay() + 6) % 7;
+    const daysInMonth = new Date(Date.UTC(y, m, 0)).getUTCDate();
+    const cells = Math.ceil((lead + daysInMonth) / 7) * 7;
+
+    grid.replaceChildren();
+    for (const name of ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']) {
+      const h = document.createElement('div');
+      h.className = 'dow';
+      h.textContent = name;
+      grid.append(h);
+    }
+    let any = false;
+    for (let i = 0; i < cells; i++) {
+      const date = new Date(Date.UTC(y, m - 1, 1 + i - lead));
+      const day = `${date.getUTCFullYear()}-${pad(date.getUTCMonth() + 1)}-${pad(date.getUTCDate())}`;
+      const inMonth = date.getUTCMonth() === m - 1;
+      const todays = inMonth ? visible.filter((e) => covers(e, day)) : [];
+      if (todays.length) any = true;
+
+      const cell = document.createElement('div');
+      cell.className = 'day';
+      cell.classList.toggle('outside', !inMonth);
+      cell.classList.toggle('today', day === today);
+      cell.classList.toggle('has-events', todays.length > 0);
+      const num = document.createElement('div');
+      num.className = 'num';
+      num.textContent = String(date.getUTCDate());
+      num.dataset.long = dayName(date);
+      cell.append(num);
+      for (const e of todays) {
+        const a = document.createElement('a');
+        a.className = 'ev';
+        a.href = `${base}${e.slug}`;
+        a.dataset.category = e.category;
+        a.classList.toggle('past', (e.allDay ? `${e.end}T23:59` : e.end) < now);
+        a.title = e.title;
+        if (!e.allDay) {
+          const t = document.createElement('span');
+          t.className = 'time';
+          t.textContent = e.start.slice(11, 16);
+          a.append(t, ' ');
+        }
+        a.append(e.title);
+        cell.append(a);
+      }
+      grid.append(cell);
+    }
+    calEmpty.hidden = any;
+  }
+
+  function render() {
+    press('[data-view]', 'data-view', state.view);
+    press('[data-cat]', 'data-cat', state.cat);
+    press('[data-past]', 'data-past', state.past ? '1' : '0');
+    listPanel.hidden = state.view !== 'list';
+    calPanel.hidden = state.view !== 'calendar';
+    if (state.view === 'list') renderList();
+    else renderCalendar();
+    syncUrl();
+  }
+
+  root.querySelectorAll<HTMLButtonElement>('[data-view]').forEach((b) =>
+    b.addEventListener('click', () => {
+      state.view = b.dataset.view === 'calendar' ? 'calendar' : 'list';
+      render();
+    }),
+  );
+  root.querySelectorAll<HTMLButtonElement>('[data-cat]').forEach((b) =>
+    b.addEventListener('click', () => {
+      state.cat = b.dataset.cat ?? '';
+      state.page = 1;
+      render();
+    }),
+  );
+  root.querySelectorAll<HTMLButtonElement>('[data-past]').forEach((b) =>
+    b.addEventListener('click', () => {
+      state.past = b.dataset.past === '1';
+      state.page = 1;
+      render();
+    }),
+  );
+  root.querySelectorAll<HTMLButtonElement>('[data-step]').forEach((b) =>
+    b.addEventListener('click', () => {
+      const step = Number(b.dataset.step);
+      if (step === 0) {
+        state.month = thisMonth;
+      } else {
+        const [y, m] = state.month.split('-').map(Number);
+        const d = new Date(Date.UTC(y, m - 1 + step, 1));
+        state.month = `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}`;
+      }
+      render();
+    }),
+  );
+
+  render();
+</script>
+
+<style>
+  h1 {
+    margin-top: 0;
+  }
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0 1.5rem;
+  }
+  .controls .filter {
+    margin-top: 1rem;
+  }
+  .panel {
+    margin-top: 1.5rem;
+  }
+  .when {
+    margin-top: 0;
+  }
+  .events {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  .events.reverse {
+    flex-direction: column-reverse;
+  }
+  .pager {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .pager :global(.chip[aria-current='page']) {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+  }
+  .pager :global(.chip:disabled) {
+    opacity: 0.4;
+    cursor: default;
+  }
+  .pager :global(span) {
+    color: var(--muted);
+  }
+
+  .cal-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    margin-bottom: 0.75rem;
+  }
+  .cal-title {
+    margin: 0;
+  }
+  .cal-title::after {
+    display: none !important;
+  }
+  .cal-nav {
+    display: flex;
+    gap: 0.4rem;
+  }
+  .cal-nav .btn {
+    padding: 0.35em 0.9em;
+  }
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--line);
+    gap: 1px;
+  }
+  .cal-grid :global(.dow) {
+    padding: 0.35rem 0.5rem;
+    background: var(--primary);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
+  .cal-grid :global(.day) {
+    min-height: 6.5rem;
+    padding: 0.3rem;
+    background: var(--card);
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+  }
+  .cal-grid :global(.day.outside) {
+    background: var(--paper);
+    color: var(--muted);
+  }
+  .cal-grid :global(.num) {
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 0 0.2rem;
+  }
+  .cal-grid :global(.day.today .num) {
+    align-self: flex-start;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 999px;
+    padding: 0 0.45rem;
+  }
+  .cal-grid :global(.ev) {
+    display: block;
+    padding: 0.1rem 0.35rem;
+    border-radius: 4px;
+    border-left: 3px solid var(--cat);
+    background: color-mix(in srgb, var(--cat) 14%, transparent);
+    color: var(--ink);
+    font-size: 0.78rem;
+    line-height: 1.3;
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .cal-grid :global(.ev:hover) {
+    background: color-mix(in srgb, var(--cat) 28%, transparent);
+  }
+  .cal-grid :global(.ev.past) {
+    opacity: 0.55;
+  }
+  .cal-grid :global(.time) {
+    font-weight: 600;
+  }
+  .cal-grid :global(.ev[data-category='academic']) {
+    --cat: #152b4e;
+  }
+  .cal-grid :global(.ev[data-category='ents']) {
+    --cat: #e3261c;
+  }
+  .cal-grid :global(.ev[data-category='formal']) {
+    --cat: #b8860b;
+  }
+  .cal-grid :global(.ev[data-category='freshers']) {
+    --cat: #2a7f86;
+  }
+  .cal-grid :global(.ev[data-category='sans-frontieres']) {
+    --cat: #6a4c93;
+  }
+  .cal-grid :global(.ev[data-category='welfare']) {
+    --cat: #3d7a3d;
+  }
+  .cal-empty {
+    color: var(--muted);
+  }
+
+  /* Narrow screens: agenda of the days that have events. */
+  @media (max-width: 40rem) {
+    .cal-grid {
+      display: block;
+      background: var(--card);
+    }
+    .cal-grid :global(.dow),
+    .cal-grid :global(.day:not(.has-events)) {
+      display: none;
+    }
+    .cal-grid :global(.day) {
+      min-height: 0;
+      padding: 0.6rem 0.75rem;
+      border-top: 1px solid var(--line);
+    }
+    .cal-grid :global(.num) {
+      font-size: 0;
+    }
+    .cal-grid :global(.num::after) {
+      content: attr(data-long);
+      font-size: 0.95rem;
+    }
+    .cal-grid :global(.ev) {
+      font-size: 0.95rem;
+      padding: 0.25rem 0.5rem;
+      white-space: normal;
+    }
+  }
+
+  .subscribe {
+    margin-top: 3rem;
+  }
+</style>
