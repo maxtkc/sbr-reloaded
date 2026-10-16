@@ -694,7 +694,7 @@ playable for 30s without errors, closes cleanly, standalone URL works, touch beh
   collision adds a surcharge to a running UPay bill. Real info: BA Table Tue/Fri, swap partners as menu names.
 UPDATE: This should not be formal plate but just dining hall, because that's
 where you get a main and you add your own sides, and try not to get it to spill
-off the plate onto the tray
+off the plate onto the tray.
 
 ### Phase 26 - Pacman: Fisher Building  `[ ]`  trigger: Ents / sBrOILER ROOMS | touch: swipe
 - Maze is the Fisher Building; goal is the dancefloor. Bouncers chase while shouting speech bubbles ("Ticket?",
@@ -814,6 +814,30 @@ off the plate onto the tray
 - Notes: `src/chaos/eggs.ts` stores found ids in localStorage (`sbr-eggs`) and fires `chaos:egg`. Eggs are gags with
   an `egg` name in `registry.ts` plus every registered game (`eggList()`); a game counts when its overlay opens.
   `src/chaos/egg-counter.ts` renders the button and a `<dialog>` list in `SiteFooter.astro`.
+
+### Phase 42 - Solbee manager mode  `[x]`
+- "I'd like to speak to your manager" link under the Solbee header escalates to Soleh, who searches the site, quotes
+  the best passage and scrolls to it.
+- Notes: `src/lib/solbee-index.mjs` is an Astro integration (`astro:build:done`) that parses every built page
+  except `/games` and `/admin` with `hast-util-from-html`. It skips header/nav/script/dialog, and only keeps
+  `<address>` from the footer. It groups block text under each heading into chunks of up to 120 words; each chunk's
+  URL anchor is the innermost id (an ancestor element's, or the heading's). Link-only blocks (quick links) stay
+  separate and keep their href. Chunks under 6 words are dropped, and duplicates keep the shortest path (home page
+  first). It embeds `heading. text` with MiniLM and writes `dist/solbee-index.json` (int8 vectors as base64, about
+  280KB, 279 chunks). If embedding fails it writes text only and the build still passes. `src/lib/solbee-model.mjs`
+  holds the model id and `q8` dtype, shared with the browser matcher so the vectors agree.
+  `src/chaos/gags/assistant/search.ts` fetches the index on escalation and scores each chunk as cosine plus 0.3 x
+  keyword overlap (idf-weighted, title hits double), threshold 0.32. It falls back to keywords only (threshold 0.4)
+  if the model cannot load. In `index.ts`, manager mode shows the heading, an excerpt (~280 chars), "Show me", "Open
+  link" for external links and "Also see" for hits within 75% of the top score; a miss shows Soleh's email from the
+  committee entry. "Show me" smooth-scrolls to the matching paragraph and outlines it, closing the panel if it
+  covers the passage. For other pages it stores the target in sessionStorage (`sbot-show`), and the next page
+  highlights it once the browser's hash scroll stops. Game `autoOpen` is skipped when the URL has a hash, so
+  `/freshers#...` lands on the section instead of the crawl. Copy is in the `manager` block of `assistant.yaml`. In
+  `astro dev`, an `astro:server:setup` middleware serves the index by crawling the site's own pages from the home
+  page (only linked pages, built on first request, rebuilt after any file change).
+  Verified in headless Chromium at 375/1280px: answers, same-page and cross-page highlight, mailto on a miss, back to
+  Solbee, keyword fallback with huggingface.co blocked, missing index, no horizontal scroll.
 
 ## Verification (whole project)
 - `npm run build` clean; `npm run preview` and walk every trigger in the egg table.

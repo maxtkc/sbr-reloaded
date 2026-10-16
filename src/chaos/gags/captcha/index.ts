@@ -1,4 +1,4 @@
-// "Are you a robot": form submits and form/CMS links first go through a fake captcha that never passes.
+// "Are you a robot": form submits and form/CMS/calendar links first go through a fake captcha that never passes.
 import { isPaused } from '../../bus';
 import { found } from '../../eggs';
 import { blip, siren } from '../../shared/sfx';
@@ -17,10 +17,11 @@ interface Data {
 }
 
 type Action =
-  | { kind: 'link'; href: string; blank: boolean }
+  | { kind: 'link'; href: string; blank: boolean; download: string | null }
   | { kind: 'form'; form: HTMLFormElement; submitter: HTMLElement | null };
 
-// Links that get the captcha: Google Forms, GitHub issue forms, the CMS, and anything marked data-captcha.
+// Links that get the captcha: Google Forms, GitHub issue forms, the CMS, and anything marked data-captcha
+// (e.g. the calendar subscribe buttons).
 const LINKS = [
   'a[href*="docs.google.com/forms"]',
   'a[href*="forms.gle"]',
@@ -30,8 +31,15 @@ const LINKS = [
   '[data-captcha]',
 ].join(',');
 
-// Forms that skip the captcha (Solbee's chat box).
-const SKIP_FORMS = '.sbot-form';
+// Links that never get the captcha: the anonymous welfare request and anonymous report forms.
+const SKIP_LINKS = [
+  'a[href*="1FAIpQLSfjY5agNiow7gJexh4cxgAel1h7_TynLoeyh7Z_o28Cp60mWA"]',
+  'a[href*="1FAIpQLSeZjA4mKxVWfW4oljOWoztIfPy6DskBlbVrfYvyKg81_gW48g"]',
+  '[data-no-captcha]',
+].join(',');
+
+// Forms that skip the captcha (Solbee's chat box and dialog close buttons).
+const SKIP_FORMS = '.sbot-form, form[method="dialog"]';
 
 // Attempts before the give-up button appears.
 const GIVE_UP_AFTER = 3;
@@ -164,7 +172,13 @@ export default function captcha(): (() => void) | void {
     const a = action;
     close();
     if (!a) return;
-    if (a.kind === 'link') {
+    if (a.kind === 'link' && a.download !== null) {
+      // Replay download links through an anchor so the filename is kept.
+      const dl = el('a');
+      dl.href = a.href;
+      dl.download = a.download;
+      dl.click();
+    } else if (a.kind === 'link') {
       location.assign(a.href);
     } else {
       passing.add(a.form);
@@ -307,7 +321,7 @@ export default function captcha(): (() => void) | void {
     if (e.type === 'auxclick' && e.button !== 1) return;
     if (e.target.closest('.cap')) return;
     const link = e.target.closest(LINKS);
-    if (!link) return;
+    if (!link || link.matches(SKIP_LINKS)) return;
     const href = link instanceof HTMLAnchorElement ? link.href : link.getAttribute('data-captcha');
     if (!href) return;
     e.preventDefault();
@@ -318,7 +332,7 @@ export default function captcha(): (() => void) | void {
       e.ctrlKey ||
       e.metaKey ||
       e.shiftKey;
-    open({ kind: 'link', href, blank });
+    open({ kind: 'link', href, blank, download: link.getAttribute('download') });
   };
 
   const onSubmit = (e: SubmitEvent) => {
