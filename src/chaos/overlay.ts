@@ -9,6 +9,10 @@ const CSS = `
 .chaos-overlay .chaos-close{position:absolute;top:.5rem;right:.5rem;z-index:1;width:2.5rem;height:2.5rem;
 border:0;border-radius:50%;background:rgba(255,255,255,.9);color:#000;font:700 1.4rem/1 sans-serif;cursor:pointer}
 .chaos-overlay .chaos-close.labelled{width:auto;height:2.2rem;padding:0 .9rem;border-radius:1.1rem;font-size:.95rem}
+.chaos-overlay .chaos-bypass{position:absolute;top:.65rem;right:3.5rem;z-index:1;display:flex;align-items:center;
+height:2.2rem;padding:0 .9rem;border-radius:1.1rem;background:rgba(255,255,255,.9);color:#000;
+font:700 .95rem/1 sans-serif;text-decoration:none}
+.chaos-overlay .chaos-close.labelled~.chaos-bypass{right:auto;left:.5rem}
 `;
 
 let current: { el: HTMLElement; opener: Element | null; overflow: string } | null = null;
@@ -33,8 +37,12 @@ export function isOpen(): boolean {
   return current !== null;
 }
 
-// closeLabel replaces the X with a text button.
-export function open(slug: string, closeLabel?: string): void {
+// closeLabel replaces the X with a text button. bypass adds a link out to the page the trigger pointed at.
+export function open(
+  slug: string,
+  closeLabel?: string,
+  bypass?: { label: string; href: string },
+): void {
   if (current) close();
   found(slug);
   injectStyles();
@@ -57,6 +65,14 @@ export function open(slug: string, closeLabel?: string): void {
   x.addEventListener('click', close);
 
   el.append(iframe, x);
+  if (bypass) {
+    const a = document.createElement('a');
+    a.className = 'chaos-bypass';
+    a.href = bypass.href;
+    a.textContent = bypass.label;
+    a.addEventListener('click', close);
+    el.append(a);
+  }
   current = {
     el,
     opener: document.activeElement,
