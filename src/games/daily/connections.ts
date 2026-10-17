@@ -27,7 +27,8 @@ overflow-wrap:normal;transition:transform .15s}
 .cn-tile.sel{background:#5a594e;color:#fff}
 .cn-tile.shake{animation:cn-shake .4s}
 .cn-group{grid-column:1/-1;min-height:4.2rem;display:flex;flex-direction:column;justify-content:center;
-border-radius:.4rem;padding:.4rem;text-align:center;animation:cn-pop .3s}
+border-radius:.4rem;padding:.4rem;text-align:center}
+.cn-group.new{animation:cn-pop .3s}
 .cn-group b{text-transform:uppercase}
 .cn-group span{font-size:.85rem;text-transform:uppercase}
 .cn-lives{display:flex;gap:.4rem;align-items:center;font-size:.9rem;color:#545c6b}
@@ -67,11 +68,15 @@ export default function start(root: HTMLElement): () => void {
   let tried = new Set<string>();
   let attempts = getDay(SLUG)?.attempts ?? 0;
   let started = false;
+  // Group found by the last submit; only it pops in.
+  let fresh: Group | null = null;
+  let done = false;
 
   const shuffleBtn = button(
     'Shuffle',
     () => {
       order = shuffled(order, Math.random() * 1e9);
+      fresh = null;
       render();
     },
     'dp-btn ghost',
@@ -80,6 +85,7 @@ export default function start(root: HTMLElement): () => void {
     'Deselect',
     () => {
       selected.clear();
+      fresh = null;
       render();
     },
     'dp-btn ghost',
@@ -88,7 +94,7 @@ export default function start(root: HTMLElement): () => void {
   controls.append(shuffleBtn, clearBtn, submitBtn);
 
   function groupEl(g: Group) {
-    const box = h('div', 'cn-group');
+    const box = h('div', 'cn-group' + (g === fresh ? ' new' : ''));
     box.style.background = COLOURS[g.level];
     box.append(h('b', '', g.name), h('span', '', g.words.join(', ')));
     return box;
@@ -104,6 +110,7 @@ export default function start(root: HTMLElement): () => void {
           'cn-tile' + (selected.has(w) ? ' sel' : '') + (w.length > 9 ? ' long' : ''),
         );
         t.dataset.word = w;
+        t.disabled = done;
         return t;
       }),
     );
@@ -118,6 +125,7 @@ export default function start(root: HTMLElement): () => void {
   function toggle(w: string) {
     if (selected.has(w)) selected.delete(w);
     else if (selected.size < 4) selected.add(w);
+    fresh = null;
     msg.textContent = '';
     render();
   }
@@ -140,6 +148,7 @@ export default function start(root: HTMLElement): () => void {
     const hit = groups.find((g) => !solved.includes(g) && pick.every((w) => g.words.includes(w)));
     if (hit) {
       solved.push(hit);
+      fresh = hit;
       order = order.filter((w) => !hit.words.includes(w));
       selected.clear();
       render();
@@ -155,10 +164,9 @@ export default function start(root: HTMLElement): () => void {
       t.classList.add('shake');
     });
     if (mistakes >= LIVES) {
+      // Leave the unsolved tiles in place, inert, so a retry is not spoiled.
       selected.clear();
-      // Reveal the rest, easiest first.
-      solved = [...solved, ...groups.filter((g) => !solved.includes(g))];
-      order = [];
+      done = true;
       render();
       finish(false);
     } else render();
@@ -191,6 +199,8 @@ export default function start(root: HTMLElement): () => void {
     tried = new Set();
     mistakes = 0;
     started = false;
+    fresh = null;
+    done = false;
     order = shuffled(
       groups.flatMap((g) => g.words),
       hash(today() + 'connections') + attempts,
