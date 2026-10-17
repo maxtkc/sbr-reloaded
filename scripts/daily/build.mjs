@@ -1,12 +1,17 @@
 // Builds data for the daily puzzles and validates src/games/daily/data.json.
 // Writes src/games/daily/words.json (Wordle guesses, Spelling Bee puzzles) and src/games/daily/countries.json.
-// Usage: node scripts/daily/build.mjs [--cached]   (--cached reuses scripts/daily/out/countries.geojson)
+// Usage: node scripts/daily/build.mjs [--cached]   (--cached reuses the GeoJSON in scripts/daily/out/)
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 
 const OUT_DIR = new URL('./out/', import.meta.url);
-const GEOJSON = new URL('countries.geojson', OUT_DIR);
-const NE_URL =
-  'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_admin_0_countries.geojson';
+const NE_BASE = 'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/';
+// 50m outlines for the shapes; the 110m file only decides which countries are in.
+const SOURCES = {
+  shapes: ['countries-50m.geojson', 'ne_50m_admin_0_countries.geojson'],
+  list: ['countries.geojson', 'ne_110m_admin_0_countries.geojson'],
+};
+// Simplification tolerance in output units (100x100 box).
+const TOLERANCE = 0.15;
 const DAILY = new URL('../../src/games/daily/', import.meta.url);
 const WORDLIST = new URL('../../node_modules/wordlist-english/', import.meta.url);
 
@@ -158,14 +163,18 @@ console.log(`words.json: ${guessWords.size} guesses, ${bee.length} bee puzzles`)
 for (const b of bee)
   console.log(`  ${b.theme} centre ${b.centre}: ${b.words.length} words, ${b.max} pts`);
 
-// Countries: Natural Earth 110m, each projected around its label point and fitted to a 100x100 box.
+// Countries: Natural Earth 50m, each projected around its label point and fitted to a 100x100 box.
 mkdirSync(OUT_DIR, { recursive: true });
-if (!process.argv.includes('--cached') || !existsSync(GEOJSON)) {
-  const res = await fetch(NE_URL);
-  if (!res.ok) throw new Error(`Natural Earth download failed: ${res.status}`);
-  writeFileSync(GEOJSON, await res.text());
+async function geojson([file, remote]) {
+  const local = new URL(file, OUT_DIR);
+  if (!process.argv.includes('--cached') || !existsSync(local)) {
+    const res = await fetch(NE_BASE + remote);
+    if (!res.ok) throw new Error(`Natural Earth download failed: ${res.status}`);
+    writeFileSync(local, await res.text());
+  }
+  return JSON.parse(readFileSync(local, 'utf8'));
 }
-const ne = JSON.parse(readFileSync(GEOJSON, 'utf8'));
+const ne = await geojson(SOURCES.shapes);
 const SKIP = new Set([
   'Antarctica',
   'French Southern and Antarctic Lands',
@@ -185,6 +194,39 @@ const NOT_ANSWERS = new Set([
   'Greenland',
 ]);
 
+const nameOf = (p) => RENAME[p.NAME_EN] ?? (p.NAME_EN || p.NAME);
+const KEEP = new Set((await geojson(SOURCES.list)).features.map((f) => nameOf(f.properties)));
+
+// Douglas-Peucker on a closed ring.
+function simplify(ring, tol) {
+  if (ring.length < 4) return ring;
+  const keep = new Uint8Array(ring.length);
+  keep[0] = keep[ring.length - 1] = 1;
+  const stack = [[0, ring.length - 1]];
+  while (stack.length) {
+    const [a, b] = stack.pop();
+    const [x1, y1] = ring[a];
+    const [x2, y2] = ring[b];
+    const len = Math.hypot(x2 - x1, y2 - y1);
+    let far = -1;
+    let max = tol;
+    for (let i = a + 1; i < b; i++) {
+      const [x, y] = ring[i];
+      const d = len
+        ? Math.abs((x2 - x1) * (y1 - y) - (x1 - x) * (y2 - y1)) / len
+        : Math.hypot(x - x1, y - y1);
+      if (d > max) {
+        max = d;
+        far = i;
+      }
+    }
+    if (far < 0) continue;
+    keep[far] = 1;
+    stack.push([a, far], [far, b]);
+  }
+  return ring.filter((_, i) => keep[i]);
+}
+
 const ringArea = (ring) => {
   let a = 0;
   for (let i = 0; i < ring.length; i++) {
@@ -198,8 +240,8 @@ const ringArea = (ring) => {
 const countries = [];
 for (const f of ne.features) {
   const p = f.properties;
-  const name = RENAME[p.NAME_EN] ?? (p.NAME_EN || p.NAME);
-  if (SKIP.has(name) || !f.geometry) continue;
+  const name = nameOf(p);
+  if (SKIP.has(name) || !KEEP.has(name) || !f.geometry) continue;
   const lon0 = p.LABEL_X;
   const lat0 = p.LABEL_Y;
   const k = Math.cos((lat0 * Math.PI) / 180);
@@ -228,16 +270,14 @@ for (const f of ne.features) {
   const ox = (100 - (maxX - minX) * s) / 2;
   const oy = (100 - (maxY - minY) * s) / 2;
   const path = rings
-    .map(
-      (r) =>
-        'M' +
-        r
-          .map(
-            ([x, y]) => `${((x - minX) * s + ox).toFixed(1)} ${((y - minY) * s + oy).toFixed(1)}`,
-          )
-          .join('L') +
-        'Z',
+    .map((r) =>
+      simplify(
+        r.map(([x, y]) => [(x - minX) * s + ox, (y - minY) * s + oy]),
+        TOLERANCE,
+      ),
     )
+    .filter((r) => r.length >= 3)
+    .map((r) => 'M' + r.map(([x, y]) => `${x.toFixed(1)} ${y.toFixed(1)}`).join('L') + 'Z')
     .join('');
   countries.push({
     name,
@@ -248,8 +288,8 @@ for (const f of ne.features) {
   });
 }
 countries.sort((a, b) => a.name.localeCompare(b.name));
-for (const n of data.worldle.featured)
-  if (!countries.some((c) => c.name === n)) fail(`worldle featured country not found: ${n}`);
+for (const { name } of data.worldle.featured)
+  if (!countries.some((c) => c.name === name)) fail(`worldle featured country not found: ${name}`);
 if (errors.length) {
   console.error(errors.map((e) => `error: ${e}`).join('\n'));
   process.exit(1);
