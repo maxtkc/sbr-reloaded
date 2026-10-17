@@ -92,7 +92,6 @@ Then, we'll make it quite satirical and fun
 
 Not yet planned:
 
-- where's waldo, throughout all of the pages (can be integrated with an overall games found checklist?)
 - humpty dumpty is sitting on a wall somewhere, you click him and he falls and
   breaks, and the kings horses and men are right there, but you click them and
   they can't put him back together again
