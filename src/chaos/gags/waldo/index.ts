@@ -8,7 +8,7 @@ import { onPause, onResume } from '../../bus';
 import { url } from '../../../lib/url';
 import { hash, rng, shuffled, today } from '../../../games/daily/core';
 
-const PAGES = ['/', '/history', '/freshers', '/quick-links', '/events'];
+const PAGES = ['/', '/history', '/quick-links'];
 // Block elements a character can stand behind, in DOM order.
 const HOSTS =
   'main .card, main .panel, main figure, main h1, main h2, main h3, main .facts, main .strip, main table, main blockquote, main .prose > p';
