@@ -775,9 +775,32 @@ off the plate onto the tray.
   Environment card on `/` (Esc closes) and from "Cycling in Cambridge" on `/freshers` (X closes), iPhone emulation
   (tap jumps, no horizontal scroll), no page errors. The debug hooks were removed.
 
-### Phase 29 - Impossible 8-ball  `[ ]`  trigger: pool table (SBR room) | touch: drag to aim
+### Phase 29 - Impossible 8-ball  `[x]`  trigger: pool table (SBR room) | touch: drag to aim
 - Matter.js pool table (the SBR's real table). When a ball nears a pocket, a random roster face pops up in the pocket
   and blocks it with a role-specific quip. Never winnable.
+- Notes: `src/games/eight-ball/{index.ts,data.json}`, registered as `eight-ball` ("Impossible 8-Ball") with no extra
+  selector: the existing "pool table" phrase hook in `hooks.mjs` (SBR room section) launches it. Plain 2D canvas
+  over `startMatter()`, stepped by hand like QWOP (two half steps per 1/60 s so fast balls do not pass through each
+  other), zero gravity, `Resolver._restingThresh` lowered so slow balls still bounce off cushions (restored on
+  cleanup). Top-down UK pub table in a 1000 x 500 unit playfield: wood rail with diamonds and a "Samuel Butler Room"
+  plaque, baulk line, D and spot; 7 reds and 7 yellows in St John's red and gold plus the black, racked with the
+  black in the middle and one of each colour at the back corners. Static rectangle cushions with gaps at the six
+  pockets and an outer wall behind them. Balls use frictionAir plus a constant rolling resistance so shots settle in
+  a few seconds. Matter soaks up a break into a tight pack, so the first cue-to-ball contact of each rack spreads the
+  rack outward by hand. Blocking: each step, a ball heading at a pocket (reach grows with the shot count) or resting
+  within 60 units raises that pocket's guardian: a static circle body over the mouth (restitution 1.1) and a random
+  roster face (circle-masked, gold ring, wobble, pop-in) drawn in screen space so it stays upright, with a speech
+  bubble (name, role, a `quips[role]` line, `default` fallback) for 2.6s. Guardians sink 1.8s after no ball is near.
+  A ball that still crosses the cushion line is put back at the nearest pocket's mouth, reflected, with a "spat"
+  toast. Controls: drag from anywhere and release (slingshot, power from drag length) with mouse or touch; Left/Right
+  (Shift for fine) aim and hold Space for power; R re-racks; after 25 shots it re-racks itself with a committee
+  line. Dashed aim line with a ghost ball, cue stick pulled back by power, power bar. HUD: shots, "Pots: 0", blocked,
+  and lifetime shots in localStorage `eight-ball-stats` (try/catch). SBR room facts in a red/gold banner every third
+  block. Portrait screens get the table turned 90 degrees (pointer input through the inverse view matrix). Reduced
+  motion runs at 0.7x. Verified in headless Chromium: standalone at 1280px (break, 7 shots over ~50s, guardians and
+  bubbles on most shots, all 16 balls stay on the table, keyboard aim and charge with the ghost ball, re-rack),
+  opened from "pool table" on `/` with Esc closing it, iPhone emulation (rotated table, touch drag aims and shoots,
+  no horizontal scroll), no page errors.
 
 ### Phase 30 - Floppy Crow  `[ ]`  trigger: welfare / footer image | touch: yes
 - Crow flapper with deliberately floppy physics, ceiling hazard of St John's Chapel roofline / gothic arches, foxes on the ground that jump to
