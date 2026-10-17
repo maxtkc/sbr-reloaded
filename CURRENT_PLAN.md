@@ -775,7 +775,7 @@ off the plate onto the tray.
   Environment card on `/` (Esc closes) and from "Cycling in Cambridge" on `/freshers` (X closes), iPhone emulation
   (tap jumps, no horizontal scroll), no page errors. The debug hooks were removed.
 
-### Phase 29 - Impossible 8-ball  `[x]`  trigger: pool table (SBR room) | touch: drag to aim
+### Phase 29 - Gentle 8 Ball  `[x]`  trigger: pool table (SBR room) | touch: drag to aim
 - Matter.js pool table (the SBR's real table). When a ball nears a pocket, a random roster face pops up in the pocket
   and blocks it with a role-specific quip. Never winnable.
 - Notes: `src/games/eight-ball/{index.ts,data.json}`, registered as `eight-ball` ("Impossible 8-Ball") with no extra
@@ -801,6 +801,15 @@ off the plate onto the tray.
   bubbles on most shots, all 16 balls stay on the table, keyboard aim and charge with the ghost ball, re-rack),
   opened from "pool table" on `/` with Esc closing it, iPhone emulation (rotated table, touch drag aims and shoots,
   no horizontal scroll), no page errors.
+- Follow-up: renamed "Gentle 8 Ball" (slug and storage key unchanged). A ball heading at a pocket now rolls a pot
+  chance once per approach from its speed, `0.7 * max(0, 1 - speed / 9)^2` (units per 1/60 s), so slow rollers
+  drop about half the time and anything at speed 9 or more is always blocked; an allowed pocket drops its guardian
+  and takes the ball (shrink into the hole). Potting the cue respawns it in the D once the balls stop; potting the
+  black ends the frame (won if all reds or all yellows are down, else lost) and re-racks. HUD and lifetime stats
+  count pots. Guardian heads now just fill the hole. Bubbles are comic style (white, heavy outline, tail to the
+  head, uppercase Comic Sans with a sans fallback), placed beside the head and pushed out until clear of every
+  head. Portrait rotation is -90 degrees so the break comes from the bottom. Verified the same way, plus a
+  temporary build with the pot chance forced to 1 (pots, counters, no errors).
 
 ### Phase 30 - Floppy Crow  `[ ]`  trigger: welfare / footer image | touch: yes
 - Crow flapper with deliberately floppy physics, ceiling hazard of St John's Chapel roofline / gothic arches, foxes on the ground that jump to

@@ -1,7 +1,7 @@
-// Impossible 8-Ball: top-down Matter.js pool where committee faces pop up and block every pocket.
+// Gentle 8 Ball: top-down Matter.js pool where committee faces block the pockets unless you play softly.
 import type MatterNS from 'matter-js';
 import { startMatter, type MatterWorld } from '../../chaos/shared/matter';
-import { beep, blip } from '../../chaos/shared/sfx';
+import { beep, blip, fanfare } from '../../chaos/shared/sfx';
 import data from './data.json';
 
 interface RosterEntry {
@@ -37,6 +37,7 @@ interface Guardian {
 interface Stats {
   shots: number;
   blocks: number;
+  pots: number;
 }
 
 type State = 'ready' | 'play';
@@ -59,6 +60,12 @@ const ROLL = 0.02;
 const SPOT = { x: L * 0.73, y: WD / 2 };
 const AUTO_RERACK = 25;
 const HUD = 40;
+// Chance a ball heading at a pocket is let through, by its speed (units per 1/60 s). Zero from POT_CUTOFF up.
+const POT_MAX = 0.7;
+const POT_CUTOFF = 9;
+const potChance = (speed: number) => POT_MAX * Math.max(0, 1 - speed / POT_CUTOFF) ** 2;
+const COMIC =
+  "'Comic Sans MS', 'Comic Neue', 'Chalkboard SE', 'Marker Felt', system-ui, sans-serif";
 
 const RED = '#a3162b';
 const GOLD = '#d1b948';
@@ -94,9 +101,13 @@ function readRoster(): RosterEntry[] {
 function loadStats(): Stats {
   try {
     const s = JSON.parse(localStorage.getItem('eight-ball-stats') ?? '{}');
-    return { shots: Number(s.shots) || 0, blocks: Number(s.blocks) || 0 };
+    return {
+      shots: Number(s.shots) || 0,
+      blocks: Number(s.blocks) || 0,
+      pots: Number(s.pots) || 0,
+    };
   } catch {
-    return { shots: 0, blocks: 0 };
+    return { shots: 0, blocks: 0, pots: 0 };
   }
 }
 
@@ -176,7 +187,7 @@ function run(root: HTMLElement, world: MatterWorld): () => void {
     H = root.clientHeight;
     canvas.width = Math.round(W * dpr);
     canvas.height = Math.round(H * dpr);
-    // Portrait screens get the table on its side.
+    // Portrait screens get the table on its side, baulk end at the bottom.
     rotated = H > W * 1.1;
     const ow = L + RAIL * 2;
     const oh = WD + RAIL * 2;
@@ -184,7 +195,7 @@ function run(root: HTMLElement, world: MatterWorld): () => void {
     scale = rotated ? Math.min((W - 16) / oh, availH / ow) : Math.min((W - 16) / ow, availH / oh);
     view = new DOMMatrix()
       .translate(W / 2, HUD + availH / 2 + 4)
-      .rotate(rotated ? 90 : 0)
+      .rotate(rotated ? -90 : 0)
       .scale(scale)
       .translate(-L / 2, -WD / 2);
     inv = view.inverse();
@@ -236,10 +247,18 @@ function run(root: HTMLElement, world: MatterWorld): () => void {
   let cue: Ball;
   const guardians: (Guardian | null)[] = POCKETS.map(() => null);
   const sinking: { pocket: number; g: Guardian }[] = [];
+  // Potted balls dropping into their pocket.
+  const dropping: { color: string; from: Point; pocket: number; t: number }[] = [];
+  // Pot or block verdict per ball and pocket, rolled once per approach.
+  const verdicts = new Map<string, boolean>();
 
   let state: State = 'ready';
   let shots = 0;
   let blocks = 0;
+  let pots = 0;
+  let cueDown = false;
+  // Line shown when the balls stop after the black goes down.
+  let frameEnd = '';
   const stats = loadStats();
   let aim = Math.PI;
   let power = 0;
@@ -275,6 +294,10 @@ function run(root: HTMLElement, world: MatterWorld): () => void {
     for (const b of balls) Matter.Composite.remove(engine.world, b.body);
     for (let i = 0; i < guardians.length; i++) dropGuardian(i);
     balls = [];
+    verdicts.clear();
+    pots = 0;
+    cueDown = false;
+    frameEnd = '';
     // Apex on the spot, black in the middle of the third row, one of each colour at the back corners.
     const colours: Ball['kind'][] = [];
     for (let i = 0; i < 6; i++) colours.push('red', 'yellow');
@@ -375,22 +398,90 @@ function run(root: HTMLElement, world: MatterWorld): () => void {
     sinking.push({ pocket: i, g });
   }
 
-  // Pops a guardian up for any ball heading at a pocket, and returns strays that slipped past.
+  function potBall(b: Ball, i: number): void {
+    Matter.Composite.remove(engine.world, b.body);
+    balls = balls.filter((x) => x !== b);
+    for (let j = 0; j < POCKETS.length; j++) verdicts.delete(`${b.body.id}:${j}`);
+    dropping.push({ color: b.color, from: { ...b.body.position }, pocket: i, t: 0 });
+    beep(140, 160, 'sine', 0.14);
+    if (b.kind === 'cue') {
+      cueDown = true;
+      showToast(pick(data.scratch));
+      return;
+    }
+    pots++;
+    stats.pots++;
+    saveStats(stats);
+    if (b.kind === 'black') {
+      const cleared =
+        !balls.some((x) => x.kind === 'red') || !balls.some((x) => x.kind === 'yellow');
+      frameEnd = pick(cleared ? data.won : data.lost);
+      if (cleared) fanfare();
+      showToast(cleared ? 'The black is down!' : 'The black is down. Early.');
+      return;
+    }
+    [523, 784].forEach((f, j) => beep(f, 120, 'square', 0.07, 120 + j * 110));
+    showToast(pick(data.potted));
+  }
+
+  // Cue ball back in the D after a scratch.
+  function respawnCue(): void {
+    cueDown = false;
+    let y = WD / 2;
+    for (const off of [0, 30, -30, 60, -60]) {
+      y = WD / 2 + off;
+      if (
+        !balls.some(
+          (b) => Math.hypot(b.body.position.x - L * 0.2, b.body.position.y - y) < R * 2 + 2,
+        )
+      )
+        break;
+    }
+    Matter.Body.setPosition(cue.body, { x: L * 0.2, y });
+    Matter.Body.setVelocity(cue.body, { x: 0, y: 0 });
+    Matter.Composite.add(engine.world, cue.body);
+    balls.push(cue);
+  }
+
+  // Rolls a pot-or-block verdict for each ball heading at a pocket. Blocked pockets get a guardian, allowed
+  // ones take the ball, and strays that slip past a guardian are sent back out.
   function guardPockets(dt: number): void {
     const reach = Math.min(160, 95 + shots * 2.5);
     const near = POCKETS.map(() => false);
-    for (const b of balls) {
+    const allowed = POCKETS.map(() => false);
+    for (const b of [...balls]) {
       const pos = b.body.position;
       const v = b.body.velocity;
       const speed = Math.hypot(v.x, v.y);
+      let gone = false;
       POCKETS.forEach((p, i) => {
+        if (gone) return;
         const dx = p.x - pos.x;
         const dy = p.y - pos.y;
         const d = Math.hypot(dx, dy);
         const heading = speed > 0.3 && (dx * v.x + dy * v.y) / (d * speed) > 0.35;
+        const key = `${b.body.id}:${i}`;
+        let ok = verdicts.get(key);
+        if (ok === undefined && heading && d < reach + speed * 6) {
+          ok = Math.random() < potChance(speed);
+          verdicts.set(key, ok);
+        } else if (ok !== undefined && d > reach + 80) {
+          verdicts.delete(key);
+          ok = undefined;
+        }
+        if (ok) {
+          allowed[i] = true;
+          if (d < p.hole + R * 0.6) {
+            potBall(b, i);
+            gone = true;
+          }
+          return;
+        }
         if (d < 60 || (heading && d < reach + speed * 6)) near[i] = true;
       });
-      // Safety net: a ball past the cushion line goes back out of the nearest pocket.
+      if (gone) continue;
+      // Safety net: a ball past the cushion line goes back out of the nearest pocket, unless it is in the
+      // jaws of a pocket that is letting it through.
       if (pos.x < 0 || pos.x > L || pos.y < 0 || pos.y > WD) {
         let best = 0;
         let bestD = Infinity;
@@ -402,6 +493,8 @@ function run(root: HTMLElement, world: MatterWorld): () => void {
           }
         });
         const p = POCKETS[best];
+        if (verdicts.get(`${b.body.id}:${best}`) && bestD < p.hole + 30) continue;
+        verdicts.delete(`${b.body.id}:${best}`);
         const nx = L / 2 - p.x;
         const ny = WD / 2 - p.y;
         const n = Math.hypot(nx, ny);
@@ -424,12 +517,17 @@ function run(root: HTMLElement, world: MatterWorld): () => void {
     }
     POCKETS.forEach((_, i) => {
       if (near[i]) raiseGuardian(i);
+      else if (allowed[i]) dropGuardian(i);
       const g = guardians[i];
       if (!g) return;
       g.t += dt;
       g.idle = near[i] ? 0 : g.idle + dt;
       if (g.idle > 1.8 && g.t > 1.5) dropGuardian(i);
     });
+    for (let j = dropping.length - 1; j >= 0; j--) {
+      dropping[j].t += dt;
+      if (dropping[j].t > 0.3) dropping.splice(j, 1);
+    }
     for (let j = sinking.length - 1; j >= 0; j--) {
       sinking[j].g.sinking += dt;
       if (sinking[j].g.sinking > 0.3) sinking.splice(j, 1);
@@ -531,7 +629,11 @@ function run(root: HTMLElement, world: MatterWorld): () => void {
     }
     if (moving && settle()) {
       moving = false;
-      if (shots >= AUTO_RERACK) {
+      if (frameEnd) {
+        showToast(frameEnd);
+        rack();
+      } else if (cueDown) respawnCue();
+      else if (shots >= AUTO_RERACK) {
         showToast(pick(data.rerack));
         rack();
       }
@@ -666,6 +768,24 @@ function run(root: HTMLElement, world: MatterWorld): () => void {
     }
   }
 
+  // Potted balls slide into the pocket centre and shrink.
+  function drawDropping(): void {
+    for (const b of dropping) {
+      const k = Math.min(1, b.t / 0.3);
+      const p = POCKETS[b.pocket];
+      ctx.fillStyle = b.color;
+      ctx.beginPath();
+      ctx.arc(
+        b.from.x + (p.x - b.from.x) * k,
+        b.from.y + (p.y - b.from.y) * k,
+        R * (1 - k * 0.6),
+        0,
+        Math.PI * 2,
+      );
+      ctx.fill();
+    }
+  }
+
   function drawCue(): void {
     if (state !== 'play' || moving) return;
     const o = cue.body.position;
@@ -726,7 +846,7 @@ function run(root: HTMLElement, world: MatterWorld): () => void {
     const p = POCKETS[i];
     const c = toScreen(p.x, p.y);
     const pop = sink > 0 ? 1 - sink / 0.3 : easeOutBack(Math.min(1, g.t / 0.25));
-    const r = Math.max(0, p.guard * scale * 1.05 * pop);
+    const r = Math.max(0, p.hole * scale * pop);
     if (r < 1) return;
     const wob = sink > 0 ? 0 : Math.sin(time * 6 + i) * 0.06 * Math.max(0, 1 - g.t / 2);
     ctx.save();
@@ -761,50 +881,95 @@ function run(root: HTMLElement, world: MatterWorld): () => void {
     ctx.restore();
   }
 
+  // Comic speech bubble beside the head, with a tail pointing at it, kept clear of every head.
   function drawBubble(i: number, g: Guardian): void {
     if (g.t > 2.6) return;
     const p = POCKETS[i];
     const c = toScreen(p.x, p.y);
     const mid = toScreen(L / 2, WD / 2);
+    const rh = p.hole * scale;
     const fs = Math.max(12, Math.min(16, W / 50));
-    ctx.font = `600 ${fs}px system-ui, sans-serif`;
-    const maxW = Math.min(220, W * 0.42);
-    const lines = wrapText(ctx, g.quip, maxW);
+    const quipFont = `700 ${fs}px ${COMIC}`;
+    const headFont = `700 ${fs * 0.75}px ${COMIC}`;
+    ctx.font = quipFont;
+    const lines = wrapText(ctx, g.quip.toUpperCase(), Math.min(210, W * 0.42));
+    const quipW = Math.max(...lines.map((l) => ctx.measureText(l).width));
     const head = `${g.member.name}${g.member.role !== 'default' ? `, ${g.member.role}` : ''}`;
-    ctx.font = `600 ${fs * 0.8}px system-ui, sans-serif`;
-    const w =
-      Math.max(
-        ctx.measureText(head).width,
-        ...lines.map((l) => {
-          ctx.font = `600 ${fs}px system-ui, sans-serif`;
-          return ctx.measureText(l).width;
-        }),
-      ) + 20;
-    const h = lines.length * fs * 1.3 + fs * 0.8 * 1.3 + 14;
-    // Offset toward the middle of the table, kept on screen.
+    ctx.font = headFont;
+    const w = Math.max(ctx.measureText(head).width, quipW) + 26;
+    const h = lines.length * fs * 1.25 + fs * 0.75 * 1.3 + 18;
+    // Start just past the head toward the middle of the table, then push on until clear of all heads.
     const dx = mid.x - c.x;
     const dy = mid.y - c.y;
     const d = Math.hypot(dx, dy) || 1;
-    const off = p.guard * scale + 30;
-    let bx = c.x + (dx / d) * off - w / 2;
-    let by = c.y + (dy / d) * off - h / 2;
-    bx = Math.max(6, Math.min(W - w - 6, bx));
-    by = Math.max(HUD + 4, Math.min(H - h - 6, by));
-    ctx.fillStyle = CREAM;
+    const ux = dx / d;
+    const uy = dy / d;
+    const heads = POCKETS.flatMap((q, j) =>
+      guardians[j] ? [{ ...toScreen(q.x, q.y), r: q.hole * scale + 6 }] : [],
+    );
+    let off = rh + 18 + Math.abs(ux) * (w / 2) + Math.abs(uy) * (h / 2);
+    let bx = 0;
+    let by = 0;
+    for (let k = 0; k < 30; k++) {
+      bx = Math.max(6, Math.min(W - w - 6, c.x + ux * off - w / 2));
+      by = Math.max(HUD + 4, Math.min(H - h - 6, c.y + uy * off - h / 2));
+      const hit = heads.some(
+        (o) =>
+          Math.hypot(
+            o.x - Math.max(bx, Math.min(bx + w, o.x)),
+            o.y - Math.max(by, Math.min(by + h, o.y)),
+          ) < o.r,
+      );
+      if (!hit) break;
+      off += 10;
+    }
+    // Tail from the edge nearest the head to just short of it.
+    const ex = Math.max(bx - c.x, 0, c.x - (bx + w));
+    const ey = Math.max(by - c.y, 0, c.y - (by + h));
+    let b1: Point;
+    let b2: Point;
+    if (ex > ey) {
+      const x = c.x < bx ? bx : bx + w;
+      const y = Math.max(by + 14, Math.min(by + h - 14, c.y));
+      b1 = { x, y: y - 8 };
+      b2 = { x, y: y + 8 };
+    } else {
+      const y = c.y < by ? by : by + h;
+      const x = Math.max(bx + 16, Math.min(bx + w - 16, c.x));
+      b1 = { x: x - 8, y };
+      b2 = { x: x + 8, y };
+    }
+    const bm = { x: (b1.x + b2.x) / 2, y: (b1.y + b2.y) / 2 };
+    const td = Math.hypot(c.x - bm.x, c.y - bm.y) || 1;
+    const reachTip = Math.max(0, td - rh - 4);
+    const tip = {
+      x: bm.x + ((c.x - bm.x) / td) * reachTip,
+      y: bm.y + ((c.y - bm.y) / td) * reachTip,
+    };
+    const outline = () => {
+      ctx.beginPath();
+      ctx.roundRect(bx, by, w, h, Math.min(18, h / 2));
+      ctx.moveTo(b1.x, b1.y);
+      ctx.lineTo(tip.x, tip.y);
+      ctx.lineTo(b2.x, b2.y);
+      ctx.closePath();
+    };
+    // Double-width stroke under the fill leaves one outline round the bubble and tail together.
+    outline();
     ctx.strokeStyle = INK;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.roundRect(bx, by, w, h, 8);
-    ctx.fill();
+    ctx.lineWidth = 5;
+    ctx.lineJoin = 'round';
     ctx.stroke();
-    ctx.textAlign = 'left';
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+    ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
     ctx.fillStyle = RED;
-    ctx.font = `600 ${fs * 0.8}px system-ui, sans-serif`;
-    ctx.fillText(head, bx + 10, by + 7);
+    ctx.font = headFont;
+    ctx.fillText(head, bx + w / 2, by + 9);
     ctx.fillStyle = INK;
-    ctx.font = `600 ${fs}px system-ui, sans-serif`;
-    lines.forEach((l, j) => ctx.fillText(l, bx + 10, by + 7 + fs * 0.8 * 1.3 + j * fs * 1.3));
+    ctx.font = quipFont;
+    lines.forEach((l, j) => ctx.fillText(l, bx + w / 2, by + 9 + fs * 0.75 * 1.3 + j * fs * 1.25));
   }
 
   function text(
@@ -826,10 +991,10 @@ function run(root: HTMLElement, world: MatterWorld): () => void {
 
   function drawHud(): void {
     const fs = Math.max(12, Math.min(17, W / 45));
-    text(`Shots: ${shots}   Pots: 0   Blocked: ${blocks}`, 12, HUD / 2, fs, CREAM);
+    text(`Shots: ${shots}   Pots: ${pots}   Blocked: ${blocks}`, 12, HUD / 2, fs, CREAM);
     if (W > 520)
       text(
-        `Lifetime: ${stats.shots.toLocaleString('en-GB')} shots, 0 pots`,
+        `Lifetime: ${stats.shots.toLocaleString('en-GB')} shots, ${stats.pots.toLocaleString('en-GB')} pots`,
         W - 12,
         HUD / 2,
         fs,
@@ -882,7 +1047,7 @@ function run(root: HTMLElement, world: MatterWorld): () => void {
       { s: data.subtitle, size: 0.9, color: CREAM, serif: false, weight: 600 },
       { s: data.controls, size: 0.9, color: CREAM, serif: false, weight: 600 },
       {
-        s: `Lifetime: ${stats.shots.toLocaleString('en-GB')} shots, ${stats.blocks.toLocaleString('en-GB')} blocked, 0 pots`,
+        s: `Lifetime: ${stats.shots.toLocaleString('en-GB')} shots, ${stats.blocks.toLocaleString('en-GB')} blocked, ${stats.pots.toLocaleString('en-GB')} pots`,
         size: 0.8,
         color: '#c8c2b4',
         serif: false,
@@ -926,6 +1091,7 @@ function run(root: HTMLElement, world: MatterWorld): () => void {
     ctx.setTransform(new DOMMatrix().scale(dpr).multiply(view));
     drawTable();
     drawBalls();
+    drawDropping();
     drawCue();
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     for (const s of sinking) drawGuardian(s.pocket, s.g, s.g.sinking || 0.001);
