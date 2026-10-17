@@ -53,6 +53,8 @@ const SETTLE = 1000;
 const FLY = 600;
 const STAGGER = 15;
 const TOAST = 'The Porters have tidied up. Please keep off the grass.';
+// sessionStorage key set after the first collapse in a tab.
+const SEEN = 'gravity-seen';
 
 const CSS = `
 .gv-layer{position:absolute;left:0;top:0;overflow:hidden;pointer-events:none}
@@ -66,6 +68,15 @@ color:#fff;cursor:pointer}
 .gv-porters:hover{background:var(--accent-dark,#a8190f)}
 .gv-toast{padding:.6rem 1.2rem;background:var(--primary,#152b4e);color:#fff;transition:opacity .4s}
 `;
+
+// True if the page has already collapsed in this tab.
+function seen(): boolean {
+  try {
+    return sessionStorage.getItem(SEEN) === '1';
+  } catch {
+    return false;
+  }
+}
 
 const transparent = (c: string) => c === 'transparent' || /^rgba\(.*,\s*0\)$/.test(c);
 
@@ -160,8 +171,8 @@ export default function gravity(): (() => void) | void {
   let wasAtBottom = true;
   let collapsing = false;
   let restoring = false;
-  // Set once the porters have tidied up; the page stays put until reload.
-  let spent = false;
+  // Set once the page has collapsed in this tab, or the porters have tidied up.
+  let spent = seen();
   let porters: HTMLButtonElement | null = null;
   // Page y of the topmost fallen element below the header, clamped to the header bottom.
   let topY = 0;
@@ -363,6 +374,9 @@ export default function gravity(): (() => void) | void {
       }
       boom(90, 0.2);
       foundEgg('gravity');
+      try {
+        sessionStorage.setItem(SEEN, '1');
+      } catch {}
       showPorters();
       if (!raf && !isPaused()) raf = requestAnimationFrame(frame);
     } finally {
