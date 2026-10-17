@@ -1,0 +1,73 @@
+{
+  "title": "Impossible 8-Ball",
+  "subtitle": "The SBR pool table, First Court. Reds or yellows, then the black. The committee keeps an eye on the pockets.",
+  "controls": "Drag back from anywhere and let go to shoot. Or Left/Right to aim and hold Space for power. R re-racks.",
+  "start": "Drag or press Space to break",
+  "quips": {
+    "President": [
+      "As President, I veto this pocket.",
+      "This pocket is reserved for committee business.",
+      "Motion to pot: denied.",
+      "I chair this pocket. Point of order."
+    ],
+    "Co-Vice-President": [
+      "Co-blocking. It's in the job title.",
+      "The other Vice-President has the other pocket.",
+      "Vice-presidential pocket protection.",
+      "I'll escalate that shot to the President."
+    ],
+    "Treasurer": [
+      "That pot costs GBP1.50. On UPay.",
+      "Pocket access is not in the budget.",
+      "Have you filled in a reimbursement form?",
+      "Sorry, the pocket fund is overdrawn."
+    ],
+    "Secretary": [
+      "Minuted: shot attempted, pocket closed.",
+      "Please submit pots in writing, 7 days in advance.",
+      "Noted for the AGM.",
+      "That pocket is not on the agenda."
+    ],
+    "Academic": [
+      "Pockets are a graduate talk topic. Book one before BA Table.",
+      "Has this shot been peer reviewed?",
+      "Your angle needs a citation.",
+      "Present this at the Lent research symposium first."
+    ],
+    "Welfare": [
+      "Are you okay? You seem very focused on pockets.",
+      "Take a break. The pocket will still be here.",
+      "Have some tea first.",
+      "This pocket is a safe space. For me."
+    ],
+    "Environment": [
+      "This pocket is a protected habitat.",
+      "Please re-use your shot.",
+      "Balls must be cycled, not potted.",
+      "Rewilding this pocket. Keep off."
+    ],
+    "Comms": [
+      "Posting this miss on Instagram. @samuelsroom",
+      "Follow @samuelsroom for pocket updates.",
+      "Great content. Do it again.",
+      "Going live from inside the pocket."
+    ],
+    "default": ["Not this pocket.", "Committee only.", "Occupied.", "Nope."]
+  },
+  "spat": ["Spat back out.", "Returned to sender.", "Pocket says no."],
+  "rerack": [
+    "Committee meeting over. Re-racking.",
+    "Time's up, next pair on the table.",
+    "Tidy up after use. Re-racking."
+  ],
+  "facts": [
+    "The SBR room is in the corner of First Court, staircase I2.",
+    "The SBR room has a TV with a Wii, board games, a pool table, a piano and a small kitchen.",
+    "Your University Card opens the SBR room. Please tidy up after use.",
+    "Port & Sherry is served in the SBR before and after BA Table.",
+    "BA Table is on Tuesdays and Fridays in term. Port & Sherry after Friday hall is GBP1.50.",
+    "The SBR has been the graduate society of St John's since 1960.",
+    "Samuel Butler was at St John's from 1854 to 1858. The room is named after him.",
+    "There is also a graduate study room at 1 All Saints Passage."
+  ]
+}
