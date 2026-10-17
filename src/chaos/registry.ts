@@ -100,7 +100,7 @@ export const games: Record<string, Game> = {
     load: () => import('../games/doodle-jump'),
   },
   'eight-ball': {
-    title: 'Impossible 8-Ball',
+    title: 'Gentle 8 Ball',
     trigger: '',
     touch: true,
     load: () => import('../games/eight-ball'),
