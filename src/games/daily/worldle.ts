@@ -215,15 +215,13 @@ export default function start(root: HTMLElement): () => void {
         state: { guesses } satisfies State,
       });
     }
-    const featured = data.worldle.featured.includes(answer.name);
+    const featured = data.worldle.featured.find((f) => f.name === answer.name);
     tail.replaceChildren(
       result(SLUG, {
         title: solved ? answer.name : `It was ${answer.name}`,
         score: fresh ? score : (getDay(SLUG)?.score ?? score),
         solved,
-        fact: featured
-          ? data.worldle.facts[1]
-          : fact('worldle', [data.worldle.facts[0], ...data.facts]),
+        fact: featured ? featured.fact : fact('worldle', [...data.worldle.facts, ...data.facts]),
         retry: solved ? undefined : reset,
       }),
     );
