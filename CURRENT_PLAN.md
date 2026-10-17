@@ -844,12 +844,42 @@ off the plate onto the tray.
   X, Esc or a backdrop click closes it. Pauses gags via the bus while open. Pong and gravity skip `.rr`. Verified in
   headless Chromium at 1280px (card, modal opens with no mailto navigation, Esc closes).
 
-### Phase 33 - Daily puzzle lock  `[ ]`
-- Classic daily puzzles (Wordle, Connections, Mini crossword, Spelling Bee, Strands), seeded by date so everyone gets
-  the same puzzle each day. A random share of internal link clicks are stopped with "This page is locked. Solve
-  today's daily puzzle first." Failing is allowed with unlimited retries; Wordle-style limited guesses reset on a new
-  attempt. Solved state lasts the day (localStorage, wrapped in try/catch). Words and clues are SBR/St John's themed,
-  in a jokes data file.
+### Phase 33 - Daily puzzles behind Waldo  `[x]`
+- Five Where's-Waldo-style characters hide each day behind page elements, seeded by the London date so everyone
+  gets the same spots. Each opens a daily puzzle: Waldo -> Wordle, Wenda -> Connections, Wizard Whitebeard ->
+  Worldle (country silhouette), Odlaw -> Mini crossword, Woof (only his tail shows) -> Spelling Bee. Failing is
+  allowed with unlimited retries. Scores are kept in localStorage and listed in the footer easter egg dialog. Next to
+  the egg counter: "This page was designed by a fan of the Boston Red Sox". Replaces the internal-link lock.
+- Notes: `src/games/daily/core.ts` has `today()` (Europe/London), FNV-1a `hash`, mulberry32 `rng`, and `daily(pool,
+  salt)` (a fixed shuffle walked one step per day, so nothing repeats until the pool wraps). Scores live in
+  localStorage `sbr-daily` as `{slug: {date: {solved, score, attempts, state?}}}`, with an in-memory fallback when
+  storage is blocked; writes fire `sbr-daily` on window, and the parent page also listens for `storage`. The first
+  solve of the day keeps its score; later attempts only bump `attempts`. `common.ts` adds the UI helpers (light
+  scrolling shell, on-screen keyboard with physical keys, result card with streak, totals and an SBR fact).
+  Themed copy is in `src/games/daily/data.json`. `scripts/daily/build.mjs` validates it and writes `words.json`
+  (Wordle guesses from SCOWL up to level 60 via the `wordlist-english` devDependency, plus Spelling Bee puzzles:
+  each 7-letter theme gets the non-S centre letter whose word count from SCOWL up to 35 is nearest 35, with a small
+  blocklist) and `countries.json` (Natural Earth 110m, each country projected around its label point into a 100x100
+  path; Antarctica, Somaliland and Northern Cyprus dropped, a few territories guessable but never the answer).
+  `scripts/daily/mini-fill.mjs` proposes 5x5 fills for writing new minis. Wordle: 6 guesses, standard duplicate
+  rule, guesses checked against the word list. Connections: one group per difficulty, every tile unique across
+  all groups, "One away", 4 mistakes ends the attempt. Worldle: distance, bearing arrow (SVG) and proximity between
+  label points; searchable input. Mini: 10 grids with black corners, tap toggles direction, arrows move, auto-check
+  when full, scored by time. Spelling Bee: found words persist for the day; Genius (70%) counts as solved.
+  `src/chaos/gags/waldo/` (gag `waldo`, no egg name; the five games are the eggs) picks one page per character per
+  day from `/`, `/history`, `/freshers`, `/quick-links`, `/events`. On that page it walks a seeded shuffle of
+  cards, panels, figures, headings, tables and prose paragraphs in `main`, and takes the first host that is big
+  enough, unclipped, not inside a link, button, dialog, header, footer or `[data-game]`, and whose peek area
+  (top edge, or left/right rotated 90 degrees; paragraphs only sideways) has no other content and stays inside the
+  page width. If none fits, it peeks over the top of the footer. Layout checks mean phone and desktop can differ,
+  but each is the same for everyone. The character is a 40x44 clipped box inside the host, so the part below the
+  edge is hidden. It bobs, ducks every 8-20s (3x slower under reduced motion), leans out on hover, pauses with
+  the bus. Click (or Enter) shows a "You found Odlaw!" bubble and opens the puzzle in the overlay after 800ms.
+  Characters are drawn from scratch in `characters.ts`. Verified in headless Chromium at 1280px and iPhone 13:
+  placements for several dates (all five placed, same in fresh contexts, no horizontal scroll), each puzzle
+  standalone (Wordle fail, retry and win, Connections wrong guess and win, Worldle, Mini wrong fill then fix, Bee
+  persistence across reload), opening Wenda from `/events` (bubble, overlay, egg counted, Esc closes), the footer
+  dialog scores, and storage blocked; no page errors.
 
 ### Phase 34 - Fox to cat morph rework  `[x]`
 - Captcha fox tiles become one shared SVG face (ears, snout, eyes, nose, whiskers, tail, fur) with fox and cat as two

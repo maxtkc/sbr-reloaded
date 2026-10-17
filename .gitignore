@@ -11,3 +11,4 @@ __pycache__/
 scripts/scrape/out/images/
 scripts/scrape/out/html/
 scripts/osm/out/
+scripts/daily/out/

@@ -14,10 +14,10 @@ import { url } from '../lib/url';
       <SectionText id="address" />
     </address>
     <div>
-      <p>
-        <a href="https://www.instagram.com/samuelsroom">Follow @samuelsroom on Instagram</a>
-      </p>
       <ul class="links">
+        <li>
+          <a href="https://www.instagram.com/samuelsroom">Follow @samuelsroom on Instagram</a>
+        </li>
         <li>
           <a href={url('/#committee')}>Contact the committee</a>
         </li>
@@ -44,10 +44,17 @@ import { url } from '../lib/url';
       <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>,{' '}
       <a href="https://opendatacommons.org/licenses/odbl/">ODbL</a>.
     </p>
-    <button type="button" class="eggs-toggle" data-eggs hidden></button>
+    <p class="eggs-row">
+      <button type="button" class="eggs-toggle" data-eggs hidden></button>
+      <span>This page was designed by a fan of the Boston Red Sox</span>
+    </p>
     <dialog class="eggs-list" aria-labelledby="eggs-title">
       <h2 id="eggs-title">Easter eggs</h2>
-      <ul></ul>
+      <ul class="eggs"></ul>
+      <section class="daily" hidden>
+        <h3>Daily puzzles</h3>
+        <ul></ul>
+      </section>
       <form method="dialog">
         <button class="btn">Close</button>
       </form>
@@ -89,8 +96,13 @@ import { url } from '../lib/url';
     font-size: 0.85rem;
     color: #a7b2c6;
   }
+  .eggs-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.5rem;
+    margin: 0.5rem 0 0;
+  }
   .eggs-toggle {
-    margin-top: 0.5rem;
     padding: 0;
     border: 0;
     background: none;
@@ -146,6 +158,19 @@ import { url } from '../lib/url';
   }
   .eggs-list :global(.state) {
     margin-left: auto;
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: var(--muted);
+  }
+  .daily h3 {
+    margin: 0 0 0.5rem;
+  }
+  .eggs-list :global(.daily li) {
+    flex-wrap: wrap;
+  }
+  .eggs-list :global(.daily .meta) {
+    flex-basis: 100%;
+    padding-left: 1.4rem;
     font-size: 0.8rem;
     font-weight: 400;
     color: var(--muted);

@@ -7,6 +7,7 @@ import captcha from './gags/captcha';
 import gravity from './gags/gravity';
 import pong from './gags/pong';
 import ragdoll from './gags/ragdoll';
+import waldo from './gags/waldo';
 
 export interface Gag {
   enabled: boolean;
@@ -48,6 +49,8 @@ export const gags: Record<string, Gag> = {
   gravity: { enabled: true, egg: 'Gravity collapse', init: gravity },
   pong: { enabled: true, egg: 'Corner pong', init: pong },
   ragdoll: { enabled: true, egg: 'Committee ragdoll', init: ragdoll },
+  // Daily puzzle characters; the puzzles below are the eggs.
+  waldo: { enabled: true, init: waldo },
 };
 
 // Every egg in the footer list: named gags, then all games.
@@ -78,6 +81,36 @@ export const games: Record<string, Game> = {
     trigger: '',
     touch: true,
     load: () => import('../games/bike-dino'),
+  },
+  'daily-bee': {
+    title: "Woof's Spelling Bee",
+    trigger: '',
+    touch: true,
+    load: () => import('../games/daily/bee'),
+  },
+  'daily-connections': {
+    title: "Wenda's Connections",
+    trigger: '',
+    touch: true,
+    load: () => import('../games/daily/connections'),
+  },
+  'daily-mini': {
+    title: "Odlaw's Mini Crossword",
+    trigger: '',
+    touch: true,
+    load: () => import('../games/daily/mini'),
+  },
+  'daily-wordle': {
+    title: "Waldo's Wordle",
+    trigger: '',
+    touch: true,
+    load: () => import('../games/daily/wordle'),
+  },
+  'daily-worldle': {
+    title: "Whitebeard's Worldle",
+    trigger: '',
+    touch: true,
+    load: () => import('../games/daily/worldle'),
   },
   crawl: {
     title: "Freshers' Guide: The Crawl",

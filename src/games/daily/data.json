@@ -1,0 +1,319 @@
+{
+  "facts": [
+    "The Samuel Butler Room was founded in 1960 as the society for St John's postgraduates.",
+    "Samuel Butler, author of Erewhon, was at St John's from 1854 to 1858.",
+    "The SBR room is at I2 First Court: TV with a Wii, board games, a pool table, a piano and a kitchen.",
+    "Port & Sherry runs on Fridays after hall, GBP1.50 a glass.",
+    "BA Table runs on Tuesdays and Fridays in full term.",
+    "The SBR swaps formal halls with Balliol, Trinity College Dublin, Ghislieri and Uppsala.",
+    "The Graduate Student Residence (GSR) is at 1 All Saints Passage.",
+    "Grad talks happen before BA Table, and there is a research symposium in Lent."
+  ],
+  "wordle": {
+    "answers": [
+      "EAGLE",
+      "PUNTS",
+      "BUMPS",
+      "GOWNS",
+      "CROWN",
+      "COURT",
+      "SWAPS",
+      "HALLS",
+      "CHAIN",
+      "TOWER",
+      "SIGHS",
+      "ROWER",
+      "BLADE",
+      "CREWS",
+      "EIGHT",
+      "PIANO",
+      "GRASS",
+      "LAWNS",
+      "CLOCK",
+      "ORGAN",
+      "CHOIR",
+      "GATES",
+      "ESSAY",
+      "GRADS",
+      "TABLE",
+      "FEAST",
+      "TOAST",
+      "GRACE",
+      "LATIN",
+      "QUILL",
+      "RIVER",
+      "BANKS",
+      "BIKES",
+      "CYCLE",
+      "SCARF",
+      "CREST",
+      "CREAM",
+      "SCONE",
+      "PINTS",
+      "PUNCH",
+      "DANCE",
+      "MUSIC",
+      "DISCO",
+      "PARTY",
+      "CAROL",
+      "TERMS",
+      "EXAMS",
+      "BOOKS",
+      "NOTES",
+      "PAPER",
+      "DRAFT",
+      "PROOF",
+      "SPIRE",
+      "VAULT",
+      "STAIR",
+      "LODGE",
+      "BOATS",
+      "PORTS",
+      "LIONS",
+      "YALES"
+    ]
+  },
+  "connections": {
+    "levels": ["Straightforward", "Fair", "Tricky", "Devious"],
+    "groups": [
+      [
+        { "name": "In the SBR room", "words": ["PIANO", "KITCHEN", "WII", "CUE"] },
+        { "name": "Cambridge calendar", "words": ["MICHAELMAS", "LENT", "EASTER", "MAY WEEK"] },
+        { "name": "Rivers", "words": ["CAM", "GRANTA", "ISIS", "OUSE"] },
+        { "name": "Formal dress", "words": ["GOWN", "TUXEDO", "BOW TIE", "CUFFLINKS"] },
+        {
+          "name": "Gelato flavours",
+          "words": ["PISTACHIO", "STRACCIATELLA", "VANILLA", "HAZELNUT"]
+        },
+        { "name": "Board games", "words": ["CHESS", "SCRABBLE", "RISK", "CLUEDO"] }
+      ],
+      [
+        {
+          "name": "Cambridge bridges",
+          "words": ["SIGHS", "MATHEMATICAL", "SILVER STREET", "CLARE"]
+        },
+        { "name": "SBR swap partners", "words": ["BALLIOL", "UPPSALA", "GHISLIERI", "TRINITY"] },
+        { "name": "St John's courts", "words": ["FIRST", "SECOND", "THIRD", "CHAPEL"] },
+        { "name": "Places in a rowing eight", "words": ["BOW", "STROKE", "COX", "ENGINE ROOM"] },
+        { "name": "Cycling kit", "words": ["HELMET", "D-LOCK", "PANNIER", "LIGHTS"] },
+        { "name": "Fortified wines", "words": ["PORT", "SHERRY", "MADEIRA", "MARSALA"] }
+      ],
+      [
+        {
+          "name": "Books by Samuel Butler",
+          "words": ["EREWHON", "FAIR HAVEN", "LIFE AND HABIT", "ALPS AND SANCTUARIES"]
+        },
+        { "name": "Bumps outcomes", "words": ["OVERBUMP", "ROW OVER", "SPOONS", "BLADES"] },
+        { "name": "Cambridge slang", "words": ["BEDDER", "SUPO", "SWAP", "BOP"] },
+        { "name": "On the college arms", "words": ["EAGLE", "YALE", "FLEUR-DE-LIS", "LIONS"] },
+        { "name": "Cambridge exams and degrees", "words": ["TRIPOS", "VIVA", "MPHIL", "PHD"] },
+        { "name": "Bits of a punt", "words": ["POLE", "TILL", "CUSHION", "PADDLE"] }
+      ],
+      [
+        { "name": "___ Lodge", "words": ["SKI", "HUNTING", "MASTER'S", "PORTERS'"] },
+        { "name": "___ Table", "words": ["BA", "HIGH", "ROUND", "TIMES"] },
+        { "name": "Hidden rivers", "words": ["CAMPING", "MOUSE", "SENILE", "ATTEST"] },
+        { "name": "___ Ball", "words": ["MAY", "FOOT", "MASKED", "SNOW"] },
+        { "name": "___ Room", "words": ["BOILER", "COMBINATION", "SAMUEL BUTLER", "ESCAPE"] },
+        { "name": "Famous Johnians", "words": ["WORDSWORTH", "WILBERFORCE", "DIRAC", "HERSCHEL"] }
+      ]
+    ]
+  },
+  "worldle": {
+    "featured": ["United Kingdom", "Ireland", "Italy", "Sweden"],
+    "facts": [
+      "Sans Frontieres is the SBR's celebration of its members' home countries.",
+      "SBR swap partners are in England, Ireland, Italy and Sweden."
+    ]
+  },
+  "mini": [
+    {
+      "grid": ["#BRAT", "SLICE", "PUNTS", "ASSET", "SHED#"],
+      "across": [
+        "Spoiled child",
+        "Piece of cake, or a bad golf shot",
+        "Flat boats poled along the Backs",
+        "Something of value",
+        "Garden outbuilding"
+      ],
+      "down": [
+        "Go red, like an LMBC blazer",
+        "Wash in clean water",
+        "Performed on stage",
+        "Exam",
+        "Relaxing retreats"
+      ]
+    },
+    {
+      "grid": ["#CARS", "VENUE", "EAGLE", "ISLES", "NEED#"],
+      "across": [
+        "Not to be parked in First Court",
+        "Where an event is held",
+        "Gold bird on the St John's arms",
+        "British ___",
+        "Require"
+      ],
+      "down": ["Stop", "Point of view", "Lined, like exam paper", "Spots", "Blood vessel"]
+    },
+    {
+      "grid": ["#SARI", "APRON", "CROWN", "EASES", "DYED#"],
+      "across": [
+        "Draped South Asian garment",
+        "Worn by the gelato server",
+        "Chained headwear on the college arms",
+        "Makes less painful",
+        "Coloured, as hair"
+      ],
+      "down": [
+        "Mist off the Cam on a bad punting day",
+        "Got up",
+        "Did the Bumps, say",
+        "Pubs",
+        "Got full marks on"
+      ]
+    },
+    {
+      "grid": ["#SWAN", "SCENE", "LODGE", "URGED", "REEL#"],
+      "across": [
+        "Bird that will not move for your punt",
+        "Part of a play",
+        "Porters' ___",
+        "Strongly encouraged",
+        "Scottish dance, or a fishing spool"
+      ],
+      "down": [
+        "Tally of points",
+        "Doorstop shape",
+        "Heavenly being",
+        "Must have",
+        "Speak unclearly after Port & Sherry"
+      ]
+    },
+    {
+      "grid": ["#BORE", "ORGAN", "VALID", "EVENS", "NODS#"],
+      "across": [
+        "Tedious neighbour at formal",
+        "Instrument in the college Chapel",
+        "Like an accepted Wordle guess",
+        "1 to 1 odds",
+        "___ off in a lecture"
+      ],
+      "down": [
+        "Shout after a choir concert",
+        "Stared at",
+        "What Cambridge does all Michaelmas",
+        "Finishes",
+        "Kitchen appliance in the SBR"
+      ]
+    },
+    {
+      "grid": ["#VAST", "RIVER", "ALONE", "SLIDE", "PADS#"],
+      "across": ["Huge", "The Cam, for one", "Solo", "One page of a talk deck", "Note ___"],
+      "down": [
+        "Holiday home",
+        "Steer clear of",
+        "Mails",
+        "Willow on the Backs, say",
+        "Rough file, or harsh voice"
+      ]
+    },
+    {
+      "grid": ["#TWIN", "GRACE", "AUTOS", "SCENT", "HERS#"],
+      "across": [
+        "Kind of room, or sibling",
+        "Said in Latin before formal hall",
+        "Cars, informally",
+        "Perfume",
+        "Not his"
+      ],
+      "down": [
+        "Ceasefire",
+        "What the Cam is full of",
+        "Desktop pictures",
+        "Where the eagle lives",
+        "Deep cut"
+      ]
+    },
+    {
+      "grid": ["#ERAS", "FEAST", "ARISE", "SINEW", "TEST#"],
+      "across": ["Historical periods", "Grand college dinner", "Get up", "Tendon", "Trial"],
+      "down": [
+        "Spooky, like the Bridge of Sighs at midnight",
+        "Pours down",
+        "Something valuable",
+        "Hall dish on a cold day",
+        "Quick"
+      ]
+    },
+    {
+      "grid": ["#SPAS", "SPENT", "PIANO", "ARROW", "RELY#"],
+      "across": [
+        "Health resorts",
+        "Exhausted",
+        "Instrument in the SBR room",
+        "Archer's shot",
+        "Depend"
+      ],
+      "down": [
+        "Pointy church top",
+        "Gem from an oyster",
+        "Irritate",
+        "Pack away",
+        "Box for practice"
+      ]
+    },
+    {
+      "grid": ["#SPAR", "SCARE", "TERMS", "ONSET", "WEED#"],
+      "across": [
+        "Mast or boom",
+        "Fright",
+        "Michaelmas, Lent and Easter",
+        "Beginning",
+        "Garden pest"
+      ],
+      "down": [
+        "Setting",
+        "Analyse grammatically",
+        "Bearing arms, like the college",
+        "Remainder",
+        "Stash"
+      ]
+    }
+  ],
+  "bee": {
+    "themes": [
+      "BUTLERS",
+      "CHAPELS",
+      "FORMALS",
+      "GRADUATE",
+      "REDCOAT",
+      "CHAPLAIN",
+      "SYMPOSIUM",
+      "SCHOLAR",
+      "OARSMEN",
+      "PUNTERS",
+      "DOCTORAL",
+      "BEDMAKER",
+      "LECTURES",
+      "BANQUET",
+      "CROWNED",
+      "PORTALS",
+      "BLAZERS",
+      "FRESHMEN",
+      "TUTORIAL",
+      "GARDENS",
+      "BRIDGES"
+    ],
+    "ranks": [
+      ["Beginner", 0],
+      ["Good start", 2],
+      ["Moving up", 5],
+      ["Good", 8],
+      ["Solid", 15],
+      ["Nice", 25],
+      ["Great", 40],
+      ["Amazing", 50],
+      ["Genius", 70]
+    ]
+  }
+}
