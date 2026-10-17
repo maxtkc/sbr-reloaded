@@ -1,6 +1,6 @@
 {
-  "title": "Impossible 8-Ball",
-  "subtitle": "The SBR pool table, First Court. Reds or yellows, then the black. The committee keeps an eye on the pockets.",
+  "title": "Gentle 8 Ball",
+  "subtitle": "The SBR pool table, First Court. Reds or yellows, then the black. The committee guards the pockets, but they go easy on a gentle shot. Slam it and they never will.",
   "controls": "Drag back from anywhere and let go to shoot. Or Left/Right to aim and hold Space for power. R re-racks.",
   "start": "Drag or press Space to break",
   "quips": {
@@ -55,6 +55,24 @@
     "default": ["Not this pocket.", "Committee only.", "Occupied.", "Nope."]
   },
   "spat": ["Spat back out.", "Returned to sender.", "Pocket says no."],
+  "potted": [
+    "It went in. The committee is reviewing the footage.",
+    "Pot confirmed. Somebody minute that.",
+    "A gentle touch. The committee approves.",
+    "In! The Treasurer is checking the receipts."
+  ],
+  "scratch": [
+    "Scratch. Cue ball back in the D.",
+    "The cue ball has left the society. It will be back."
+  ],
+  "won": [
+    "Frame won. The committee is calling an emergency general meeting.",
+    "You won a frame. Nobody saw it, and the Secretary did not minute it."
+  ],
+  "lost": [
+    "Black potted early. Frame lost, rack them up.",
+    "Early black. The committee thanks you for your contribution."
+  ],
   "rerack": [
     "Committee meeting over. Re-racking.",
     "Time's up, next pair on the table.",
