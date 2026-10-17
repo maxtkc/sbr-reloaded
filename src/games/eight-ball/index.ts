@@ -61,9 +61,9 @@ const SPOT = { x: L * 0.73, y: WD / 2 };
 const AUTO_RERACK = 25;
 const HUD = 40;
 // Chance a ball heading at a pocket is let through, by its speed (units per 1/60 s). Zero from POT_CUTOFF up.
-const POT_MAX = 0.7;
-const POT_CUTOFF = 9;
-const potChance = (speed: number) => POT_MAX * Math.max(0, 1 - speed / POT_CUTOFF) ** 2;
+const POT_MAX = 0.9;
+const POT_CUTOFF = 14;
+const potChance = (speed: number) => POT_MAX * Math.max(0, 1 - speed / POT_CUTOFF) ** 1.5;
 const COMIC =
   "'Comic Sans MS', 'Comic Neue', 'Chalkboard SE', 'Marker Felt', system-ui, sans-serif";
 
@@ -446,7 +446,6 @@ function run(root: HTMLElement, world: MatterWorld): () => void {
   // Rolls a pot-or-block verdict for each ball heading at a pocket. Blocked pockets get a guardian, allowed
   // ones take the ball, and strays that slip past a guardian are sent back out.
   function guardPockets(dt: number): void {
-    const reach = Math.min(160, 95 + shots * 2.5);
     const near = POCKETS.map(() => false);
     const allowed = POCKETS.map(() => false);
     for (const b of [...balls]) {
@@ -460,12 +459,14 @@ function run(root: HTMLElement, world: MatterWorld): () => void {
         const dy = p.y - pos.y;
         const d = Math.hypot(dx, dy);
         const heading = speed > 0.3 && (dx * v.x + dy * v.y) / (d * speed) > 0.35;
+        // Verdicts and guardians trigger just outside the guardian's reach.
+        const close = p.guard + R + 20 + Math.min(45, speed * 3);
         const key = `${b.body.id}:${i}`;
         let ok = verdicts.get(key);
-        if (ok === undefined && heading && d < reach + speed * 6) {
+        if (ok === undefined && heading && d < close) {
           ok = Math.random() < potChance(speed);
           verdicts.set(key, ok);
-        } else if (ok !== undefined && d > reach + 80) {
+        } else if (ok !== undefined && d > close + 80) {
           verdicts.delete(key);
           ok = undefined;
         }
@@ -477,7 +478,7 @@ function run(root: HTMLElement, world: MatterWorld): () => void {
           }
           return;
         }
-        if (d < 60 || (heading && d < reach + speed * 6)) near[i] = true;
+        if (d < 60 || (heading && d < close)) near[i] = true;
       });
       if (gone) continue;
       // Safety net: a ball past the cushion line goes back out of the nearest pocket, unless it is in the
