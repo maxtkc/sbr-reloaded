@@ -100,7 +100,7 @@ function pickSpot(c: Character, date: string, taken: Set<HTMLElement>): Spot | n
   const hosts = [...document.querySelectorAll<HTMLElement>(HOSTS)];
   const content = [
     ...document.querySelectorAll<HTMLElement>(
-      'main p, main li, main h1, main h2, main h3, main h4, main img, main a, main button, main svg, main iframe, main input, main .card, main figure, .wl-peek',
+      'main p, main li, main h1, main h2, main h3, main h4, main img, main a, main button, main svg, main iframe, main input, main .card, main figure, .wl-peek, .hd-perch',
     ),
   ];
   const r = rng(hash(`${date}:${c.id}:spot`));

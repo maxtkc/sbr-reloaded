@@ -20,7 +20,7 @@ const ATOMS =
   'h1,h2,h3,h4,h5,h6,p,li,img,svg,picture,video,canvas,button,input,select,textarea,figure,blockquote,pre,table,dt,dd,label,hr,.card';
 // Elements that never fall: chaos UI, fallen clones and their hidden originals.
 const SKIP =
-  '.sbot,.cap,.pong-crack,.pong-score,.pong-bubble,.chaos-overlay,.rr,.rd-canvas,.rd-bubble,.gv-layer,.gv-gone,.gv-porters,.gv-toast,.eggs-toggle,.eggs-list,script,style,template,noscript,iframe';
+  '.sbot,.cap,.pong-crack,.pong-score,.pong-bubble,.chaos-overlay,.rr,.rd-canvas,.rd-bubble,.gv-layer,.gv-gone,.gv-porters,.gv-toast,.hd-scene,.eggs-toggle,.eggs-list,script,style,template,noscript,iframe';
 // Elements that get no fallback background.
 const MEDIA = 'img,svg,picture,video,canvas';
 // Logical box properties dropped from a clone root.

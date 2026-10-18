@@ -968,6 +968,28 @@ off the plate onto the tray.
   Verified in headless Chromium at 375/1280px: answers, same-page and cross-page highlight, mailto on a miss, back to
   Solbee, keyword fallback with huggingface.co blocked, missing index, no horizontal scroll.
 
+### Phase 43 - Humpty Dumpty  `[x]`
+- Humpty sits on a wall on the home page. Click him and he falls and breaks; the King's horses and men (King's
+  College) are right there, and clicking each one fails to put him back together.
+- Notes: `src/chaos/gags/humpty/{index.ts,sprites.ts}` (gag `humpty`, egg "Humpty Dumpty", registered before
+  `waldo` so Waldo's clear-space check sees the wall). An `.hd-scene` layer inside `#history .wrap` holds a 64x24
+  brick wall at the right end of the "History of the SBR" heading row, its bottom on the heading text's bottom
+  edge; if the heading text leaves no room beside it, the button row is used, else the wall is hidden. Re-laid
+  out on resize. Humpty (egg, red bow tie, swinging legs, wobble) is a button; click or Enter tips him off in a
+  WAAPI arc into the section's bottom padding, `boom` plus a crack, and a broken pile (shards, yolk, a blinking
+  eye) with a bubble. 600ms later 2 horses and 3 men in King's purple trot in from the left of the pile with hoof
+  beeps. Each figure is a button: it hops, says a line (shared shuffled decks for men and horses), and the pile
+  flashes a taped-up egg for 450ms before crumbling again. Once all 5 have tried, a descending sad beep and the
+  rhyme's last line with a real fact (King's 1441, King's Chapel 1446-1515, St John's 1511, SBR 1960) show for
+  12s, then the party trots off and a porter line appears. The pile stays until reload. One bubble at a time,
+  comic style like Waldo's, absolute in the layer so it scrolls with the page. Timeouts keep their remaining time
+  and the fall animation pauses with the bus; CSS loops pause via `.paused`. Idle loops 3x slower and the fall
+  1.4x slower under reduced motion. Copy in `src/content/jokes/humpty.yaml`, validated by
+  `src/components/HumptyData.astro` (`#humpty-data`, in `BaseLayout`). Gravity and pong skip `.hd-scene`. Verified
+  in headless Chromium at 1280px and iPhone 13 (sitting, fall, party, every attempt, finale, party leaves, egg
+  counted, no horizontal scroll), keyboard only, a game overlay opened mid-scene holds the party until closed,
+  gravity collapse does not clone the scene, no page errors.
+
 ## Verification (whole project)
 - `npm run build` clean; `npm run preview` and walk every trigger in the egg table.
 - Calendar: subscribe to the deployed `/calendar.ics` in Google Calendar.

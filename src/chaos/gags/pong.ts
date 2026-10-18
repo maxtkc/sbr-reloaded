@@ -32,7 +32,7 @@ const MAX_CRACKS = 25;
 const TARGETS = 'h1,h2,h3,p,li,img,figure,blockquote,button,.card';
 // Chaos UI that never gets smashed.
 const SKIP =
-  '.sbot,.cap,.pong-crack,.pong-score,.pong-bubble,.chaos-overlay,.rr,.gv-layer,.gv-gone,.gv-porters,.gv-toast,.eggs-toggle,.eggs-list';
+  '.sbot,.cap,.pong-crack,.pong-score,.pong-bubble,.chaos-overlay,.rr,.gv-layer,.gv-gone,.gv-porters,.gv-toast,.hd-scene,.eggs-toggle,.eggs-list';
 
 const CSS = `
 .pong-canvas{position:fixed;inset:0;z-index:2147481000;pointer-events:none;display:none}
