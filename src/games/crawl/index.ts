@@ -278,7 +278,7 @@ export default function start(root: HTMLElement): () => void {
     changeSpeed(e.deltaY > 0 ? 0.25 : -0.25);
   }
 
-  function onDown(e: PointerEvent): void {
+  function onDown(): void {
     sw.focus();
     if (t < LOGO_END) return skipIntro();
     holding = true;
