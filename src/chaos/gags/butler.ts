@@ -17,28 +17,21 @@ background:rgba(255,255,255,.95);color:#000;font:700 1.4rem/1 sans-serif;cursor:
 
 export default function butler(): (() => void) | void {
   const list = document.querySelector<HTMLElement>('#committee .members');
-  const source =
-    list?.querySelector<HTMLElement>('.member:has(.placeholder)') ??
-    list?.querySelector<HTMLElement>('.member');
-  if (!list || !source) return;
+  const template = document.querySelector<HTMLTemplateElement>('#butler-card');
+  if (!list || !template) return;
 
   const style = document.createElement('style');
   style.textContent = CSS;
   document.head.append(style);
 
-  // Card cloned from a stand-in card so it keeps the Butler portrait and the card styles.
-  const card = source.cloneNode(true) as HTMLElement;
-  card.removeAttribute('data-game');
-  const img = card.querySelector('img');
-  img?.classList.remove('placeholder');
-  img?.setAttribute('alt', 'Samuel Butler');
+  // Card from the committee's Butler template, with the portrait and card styles.
+  const card = template.content.firstElementChild!.cloneNode(true) as HTMLElement;
   card.querySelector('h3')!.textContent = 'Samuel Butler';
   card.querySelector('.role')!.textContent = 'Antisocial';
   const mail = card.querySelector<HTMLAnchorElement>('a[href^="mailto:"]')!;
   mail.href = `mailto:${EMAIL}`;
   mail.textContent = EMAIL;
   mail.dataset.rickroll = '';
-  card.querySelector('details')?.remove();
   const bio = document.createElement('details');
   const summary = document.createElement('summary');
   summary.textContent = 'About';
