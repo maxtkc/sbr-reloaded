@@ -89,9 +89,6 @@ Then, we'll make it quite satirical and fun
   animated). After 10 seconds of continuous hover, it should explode
 - The widths feel odd. Text is one width, navbar links are another, and the
   title is another. Clean it up
-
-Not yet planned:
-
 - humpty dumpty is sitting on a wall somewhere, you click him and he falls and
   breaks, and the kings horses and men are right there, but you click them and
   they can't put him back together again

@@ -5,6 +5,7 @@ import butler from './gags/butler';
 import butlerPhotos from './gags/butler-photos';
 import captcha from './gags/captcha';
 import gravity from './gags/gravity';
+import humpty from './gags/humpty';
 import pong from './gags/pong';
 import ragdoll from './gags/ragdoll';
 import waldo from './gags/waldo';
@@ -47,6 +48,7 @@ export const gags: Record<string, Gag> = {
   'butler-photos': { enabled: true, init: butlerPhotos },
   captcha: { enabled: true, egg: 'Robot check', init: captcha },
   gravity: { enabled: true, egg: 'Gravity collapse', init: gravity },
+  humpty: { enabled: true, egg: 'Humpty Dumpty', init: humpty },
   pong: { enabled: true, egg: 'Corner pong', init: pong },
   ragdoll: { enabled: true, egg: 'Committee ragdoll', init: ragdoll },
   // Daily puzzle characters; the puzzles below are the eggs.
