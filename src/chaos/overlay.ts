@@ -53,8 +53,16 @@ export function open(
 
   const iframe = document.createElement('iframe');
   iframe.src = url(`/games/${slug}?embed=1`);
-  iframe.title = slug;
+  iframe.title = slug.replace(/-/g, ' ');
   iframe.allow = 'autoplay; fullscreen; gamepad; accelerometer; gyroscope';
+  el.setAttribute('aria-label', iframe.title);
+  // Swap in the game's real title once its page has loaded.
+  iframe.addEventListener('load', () => {
+    const title = iframe.contentDocument?.title.replace(/ \| Samuel Butler Room$/, '');
+    if (!title) return;
+    iframe.title = title;
+    el.setAttribute('aria-label', title);
+  });
 
   const x = document.createElement('button');
   x.type = 'button';

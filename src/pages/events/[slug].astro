@@ -25,9 +25,32 @@ const pageUrl = new URL(url(`/events/${event.id}`), Astro.site).href;
 const google = googleEventLink(event, pageUrl);
 const outlook = outlookEventLink(event, pageUrl);
 const full = image && (await getImage({ src: image, width: Math.min(1600, image.width) })).src;
+const description = plainText(event.body).slice(0, 160) || undefined;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Event',
+  name: title,
+  startDate: dates[0].start,
+  endDate: dates[0].end,
+  eventStatus: 'https://schema.org/EventScheduled',
+  eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+  location: {
+    '@type': 'Place',
+    name: location,
+    address: "St John's College, Cambridge, CB2 1TP, UK",
+  },
+  organizer: {
+    '@type': 'Organization',
+    name: 'Samuel Butler Room',
+    url: new URL(url('/'), Astro.site).href,
+  },
+  url: new URL(Astro.url.pathname, Astro.site).href,
+  ...(description && { description }),
+  ...(full && { image: new URL(full, Astro.site).href }),
+};
 ---
 
-<BaseLayout title={title} description={plainText(event.body).slice(0, 160)}>
+<BaseLayout title={title} description={description} image={image} jsonLd={jsonLd}>
   <main class="section">
     <article class="wrap">
       <p class="back">

@@ -8,17 +8,54 @@ import RosterData from '../components/RosterData.astro';
 import PongData from '../components/PongData.astro';
 import RagdollData from '../components/RagdollData.astro';
 import HumptyData from '../components/HumptyData.astro';
+import { Font, getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import arms from '../assets/arms/arms-footer.png';
 import { url } from '../lib/url';
 
 interface Props {
   title: string;
   description?: string;
+  // Share image for Open Graph/Twitter; defaults to the college arms.
+  image?: ImageMetadata;
+  // Extra structured data for this page.
+  jsonLd?: Record<string, unknown>;
 }
 const {
   title,
   description = "The Samuel Butler Room: the postgraduate society of St John's College, Cambridge.",
+  image,
+  jsonLd,
 } = Astro.props;
 const fullTitle = title === 'Samuel Butler Room' ? title : `${title} | Samuel Butler Room`;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const home = new URL(url('/'), Astro.site).href;
+const shareSrc = image ?? arms;
+const share = await getImage({
+  src: shareSrc,
+  width: Math.min(1200, shareSrc.width),
+  format: 'jpg',
+});
+const shareUrl = new URL(share.src, Astro.site).href;
+const logo = await getImage({ src: arms, width: 512, format: 'png' });
+
+const organization = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Samuel Butler Room',
+  alternateName: 'SBR',
+  url: home,
+  logo: new URL(logo.src, Astro.site).href,
+  description: "The postgraduate society of St John's College, Cambridge.",
+  foundingDate: '1960',
+  parentOrganization: {
+    '@type': 'CollegeOrUniversity',
+    name: "St John's College, Cambridge",
+    url: 'https://www.joh.cam.ac.uk/',
+  },
+  sameAs: ['https://www.instagram.com/samuelsroom/'],
+};
+const structured = [canonical === home && organization, jsonLd].filter(Boolean);
 ---
 
 <!doctype html>
@@ -28,15 +65,24 @@ const fullTitle = title === 'Samuel Butler Room' ? title : `${title} | Samuel Bu
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Samuel Butler Room" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={shareUrl} />
+    <meta property="og:image:width" content={String(share.attributes.width)} />
+    <meta property="og:image:height" content={String(share.attributes.height)} />
+    <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
     <link rel="icon" href={url('/favicon.ico')} sizes="any" />
     <link rel="icon" type="image/png" href={url('/favicon-32.png')} />
     <link rel="apple-touch-icon" href={url('/apple-touch-icon.png')} />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap"
-    />
+    <Font cssVariable="--font-serif" preload />
+    <Font cssVariable="--font-sans" preload={[{ weight: 400, style: 'normal' }]} />
+    {structured.map((data) => (
+      <script type="application/ld+json" set:html={JSON.stringify(data)} />
+    ))}
   </head>
   <body>
     <SiteHeader />
