@@ -36,7 +36,7 @@ in one place.
 | Map data | One OSM extract (Overpass, bbox around St John's) committed as GeoJSON; feeds Pokemon tilemap, Minecraft voxels, flight sim buildings. No API keys anywhere in the project |
 | Game launch | Contextual easter eggs only (no arcade page). Trigger opens full-viewport iframe overlay of `/games/<slug>` with an X; every game also works standalone. Page gags pause while a game is open |
 | Touch | Basic touch where it maps trivially (tap = flap/jump). Keyboard-heavy games show a joke "desktop only" screen on touch |
-| Faces | 9 committee members with photos: face crops used everywhere. 6 without photos: Samuel Butler public-domain portrait on the site, EXCLUDED from games |
+| Faces | All 15 committee members have photos: face crops used everywhere. Members without a photo get the Samuel Butler public-domain portrait on the site and are EXCLUDED from games |
 | Verification | `astro build` + per-phase manual checklist. No automated test suite |
 | Git | Agent commits to `main` at end of each phase and pushes |
 
@@ -232,9 +232,10 @@ src/games/<slug>/        index.ts (export default start(root: HTMLElement): () =
 - `src/chaos/shared/faces.ts` exports the game roster.
 - Checklist: all 9 faces centered and recognizable; parts reassemble to the original logo.
 - Notes: faces use OpenCV's Haar frontal-face cascade (pinned `opencv-python-headless<5`, 5.x dropped it) instead of
-  MediaPipe, plus `rembg` (`u2net_human_seg`) for cutouts, in a uv venv on Python 3.12. Detection missed Laura (face
-  turned) and picked Davide's shirt, so both have hand-set boxes in `OVERRIDES`; detected boxes land in
-  `scripts/faces/boxes.json`. Crops are 512px PNGs; `faces.ts` serves them as 256px webp via `getImage`.
+  MediaPipe, plus `rembg` (`u2net_human_seg`) for cutouts, in a uv venv on Python 3.12. Detection misses Alexander and Matteo
+  on the 2026 photos, so both have hand-set boxes in `OVERRIDES` (source pixels of the 1200px photos); detected boxes
+  land in `scripts/faces/boxes.json`. Committee photos are stored as `src/assets/committee/<slug>.jpg`, 1200px long
+  edge. Crops are 512px PNGs; `faces.ts` serves them as 256px webp via `getImage`.
   `faces.ts` is build-time only (`getRoster()` uses `astro:content`); client code gets the roster as JSON from the
   page. Arms split (`scripts/arms/split.py`, inkscape for bounding boxes, svgo for output) gives 19 parts in
   `src/assets/arms/parts/`, listed back-to-front in `src/data/arms-parts.json` with box and pivot in source
@@ -838,8 +839,8 @@ off the plate onto the tray.
 ### Phase 32 - Committee: Samuel Butler himself  `[x]`
 - Add a committee entry "Samuel Butler", role "Antisocial", with the Butler portrait. Its email link opens an in-page
   overlay with a rickroll (YouTube embed, autoplay) instead of `mailto:`. Excluded from game rosters (no photo).
-- Notes: `src/chaos/gags/butler.ts` (gag `butler` in the registry, so not in the committee collection). It clones a
-  stand-in card from `#committee .members`, renames it, drops the sepia, sets `sb1835@cam.ac.uk`, a one-line bio, and
+- Notes: `src/chaos/gags/butler.ts` (gag `butler` in the registry, so not in the committee collection). It clones
+  the `#butler-card` template rendered by `Committee.astro` into `#committee .members`, fills in the name, role, `sb1835@cam.ac.uk`, a one-line bio, and
   appends it last. The email click opens `.rr` (fixed, z `2147483000`) with a youtube-nocookie embed, autoplay;
   X, Esc or a backdrop click closes it. Pauses gags via the bus while open. Pong and gravity skip `.rr`. Verified in
   headless Chromium at 1280px (card, modal opens with no mailto navigation, Esc closes).
