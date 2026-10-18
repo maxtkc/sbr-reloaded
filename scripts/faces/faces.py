@@ -21,8 +21,8 @@ PAD = 1.9
 LIFT = 0.12
 # Manual face boxes (x, y, w, h in source pixels) for photos where detection fails.
 OVERRIDES: dict[str, tuple[int, int, int, int]] = {
-    "davide-rosetti": (195, 45, 125, 125),
-    "laura-li-yu": (610, 250, 240, 240),
+    "alexander-corbett": (290, 330, 230, 230),
+    "matteo-poletto": (225, 355, 160, 160),
 }
 
 
