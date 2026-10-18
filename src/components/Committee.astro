@@ -41,6 +41,23 @@ const members = (await getCollection('committee')).sort((a, b) => a.data.order -
         </li>
       ))}
     </ul>
+    {/* Samuel Butler's card, cloned in by the butler gag. */}
+    <template id="butler-card">
+      <li class="card member">
+        <Image
+          src={butler}
+          alt="Samuel Butler"
+          width={240}
+          height={240}
+          densities={[1, 2]}
+          fit="cover"
+          class="photo"
+        />
+        <h3></h3>
+        <p class="role"></p>
+        <a href="mailto:"></a>
+      </li>
+    </template>
     <SectionText id="associate-membership" heading="h3" />
   </div>
 </section>
