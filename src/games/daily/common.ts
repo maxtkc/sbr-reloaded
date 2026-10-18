@@ -10,7 +10,7 @@ export function fact(salt: string, pool: readonly string[] = data.facts): string
 
 const CSS = `
 .dp{position:absolute;inset:0;overflow-y:auto;background:#f6f7fa;color:#161b26;
-font:400 1rem/1.4 'Source Sans 3',system-ui,sans-serif;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+font:400 1rem/1.4 var(--sans,system-ui,sans-serif);touch-action:manipulation;-webkit-user-select:none;user-select:none}
 .dp input{-webkit-user-select:text;user-select:text}
 .dp-in{max-width:32rem;margin:0 auto;padding:1rem 1rem 2rem;display:flex;flex-direction:column;align-items:center;gap:.9rem}
 .dp-sub{margin:0;color:#545c6b;font-size:.9rem;text-align:center}
@@ -29,7 +29,7 @@ font:700 .95rem/1 inherit;font-family:inherit;cursor:pointer;text-transform:uppe
 .dp-kb button.x{background:#787c7e;color:#fff}
 .dp-result{width:100%;padding:1rem;border-top:4px solid #e3261c;border-radius:10px;background:#fff;
 box-shadow:0 2px 10px rgba(12,26,49,.12);text-align:center}
-.dp-result h2{margin:0 0 .3rem;font:700 1.5rem/1.2 'Cormorant Garamond',Georgia,serif;color:#0c1a31}
+.dp-result h2{margin:0 0 .3rem;font:700 1.5rem/1.2 var(--serif,Georgia,serif);color:#0c1a31}
 .dp-result .big{margin:.2rem 0;font-size:1.6rem;font-weight:700}
 .dp-result .fact{margin:.75rem 0;color:#545c6b;font-style:italic}
 .dp-result .meta{margin:.5rem 0;font-size:.85rem;color:#545c6b}

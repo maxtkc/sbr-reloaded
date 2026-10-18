@@ -10,8 +10,8 @@
   --paper: #f6f7fa;
   --card: #ffffff;
   --line: #dde2ea;
-  --serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
-  --sans: 'Source Sans 3', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --serif: var(--font-serif, Georgia, 'Times New Roman', serif);
+  --sans: var(--font-sans, system-ui, -apple-system, 'Segoe UI', sans-serif);
   --radius: 10px;
   --wrap: 56rem;
 }
