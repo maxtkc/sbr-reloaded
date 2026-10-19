@@ -71,6 +71,8 @@ const events = defineCollection({
         location: z.string(),
         category: z.enum(eventCategories),
         ticketUrl: z.url().optional(),
+        // Ticket price in GBP; 0 means free.
+        price: z.number().min(0).optional(),
         // Placeholder date, shown as "to be confirmed".
         tbc: z.boolean().default(false),
         // Flier or photo.

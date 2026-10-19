@@ -95,6 +95,7 @@ export function toEvent(body, image) {
   const category = categories[f['Category']] || fail(`Unknown category: ${f['Category']}`);
   const description = f['Description'] || fail('Missing description');
   const ticketUrl = f['Ticket link'];
+  const price = f['Price (GBP)']?.replace(/^£/, '');
   const imageUrl = findImageUrl(f['Flier or photo'] || '');
 
   const dateRe = /^\d{4}-\d{2}-\d{2}$/;
@@ -105,6 +106,8 @@ export function toEvent(body, image) {
   if (endTime && !timeRe.test(endTime)) fail(`Bad end time "${endTime}", use HH:MM`);
   if (endTime && !startTime) fail('End time given without a start time');
   if (ticketUrl && !/^https?:\/\/\S+$/.test(ticketUrl)) fail(`Bad ticket link "${ticketUrl}"`);
+  if (price && !/^\d+(\.\d{1,2})?$/.test(price))
+    fail(`Bad price "${price}", use a number like 5 or 1.50`);
 
   const allDay = !startTime;
   let start, end;
@@ -123,6 +126,7 @@ export function toEvent(body, image) {
   const slug = `${slugify(title) || 'event'}-${date}`;
   const data = { title, start, end, allDay, location, category };
   if (ticketUrl) data.ticketUrl = ticketUrl;
+  if (price) data.price = Number(price);
   if (image) Object.assign(data, { image, imageAlt: `${title} flier` });
   return { slug, imageUrl, content: toFrontmatter(data, description) };
 }

@@ -76,3 +76,8 @@ body:
     attributes:
       label: Ticket link
       description: Optional. Full URL starting with https://
+  - type: input
+    id: price
+    attributes:
+      label: Price (GBP)
+      description: Optional. A number like 5 or 1.50; 0 for free.

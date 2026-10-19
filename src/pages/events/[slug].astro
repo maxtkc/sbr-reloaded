@@ -8,6 +8,7 @@ import { occurrences, formatWhen, categoryLabels } from '../../lib/events';
 import { googleEventLink, outlookEventLink } from '../../lib/calendar-links';
 import { plainText } from '../../lib/ics';
 import { url } from '../../lib/url';
+import arms from '../../assets/arms/arms-footer.png';
 
 export const getStaticPaths = (async () => {
   const events = await getCollection('events');
@@ -18,7 +19,8 @@ interface Props {
   event: CollectionEntry<'events'>;
 }
 const { event } = Astro.props;
-const { title, location, category, ticketUrl, tbc, rrule, allDay, image, imageAlt } = event.data;
+const { title, location, category, ticketUrl, price, tbc, rrule, allDay, image, imageAlt } =
+  event.data;
 const { Content } = await render(event);
 const dates = occurrences(event);
 const pageUrl = new URL(url(`/events/${event.id}`), Astro.site).href;
@@ -26,6 +28,14 @@ const google = googleEventLink(event, pageUrl);
 const outlook = outlookEventLink(event, pageUrl);
 const full = image && (await getImage({ src: image, width: Math.min(1600, image.width) })).src;
 const description = plainText(event.body).slice(0, 160) || undefined;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const shareImage = full ?? (await getImage({ src: arms, width: 1024, format: 'jpg' })).src;
+const sbr = {
+  '@type': 'Organization',
+  name: 'Samuel Butler Room',
+  url: new URL(url('/'), Astro.site).href,
+};
+const priceLabel = price === undefined ? undefined : price === 0 ? 'Free' : `£${price.toFixed(2)}`;
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Event',
@@ -39,14 +49,19 @@ const jsonLd = {
     name: location,
     address: "St John's College, Cambridge, CB2 1TP, UK",
   },
-  organizer: {
-    '@type': 'Organization',
-    name: 'Samuel Butler Room',
-    url: new URL(url('/'), Astro.site).href,
-  },
-  url: new URL(Astro.url.pathname, Astro.site).href,
+  organizer: sbr,
+  performer: sbr,
+  image: new URL(shareImage, Astro.site).href,
+  url: canonical,
   ...(description && { description }),
-  ...(full && { image: new URL(full, Astro.site).href }),
+  ...((price !== undefined || ticketUrl) && {
+    offers: {
+      '@type': 'Offer',
+      url: ticketUrl ?? canonical,
+      ...(price !== undefined && { price: price.toFixed(2), priceCurrency: 'GBP' }),
+      availability: 'https://schema.org/InStock',
+    },
+  }),
 };
 ---
 
@@ -79,6 +94,12 @@ const jsonLd = {
         </dd>
         <dt>Where</dt>
         <dd>{location}</dd>
+        {priceLabel && (
+          <>
+            <dt>Price</dt>
+            <dd>{priceLabel}</dd>
+          </>
+        )}
         {ticketUrl && (
           <>
             <dt>Tickets</dt>
