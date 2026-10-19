@@ -78,6 +78,14 @@ collections:
         widget: string
         required: false
         pattern: ['^https?://', 'Must be a full URL starting with https://']
+      - name: price
+        label: Price (GBP)
+        widget: number
+        value_type: float
+        min: 0
+        step: 0.01
+        required: false
+        hint: 'Leave empty if unknown. Enter 0 for free events.'
       - { name: tbc, label: Date to be confirmed, widget: boolean, default: false, required: false }
       - { name: image, label: Flier or photo, widget: image, required: false }
       - name: imageAlt

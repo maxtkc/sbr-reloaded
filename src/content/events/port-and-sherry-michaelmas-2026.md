@@ -6,6 +6,7 @@ allDay: false
 rrule: FREQ=WEEKLY;BYDAY=FR;UNTIL=20261204T235959Z
 location: The Samuel Butler Room, I2 First Court
 category: formal
+price: 1.5
 ---
 
 Port & Sherry is offered in the SBR after hall on Fridays, for just £1.50 per glass.

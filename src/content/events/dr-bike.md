@@ -5,6 +5,7 @@ end: 2026-10-30
 allDay: false
 location: Forecourt Parking Lot
 category: academic
+price: 0
 tbc: false
 ---
 
