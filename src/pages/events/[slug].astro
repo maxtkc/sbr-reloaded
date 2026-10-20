@@ -8,7 +8,6 @@ import { occurrences, formatWhen, categoryLabels } from '../../lib/events';
 import { googleEventLink, outlookEventLink } from '../../lib/calendar-links';
 import { plainText } from '../../lib/ics';
 import { url } from '../../lib/url';
-import arms from '../../assets/arms/arms-footer.png';
 
 export const getStaticPaths = (async () => {
   const events = await getCollection('events');
@@ -28,44 +27,10 @@ const google = googleEventLink(event, pageUrl);
 const outlook = outlookEventLink(event, pageUrl);
 const full = image && (await getImage({ src: image, width: Math.min(1600, image.width) })).src;
 const description = plainText(event.body).slice(0, 160) || undefined;
-const canonical = new URL(Astro.url.pathname, Astro.site).href;
-const shareImage = full ?? (await getImage({ src: arms, width: 1024, format: 'jpg' })).src;
-const sbr = {
-  '@type': 'Organization',
-  name: 'Samuel Butler Room',
-  url: new URL(url('/'), Astro.site).href,
-};
 const priceLabel = price === undefined ? undefined : price === 0 ? 'Free' : `£${price.toFixed(2)}`;
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Event',
-  name: title,
-  startDate: dates[0].start,
-  endDate: dates[0].end,
-  eventStatus: 'https://schema.org/EventScheduled',
-  eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
-  location: {
-    '@type': 'Place',
-    name: location,
-    address: "St John's College, Cambridge, CB2 1TP, UK",
-  },
-  organizer: sbr,
-  performer: sbr,
-  image: new URL(shareImage, Astro.site).href,
-  url: canonical,
-  ...(description && { description }),
-  ...((price !== undefined || ticketUrl) && {
-    offers: {
-      '@type': 'Offer',
-      url: ticketUrl ?? canonical,
-      ...(price !== undefined && { price: price.toFixed(2), priceCurrency: 'GBP' }),
-      availability: 'https://schema.org/InStock',
-    },
-  }),
-};
 ---
 
-<BaseLayout title={title} description={description} image={image} jsonLd={jsonLd}>
+<BaseLayout title={title} description={description} image={image}>
   <main class="section">
     <article class="wrap">
       <p class="back">
